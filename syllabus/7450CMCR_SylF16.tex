@@ -1,0 +1,314 @@
+\documentclass[11pt]{article}\usepackage[]{graphicx}\usepackage[]{color}
+%% maxwidth is the original width if it is less than linewidth
+%% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+\usepackage{graphicx}
+\usepackage{natbib}
+\usepackage{setspace}
+\usepackage{lscape}
+\usepackage{enumitem}
+\usepackage[T1]{fontenc}
+\usepackage[colorlinks=true, urlcolor=blue]{hyperref}
+\bibpunct{(}{)}{;}{a}{}{,}
+\setlength{\tabcolsep}{1pt}
+\usepackage{hanging}
+
+\def\urltilda{\kern -.15em\lower .7ex\hbox{\~{}}\kern .04em}
+
+
+\newenvironment{reading}{& \textbf{Reading:} }{}
+\newenvironment{assignment}{& \textbf{Assignment:} }{}
+\newenvironment{recommended}{& \textbf{Recommended:} }{}
+
+\newcommand{\R}{\textsf{R}~}
+\definecolor{codegray}{gray}{0.9}
+\newcommand{\code}[1]{\colorbox{codegray}{\texttt{#1}}}
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+
+\title{POLI 7450 \\ Computational Methods for\\ Comparative Research}
+
+\author{Fall 2016\\
+W 1:30 to 4:20 pm\\
+337 Schaeffer Hall\\
+\\
+Prof.~Frederick Solt\\
+Office: 324 Schaeffer Hall \\
+Office Hours: MW  9:30 to 11:00 am and by appointment\\
+E-mail: \href{mailto:frederick-solt@uiowa.edu}{\texttt{frederick-solt@uiowa.edu}}\\
+}
+\date{ }
+\maketitle 
+
+\section{Overview}
+In this course, you will learn to identify common methodological issues encountered in quantitative comparative research and to address them using computational techniques.  Topics covered include data wrangling, exploration, and analysis (i.e., `data science'); Bayesian estimation of latent variables such as democracy, judicial independence, and respect for human rights across countries and over time; and computational approaches to the study to the dynamics of public opinion both within and across countries. This course is cross-listed in Comparative Politics and Methodology; it may be used to meet requirements in either subfield (but not both).
+
+\pagebreak
+\section{Course Requirements}
+Your grade will be based on class participation (25\%), assignments (25\%), an exam (25\%), and a research paper (25\%).  The following grades may be assigned at the end of the class: A+, A, A-, B+, B, B-, C+, C, C-, D+, D, D-, F.
+%
+\subsection{Class Participation}
+By this point in your career this should really go without saying, but here it is anyway: you can't learn in a class if you don't show up.  
+You should attend every meeting having completed the readings and assignments, that is, you should be ready to discuss use cases, ask good questions, and share any difficulties you've encountered.  
+
+We will also be using \href{https://github.com/cmcr-class/Discussion/issues}{the Issues tab of a dedicated GitHub repository} to continue our discussions outside of class. 
+To start a new thread, create a new issue. 
+If you want to be sure to get the attention of someone in particular, use their GitHub handle---mine is \texttt{@fsolt}---to tag them in your post: GitHub sends an email to people when they are tagged.
+
+
+\subsection{Assignments}
+To practice your new skills, you will have regular assignments.  Many will be completed through GitHub in a private repository for each student (besides you, only I will have access to your homework repo).  
+
+
+\subsection{Exam}
+The exam will be held in class on Oct 12.  It will be open-note, open-interwebs---you know, like \href{http://www.theallium.com/engineering/computer-programming-to-be-officially-renamed-googling-stackoverflow/}{IRL}.
+
+
+\subsection{Research Paper}
+The research paper for this course is more straightforward than the usual: the assignment is ``simply'' to write a fully reproducible version of a quantitative research paper you prepared for another class.  
+Ideally the paper will be for a class you are taking this semester, so that you use best practices as you go; you will need to confirm with the instructor of that course that this is acceptable to her or him.  
+Rewriting a promising paper from past coursework will also be fine, though.  If you're stuck for an appropriate paper, talk to me and we will work it out.
+
+\noindent For your paper, you will:
+
+\begin{itemize}
+\item write using RMarkdown (or \texttt{knitr}) with intersperced \R code and text,
+\item begin with raw data collection,
+\item include all steps of data cleaning and analysis,
+\item present figures rather than tables,
+\item use Bib\TeX~for citations,
+\item automatically generate PDF, html, and (\raisebox{0.7ex}{ee}\raisebox{0.3ex}{e}w\raisebox{-0.3ex}{ww}\raisebox{-0.7ex}{w}!) Word versions,
+\item do your work in a GitHub repository,
+\item submit a link to that repo.
+\end{itemize}
+
+\noindent Papers are due the last day of exam week, Friday, Dec 16, at 5pm. %date
+
+\section{Class Schedule}
+\begin{tabular}{p{.75in} p{4.5in}}
+    Aug 24 &    Introduction to the Course\\   
+			\assignment{\href{http://happygitwithr.com}{Bryan, Jennifer. 2016. \textit{Happy Git and GitHub for the UseR.} Chapters 1-16.}  Read this carefully and follow its instructions to get set up with \textsf{R}, RStudio, Git, and GitHub on your laptop before we meet.}\\
+    \\  
+    Aug 31 &    APSA (no class)       \\ 
+        \assignment{Use the interactive \texttt{swirl} package (``Learn \R in \textsf{R}'') to learn (or review) some \R basics.  First, run the following code to get to the \texttt{swirl} interface:
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{install.packages}\hlstd{(}\hlstr{"swirl"}\hlstd{)}
+\hlkwd{library}\hlstd{(}\hlstr{"swirl"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+    Then follow the prompts to the course \texttt{1:~R Programming:~The basics of programming in R} and complete lessons 1 through 9.  (When it asks whether you want Coursera credit, just say no.)
+        }\\
+\end{tabular}
+
+\begin{tabular}{p{.75in} p{4.25in}}
+    Sept 7 &    The Replication Crisis and Reproducibility	\\
+		%	RMarkdown, bibTeX, checkpoint (knitr, pandoc) \\
+	\reading{ \begin{enumerate}
+    	\item \href{http://fivethirtyeight.com/features/how-two-grad-students-uncovered-michael-lacour-fraud-and-a-way-to-change-opinions-on-transgender-rights/}{Aschwanden, Christie, and Maggie Koerth-Baker.  2016.  ``How Two Grad Students Uncovered an Apparent Fraud---and a Way to Change Opinions on Transgender Rights.'' \emph{FiveThirtyEight}, April 7}, and \href{http://blogs.lse.ac.uk/impactofsocialsciences/2013/04/24/reinhart-rogoff-revisited-why-we-need-open-data-in-economics/}{Dimitrova, Velichka.  2013.  ``Reinhart-Rogoff Revisited: Coding Errors Happen---Key Problem Was in Not Making the Data Openly Available from the Start.''  \emph{LSE: The Impact Blog}, April 24.}
+    	\item \href{http://journals.cambridge.org/action/displayAbstract?fromPage=online&aid=9911378&fulltextType=LT&fileId=S2049847015000448}{Data Access and Research Transparency (DA-RT): A Joint Statement by Political Science Journal Editors.}
+    	\item \href{https://ajps.org/ajps-replication-policy/}{\emph{AJPS} Replication and Verification Policy} and \href{https://ajpsblogging.files.wordpress.com/2015/03/ajps-guide-for-replic-materials-1-0.pdf}{Jacoby, William G.  2015.  ``\emph{American Journal of Political Science}: Guidelines for Preparing Replication Files.''}
+    	\item \href{http://www.stat.columbia.edu/~gelman/research/unpublished/p_hacking.pdf}{Gelman, Andrew, and Eric Loken.  2013.  ``The Garden of Forking Paths: Why Multiple Comparisons Can Be a Problem, Even When There Is No `Fishing Expedition' or \mbox{`$p$-Hacking'} and the Research Hypothesis Was Posited Ahead of Time.''}
+    	\item \href{http://www.pnas.org.proxy.lib.uiowa.edu/content/112/6/1645}{Leek, Jeffrey T., and Roger D. Peng. 2015.  ``Opinion: Reproducibile Research Can Still Be Wrong: Adopting a Prevention Approach.'' \emph{Proceedings of the National Academy of Sciences} 112(6):1645-1646} and \href{http://biorxiv.org/content/biorxiv/early/2016/07/29/066803.full.pdf}{Patil, Prasad, Roger D. Peng, and Jeffrey T. Leek.  2016.  ``A Statistical Definition for Reproducibility and Replicability.''  \emph{bioRxiv}, July 29.}
+    	
+	\end{enumerate}}\\
+	\assignment{\href{http://happygitwithr.com/rmd-test-drive.html}{Bryan, Jennifer. 2016. \textit{Happy Git and GitHub for the UseR.} Chapter 19.} }\\
+	\\
+	\recommended{ \begin{enumerate}
+	    \item \href{http://www.vox.com/2016/3/14/11219446/psychology-replication-crisis}{Resnick, Brian. 2016. ``What Psychology's Crisis Means for the Future of Science.'' \emph{Vox}, March 25.}
+	    \item \href{http://rmarkdown.rstudio.com/articles.html}{RStudio's RMarkdown Reference Library.}
+	    \item \href{http://kbroman.org/knitr_knutshell/}{Broman, Karl.  \emph{\texttt{knitr} in a knutshell: A Minimal Tutorial}.}
+    	\item Grolemund, Garrett, and Hadley Wickham.  2016.  \textit{R for Data Science.} \href{http://r4ds.had.co.nz/r-markdown.html}{Chapter 27: R~Markdown}, \href{http://r4ds.had.co.nz/r-markdown-formats.html}{Chapter 29: R~Markdown Formats}, and \href{http://r4ds.had.co.nz/r-markdown-workflow.html}{Chapter 30: R~Markdown Workflow}.
+	\end{enumerate}}\\
+	\\
+\end{tabular}
+
+\pagebreak
+\begin{tabular}{p{.75in} p{4.25in}}
+    Sept 14 &   Visualization \\
+    % https://github.com/jennybc/ggplot2-tutorial
+        \reading{\begin{enumerate}
+    	\item Basics.  \href{http://r4ds.had.co.nz}{Grolemund, Garrett, and Hadley Wickham.  2016.  \textit{R for Data Science}, chapters 1-4, 6, 8.}
+    	\item Presentation Graphics. Grolemund, Garrett, and Hadley Wickham.  2016.  \textit{R for Data Science}, \href{http://r4ds.had.co.nz/graphics-for-communication.html}{chapter 28: Graphics for Communication.}
+    	\end{enumerate}
+    	}\\
+        \recommended{\begin{enumerate}
+        \item \href{http://www.cookbook-r.com/Graphs/}{Chang, Winston. \emph{Cookbook for R}.  Chapter 8: Graphs.}  Skim a couple chapters to get a feel for this as a resource. I~refer to it all.~the.~time.
+    	\item \href{http://dx.doi.org.proxy.lib.uiowa.edu/10.1017/S1537592707072209}{Kastellec, Jonathan P. and Eduardo L. Leoni. 2007. ``Using Graphs Instead of Tables in Political Science. \emph{Perspectives on Politics} 5(4):755--771.}
+    	\item \href{http://CRAN.R-project.org/package=dotwhisker}{Solt, Frederick, and Yue Hu.  2015.  \texttt{dotwhisker}: Dot-and-Whisker Plots of Regression Results.  Available at The Comprehensive R Archive Network (CRAN).}  Check out \href{https://cran.r-project.org/web/packages/dotwhisker/vignettes/kl2007_examples.html}{how to remake the examples from Kastellec and Leoni (2007)}!
+        \end{enumerate}
+        }
+    \\    
+    Sept 21 &	Wranglin' Data \\
+		\reading{\begin{enumerate}
+		\item Importing Data. \href{https://cran.r-project.org/web/packages/rio/vignettes/rio.html}{Leeper, Thomas J. 2016. ``\texttt{rio}: A Swiss-Army Knife for Data I/O. Import, Export, and Convert Data Files.''}
+		\item Tidying Data. \href{http://r4ds.had.co.nz/tidy-data.html}{Grolemund, Garrett, and Hadley Wickham.  2016.  \textit{R for Data Science,} chapter 12: Tidy Data.}
+        \item Manipulating Data. \href{http://r4ds.had.co.nz/tidy-data.html}{Grolemund, Garrett, and Hadley Wickham.  2016.  \textit{R for Data Science,} chapter 5: Data Transformation.}
+        \end{enumerate}
+		}
+	    \\
+		\recommended{\href{https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf}{RStudio's Data Wrangling Cheat Sheet.}  There are also \href{https://www.rstudio.com/resources/cheatsheets/}{other cheat sheets} that you may find useful.}\\
+		\\
+		\assignment{Exercises from \textit{R for Data Science}, Chapter 3.}
+  	\\	  
+\end{tabular} 
+\begin{tabular}{p{.75in} p{4.25in}}
+    Sept 28 &   Wranglin' Data II: Working with Text	  \\
+    	\reading{Grolemund, Garrett, and Hadley Wickham.  2016.  \textit{R~for Data Science}, \href{http://r4ds.had.co.nz/strings.html}{Chapter 14: Strings} and \href{http://r4ds.had.co.nz/factors.html}{Chapter 15: Factors.}}\\
+    	\\
+    	\assignment{Exercises from \textit{R for Data Science}, Chapters 5 and 12.}\\
+    \\      
+    Oct 5 &     Programming \\
+        \reading{Grolemund, Garrett, and Hadley Wickham.  2016.  \textit{R~for Data Science}, \href{http://r4ds.had.co.nz/functions.html}{Chapter 19: Functions} and \href{http://r4ds.had.co.nz/iteration.html}{Chapter 21: Iteration.}}\\
+        \\
+    	\assignment{Exercises from \textit{R for Data Science}, Chapters 14 and 15.}\\
+\end{tabular} 
+\begin{tabular}{p{.75in} p{4.25in}}
+    Oct 12 &     Scraping (and Managing) Data \\
+    % http://blog.revolutionanalytics.com/2016/08/r-packages-data-access.html
+        \reading{\begin{enumerate}
+        \item \href{https://rawgit.com/Reproducible-Science-Curriculum/rr-organization1/master/organization-01-slides.html}{Bryan, Jennifer. ``Organization I: File Naming.''}
+        \item \href{https://politicalsciencereplication.wordpress.com/2015/03/16/good-practice-in-data-collection-and-storing/}{Janz, Nicole. 2015. ``Good Practice in Data Collection and Storing.'' \emph{Political Science Replication}, March 16.}
+        \item \href{http://varianceexplained.org/r/trump-tweets/}{Robinson, David.  2016.  ``Text Analysis of Trump's Tweets Confirms He Writes Only the (Angrier) Android Half.'' \emph{Variance Explained}, August 9.}
+        \item \href{https://blog.rstudio.org/2014/11/24/rvest-easy-web-scraping-with-r/}{RStudio.  2014.  ``\texttt{rvest}: Easy Web Scraping with R.''  \emph{RStudio Blog}, November 24.}
+        \end{enumerate}
+        }\\
+    	\assignment{\begin{enumerate}
+	    \item Install the \href{http://selectorgadget.com}{SelectorGadget Chrome extension} (of course, you will need to install the \href{https://www.google.com/chrome/}{Chrome} browser first if you don't already have it), and while you're at the SelectorGadget website, watch the 96-second video on how to use it.
+	    \item Look at \href{https://www.tripadvisor.com/Hotel_Review-g37209-d1762915-Reviews-JW_Marriott_Indianapolis-Indianapolis_Indiana.html}{the reviews of the Indianapolis JW Marriott on TripAdvisor}, and then run the \texttt{rvest} demo:
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{install.packages}\hlstd{(}\hlstr{"rvest"}\hlstd{)}
+\hlkwd{library}\hlstd{(}\hlstr{"rvest"}\hlstd{)}
+
+\hlkwd{demo}\hlstd{(tripadvisor,} \hlkwc{package} \hlstd{=} \hlstr{"rvest"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+        \item Exercises from \textit{R for Data Science}, Chapters 19 and 21.
+	    \end{enumerate}
+	    }
+\\
+    Oct 19 &	Crowdsourcing Cross-National Data	 \\
+        \reading{\href{http://dx.doi.org.proxy.lib.uiowa.edu/10.1017/S0003055416000058}{Benoit, Kenneth, Drew Conway, Benjamin E. Lauderdale, Michael Laver, and Slava Mikhaylov. 2016. ``Crowd-sourced Text Analysis: Reproducible and Agile Production of Political Data.'' \emph{American Political Science Review} 110(2):278-295.}}\\
+        \\
+        \assignment{Take-home exam. Open book, open notes: don't click the GitHub invitation link until you have three hours to spend completing the exam.}
+\end{tabular}
+\begin{tabular}{p{.75in} p{4.25in}}
+    Oct 26 &    Multilevel Models of Multiple Surveys I \\   
+			\reading{\href{http://www.jstor.org.proxy.lib.uiowa.edu/stable/25193796}{Solt, Frederick.  2008.  ``Economic Inequality and Democratic Political Engagement.''  \emph{American Journal of Political Science} 52(1):48-60.}} \\
+    \\ 
+    Nov 2 &    Multilevel Models of Multiple Surveys II \\ 
+    % https://rpubs.com/kaz_yos/stan-multi-2
+			\assignment{Install RStan following the instructions in \href{https://github.com/stan-dev/rstan/wiki/RStan-Getting-Started}{RStan: Getting Started}.}\\
+	\\		
+    Nov 9 &     Estimating Cross-National Latent Variables\\   
+			\reading{ \begin{enumerate}
+		\item \href{http://pan.oxfordjournals.org.proxy.lib.uiowa.edu/content/18/4/426}{Pemstein, Daniel, Stephen A. Meserve, and James Melton. 2010. ``Democratic Compromise: A Latent Variable Analysis of Ten Measures of Regime Type.'' \emph{Political Analysis} 18(4):426-449.
+}
+	    \item \href{http://dx.doi.org.proxy.lib.uiowa.edu/10.1017/S0003055414000070}{Fariss, Christopher~J. 2014. ``Respect for Human Rights Has Improved Over Time: Modeling the Changing Standard of Accountability.'' \emph{American Political Science Review} 108(2):297-318.}
+	    \item \href{http://www.journals.uchicago.edu.proxy.lib.uiowa.edu/doi/10.1086/682150}{Linzer, Drew A., and Jeffrey~K. Staton. 2015. ``A Global Measure of Judicial Independence, 1948-2012.'' \emph{Journal of Law and Courts} 3(2):223-256.}
+
+
+	\end{enumerate}} \\
+    \\ 
+    Nov 16 &   Analysis with Cross-National Latent Variables \\   
+			\reading{\href{http://rap.sagepub.com/content/2/3/2053168015605343}{Crabtree, Charles~D., and Fariss, Christopher~J. 2015.  ``Uncovering Patterns Among Latent Variables: Human Rights~and De Facto Judicial Independence.'' \emph{Research \& Politics} 2(3):1-9.}} \\ \\
+			\assignment{\href{http://www.unified-democracy-scores.org/example.html}{Pemstein, Meserve, and Melton provide an example} of how use Stata to employ their Unified Democracy Scores in research.  Replicate their example but show instead how to use the UDS in \textsf{R}.  You \emph{might} find \href{http://dx.doi.org/10.7910/DVN/LVYOKM}{Crabtree and Fariss's reproducibility materials} to be a bit helpful, but you should of course use the \texttt{tidyverse} methods we've learned this semester.}\\
+\end{tabular}
+\begin{tabular}{p{.75in} p{4.25in}} 
+    Nov 23 &   FALL BREAK \\   
+			 \\
+    Nov 30 &    Public Opinion in One Country as a Latent Variable\\   
+			\reading{\href{http://pan.oxfordjournals.org.proxy.lib.uiowa.edu/content/22/1/115.abstract}{McGann, Anthony J. 2014. ``Estimating the Political Center from Aggregate Data: An Item Response Theory Alternative to the Stimson Dyad Ratios Algorithm.'' \emph{Political Analysis} 22(1):115-129.}} \\
+    \\ 
+    Dec 7 &    Public Opinion as a Cross-National Latent Variable\\   
+    \\ 
+    \\ 
+\end{tabular}    
+
+\section{Further Course Information}
+The following CLAS policy and procedural statements have been summarized from the web pages of the \href{http://clas.uiowa.edu}{College of Liberal Arts and Sciences} and \href{http://www.uiowa.edu/~our/opmanual/index.html}{\emph{The University of Iowa Operations Manual}}.
+
+\subsection*{Administrative Home}
+The College of Liberal Arts and Sciences is the administrative home of this course and governs matters such as the add/drop deadlines, the second-grade-only option, and other related issues. Different colleges may have different policies. Questions may be addressed to 120 Schaeffer Hall, or see the \href{http://clas.uiowa.edu/students/handbook}{CLAS \emph{Student Academic Handbook}}.
+
+\subsection*{Electronic Communication}
+University policy specifies that students are responsible for all official correspondences sent to their University of Iowa e-mail address (@uiowa.edu). Faculty and students should use this account for correspondences. (\href{http://www.uiowa.edu/~our/opmanual/iii/15.htm#152}{\emph{Operations Manual}, III.15.2}. Scroll down to k.11.)
+
+\subsection*{Accommodations for Disabilities}
+The University of Iowa is committed to providing an educational experience that is accessible to all students. A student may request academic accommodations for a disability (which include but are not limited to mental health, attention, learning, vision, and physical or health-related conditions). A student seeking academic accommodations should first register with Student Disability Services and then meet with the course instructor privately in the instructor's office to make particular arrangements. Reasonable accommodations are established through an interactive process between the student, instructor, and SDS. See \url{http://sds.studentlife.uiowa.edu/} for information. 
+
+\subsection*{Academic Honesty}
+The College of Liberal Arts and Sciences expects all students to do their own work, as stated in the \href{http://clas.uiowa.edu/students/handbook/academic-fraud-honor-code}{CLAS Code of Academic Honesty}. Instructors fail any assignment that shows evidence of plagiarism or other forms of cheating, also reporting the student's name to the College. A student reported to the College for cheating is placed on disciplinary probation; a student reported twice is suspended or expelled.
+
+\subsection*{Collaboration}
+All assignments in this class are to be completed individually.  Do not share your work with others or ask others to see their completed assignments since both are considered academic misconduct.  You are responsible for understanding this policy; if you have questions, ask for clarification.
+
+\subsection*{CLAS Final Examination Policies}
+Final exams may be offered only during finals week. No exams of any kind are allowed during the last week of classes. Students should not ask their instructor to reschedule a final exam since the College does not permit rescheduling of a final exam once the semester has begun. Questions should be addressed to the Associate Dean for Undergraduate Programs and Curriculum.
+
+\subsection*{Making a Suggestion or a Complaint}
+Students with a suggestion or complaint should first visit the instructor, \href{mailto:frederick-solt@uiowa.edu}{Professor Solt}, and then the departmental DEO, \href{mailto:wenfang-tang@uiowa.edu}{Dr.~Wenfang Tang} (Office: 343 SH). Complaints must be made within six months of the incident. See the \href{http://clas.uiowa.edu/students/handbook}{CLAS Student Academic Handbook}.
+
+\subsection*{Understanding Sexual Harassment}
+Sexual harassment subverts the mission of the University and threatens the well-being of students, faculty, and staff. All members of the UI community have a responsibility to uphold this mission and to contribute to a safe environment that enhances learning. Incidents of sexual harassment should be reported immediately. See the UI Comprehensive Guide on Sexual Harassment for assistance, definitions, and the full University policy.
+
+\subsection*{Reacting Safely to Severe Weather}
+In severe weather, class members should seek appropriate shelter immediately, leaving the classroom if necessary. The class will continue if possible when the event is over. For more information on Hawk Alert and the siren warning system, visit the Public Safety web site.
+
+\subsection*{Student Resources}
+I encourage interested students to make use of \href{http://www.uiowa.edu/~writingc/}{the Writing Center} and \href{http://imu.uiowa.edu/cic/}{the Campus Information Center's Tutor Referral Services} at the IMU.
+
+
+\end{document}

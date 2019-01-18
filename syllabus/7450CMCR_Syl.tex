@@ -1,0 +1,894 @@
+\documentclass[]{article}
+\usepackage[margin=1in]{geometry}
+\newcommand*{\authorfont}{\fontfamily{phv}\selectfont}
+\usepackage{lmodern}
+\usepackage{abstract}
+\renewcommand{\abstractname}{}    % clear the title
+\renewcommand{\absnamepos}{empty} % originally center
+\newcommand{\blankline}{\quad\pagebreak[2]}
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}} 
+\usepackage{longtable,booktabs}
+
+\usepackage{parskip}
+\usepackage{titlesec}
+\titlespacing\section{0pt}{12pt plus 4pt minus 2pt}{6pt plus 2pt minus 2pt}
+\titlespacing\subsection{0pt}{12pt plus 4pt minus 2pt}{6pt plus 2pt minus 2pt}
+
+\titleformat*{\subsubsection}{\normalsize\itshape}
+
+\usepackage{titling}
+\setlength{\droptitle}{-.25cm}
+
+%\setlength{\parindent}{0pt}
+%\setlength{\parskip}{6pt plus 2pt minus 1pt}
+%\setlength{\emergencystretch}{3em}  % prevent overfull lines 
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\usepackage{lastpage}
+\renewcommand{\headrulewidth}{0.3pt}
+\renewcommand{\footrulewidth}{0.0pt} 
+\lhead{}
+\chead{}
+\rhead{\footnotesize POLI 7450: Computational Methods for Comparative Research -- Spring 2019}
+\lfoot{}
+\cfoot{\small \thepage/\pageref*{LastPage}}
+\rfoot{}
+
+\fancypagestyle{firststyle}
+{
+\renewcommand{\headrulewidth}{0pt}%
+   \fancyhf{}
+   \fancyfoot[C]{\small \thepage/\pageref*{LastPage}}
+}
+
+%\def\labelitemi{--}
+%\usepackage{enumitem}
+%\setitemize[0]{leftmargin=25pt}
+%\setenumerate[0]{leftmargin=25pt}
+
+
+
+
+\makeatletter
+\@ifpackageloaded{hyperref}{}{%
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+}
+\@ifpackageloaded{color}{
+    \PassOptionsToPackage{usenames,dvipsnames}{color}
+}{%
+    \usepackage[usenames,dvipsnames]{color}
+}
+\makeatother
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={ ()},
+             pdfkeywords = {},  
+            pdftitle={POLI 7450: Computational Methods for Comparative Research},
+            colorlinks=true,
+            citecolor=blue,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+
+
+\setcounter{secnumdepth}{0}
+
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+
+
+
+
+\usepackage{setspace}
+
+\title{POLI 7450: Computational Methods for Comparative Research}
+\author{Prof.~Frederick Solt}
+\date{Spring 2019}
+
+
+\begin{document}  
+
+		\maketitle
+		
+	
+		\thispagestyle{firststyle}
+
+%	\thispagestyle{empty}
+
+
+	\noindent \begin{tabular*}{\textwidth}{ @{\extracolsep{\fill}} lr @{\extracolsep{\fill}}}
+
+
+E-mail: \texttt{\href{mailto:frederick-solt@uiowa.edu}{\nolinkurl{frederick-solt@uiowa.edu}}} & Web: \href{http://cmcr-class.github.io}{\tt cmcr-class.github.io}\\
+Office Hours: TTh 9:30 to 11:00 am and by appointment  &  Class Hours: T 11:00 am to 1:50 pm\\
+Office: 324 Schaeffer Hall  & Class Room: 103 Schaeffer Hall\\
+	&  \\
+	\hline
+	\end{tabular*}
+	
+\vspace{2mm}
+	
+
+
+\hypertarget{overview}{%
+\section{Overview}\label{overview}}
+
+In this course, you will learn to identify common methodological issues
+encountered in quantitative comparative research and to address them
+using computational techniques. Topics covered include data wrangling,
+exploration, and analysis (i.e., `data science'); Bayesian estimation of
+latent variables such as democracy, judicial independence, and respect
+for human rights across countries and over time; and computational
+approaches to the study to the dynamics of public opinion both within
+and across countries. This course is cross-listed in Comparative
+Politics and Methodology; it may be used to meet requirements in either
+subfield (but not both).
+
+\hypertarget{course-requirements}{%
+\section{Course Requirements}\label{course-requirements}}
+
+Your grade will be based on class participation (20\%), assignments
+(10\%), an exam (25\%), a research presentation (20\%), and a research
+paper (25\%). The following grades may be assigned at the end of the
+class: A+, A, A-, B+, B, B-, C+, C, C-, D+, D, D-, F.
+
+\hypertarget{class-participation}{%
+\subsection{Class Participation}\label{class-participation}}
+
+By this point in your career this should really go without saying, but
+here it is anyway: you can't learn in a class if you don't show up. You
+should attend every meeting having completed the readings and
+assignments, that is, you should be ready to discuss use cases, ask good
+questions, and share any difficulties you've encountered.
+
+We will also be using
+\href{https://github.com/cmcr-class/Discussion/issues}{the Issues tab of
+a dedicated GitHub repository} to continue our discussions outside of
+class. To start a new thread, create a new issue. If you want to be sure
+to get the attention of someone in particular, use their GitHub
+handle---mine is \texttt{@fsolt}---to tag them in your post: GitHub
+sends an email to people when they are tagged.
+
+\hypertarget{assignments}{%
+\subsection{Assignments}\label{assignments}}
+
+To practice your new skills, you will have regular assignments. Some
+will be completed through GitHub in a private repository for each
+student (besides you, only I will have access to your homework repo).
+Others will be DataCamp short courses. Others still will simply be
+readings that I want you to be sure to step through the embedded code.
+All will be graded on a pass (that is, substantially completed)/fail
+basis.
+
+\hypertarget{exam}{%
+\subsection{Exam}\label{exam}}
+
+The exam will be available for your to take anytime after class on March
+12 until the start of class on March 26. It will be open-note,
+open-interwebs---you know, just like
+\href{http://www.theallium.com/engineering/computer-programming-to-be-officially-renamed-googling-stackoverflow/}{IRL}.
+Don't click the GitHub invitation link until you have three hours to
+spend completing the exam.
+
+\hypertarget{research-paper}{%
+\subsection{Research Paper}\label{research-paper}}
+
+The research paper for this course is more straightforward than the
+usual: the assignment is ``simply'' to write a fully reproducible
+version of a quantitative research paper you prepared for another class.
+Ideally the paper will be for a class you are taking this semester, so
+that you use best practices as you go; you will need to confirm with the
+instructor of that course that this is acceptable to her or him.
+Rewriting a promising paper from past coursework will also be fine,
+though. If you're stuck for an appropriate paper, talk to me and we will
+work it out.
+
+For your paper, you will:
+
+\begin{itemize}
+\tightlist
+\item
+  write using RMarkdown (or \texttt{knitr}) with interspersed \textsf{R}
+  code and text,
+\item
+  begin with raw data collection,
+\item
+  include all steps of data cleaning and analysis,
+\item
+  present figures rather than tables,
+\item
+  use Bib\TeX for citations,
+\item
+  automatically generate PDF, html, and
+  (\raisebox{0.7ex}{ee}\raisebox{0.3ex}{e}w\raisebox{-0.3ex}{ww}\raisebox{-0.7ex}{w}!)
+  Word versions,
+\item
+  do your work in a GitHub repository,
+\item
+  submit a link to that repo.
+\end{itemize}
+
+Papers are due the last day of exam week, Friday, May 10, before
+midnight.
+
+\hypertarget{research-presentation}{%
+\subsection{Research Presentation}\label{research-presentation}}
+
+In our last class meeting, you will give a presentation based on your
+research paper to the class as if at an academic conference. You will
+speak for 12 to 15 minutes. You will have slides; these slides will not
+be filled with blocks of text. You will use plots, not tables, to
+present results. You will rock this.
+
+\pagebreak
+
+\hypertarget{course-schedule}{%
+\section{Course Schedule}\label{course-schedule}}
+
+\hypertarget{week-1-january-15-introduction-to-the-course}{%
+\subsection{Week 1, January 15: Introduction to the
+Course}\label{week-1-january-15-introduction-to-the-course}}
+
+\emph{Assignment}:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \href{http://happygitwithr.com}{Bryan, Jennifer. 2016.
+  \textit{Happy Git and GitHub for the UseR.} Chapters 1-16.} Read this
+  carefully and follow its instructions to get set up with \textsf{R},
+  RStudio, Git, and GitHub on your laptop before we meet.
+\end{enumerate}
+
+\hypertarget{week-2-january-22-the-replication-crisis-and-reproducibility}{%
+\subsection{Week 2, January 22: The Replication Crisis and
+Reproducibility}\label{week-2-january-22-the-replication-crisis-and-reproducibility}}
+
+\emph{Readings}:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \href{http://fivethirtyeight.com/features/how-two-grad-students-uncovered-michael-lacour-fraud-and-a-way-to-change-opinions-on-transgender-rights/}{Aschwanden,
+  Christie, and Maggie Koerth-Baker. 2016. ``How Two Grad Students
+  Uncovered an Apparent Fraud---and a Way to Change Opinions on
+  Transgender Rights.'' \emph{FiveThirtyEight}, April 7}, and
+  \href{http://blogs.lse.ac.uk/impactofsocialsciences/2013/04/24/reinhart-rogoff-revisited-why-we-need-open-data-in-economics/}{Dimitrova,
+  Velichka. 2013. ``Reinhart-Rogoff Revisited: Coding Errors
+  Happen---Key Problem Was in Not Making the Data Openly Available from
+  the Start.'' \emph{LSE: The Impact Blog}, April 24.}
+\item
+  \href{http://journals.cambridge.org/action/displayAbstract?fromPage=online\&aid=9911378\&fulltextType=LT\&fileId=S2049847015000448}{Data
+  Access and Research Transparency (DA-RT): A Joint Statement by
+  Political Science Journal Editors.}
+\item
+  \href{https://ajps.org/ajps-replication-policy/}{\emph{AJPS}
+  Replication and Verification Policy} and
+  \href{https://ajpsblogging.files.wordpress.com/2015/03/ajps-guide-for-replic-materials-1-0.pdf}{\emph{American
+  Journal of Political Science} Guidelines for Preparing Replication
+  Files.}
+\item
+  \href{http://www.stat.columbia.edu/~gelman/research/unpublished/p_hacking.pdf}{Gelman,
+  Andrew, and Eric Loken. 2013. ``The Garden of Forking Paths: Why
+  Multiple Comparisons Can Be a Problem, Even When There Is No `Fishing
+  Expedition' or `\emph{p}-Hacking' and the Research Hypothesis Was
+  Posited Ahead of Time.''}
+\item
+  \href{http://www.pnas.org.proxy.lib.uiowa.edu/content/112/6/1645}{Leek,
+  Jeffrey T., and Roger D. Peng. 2015. ``Opinion: Reproducibile Research
+  Can Still Be Wrong: Adopting a Prevention Approach.''
+  \emph{Proceedings of the National Academy of Sciences}
+  112(6):1645-1646} and
+  \href{http://biorxiv.org/content/biorxiv/early/2016/07/29/066803.full.pdf}{Patil,
+  Prasad, Roger D. Peng, and Jeffrey T. Leek. 2016. ``A Statistical
+  Definition for Reproducibility and Replicability.'' \emph{bioRxiv},
+  July 29.}
+\item
+  \href{https://www-journals-uchicago-edu.proxy.lib.uiowa.edu/doi/pdfplus/10.1086/690971}{Solt,
+  Frederick, Yue Hu, Kevan Hudson, Jungmin Song, and Dong `Erico' Yu.
+  2017. ``Economic Inequality and Class Consciousness.'' \emph{Journal
+  of Politics} 79(3):1079-1083.}
+\end{enumerate}
+
+\emph{Assignments}:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \href{https://happygitwithr.com/rmd-test-drive.html}{Bryan, Jennifer.
+  2016. \emph{Happy Git and GitHub for the UseR.} Chapter 18.}
+\end{enumerate}
+
+\hypertarget{week-3-january-29-settling-in-with}{%
+\subsection{\texorpdfstring{Week 3, January 29: Settling In with
+\textsf{R}}{Week 3, January 29: Settling In with }}\label{week-3-january-29-settling-in-with}}
+
+\emph{Readings}:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \href{https://moderndive.com/index.html}{Ismay, Chester, and Albert Y.
+  Kim. 2018. \emph{Modern Dive: An Introduction to Statistical and Data
+  Sciences via R}, Chapters 1 and 2.}
+\item
+  \href{https://socviz.co/}{Healy, Kieran. 2018. \emph{Data
+  Visualization: A Practical Introduction}, Preface and Chapter 2.} Some
+  overlap with Ismay and Kim, but that will probably be useful to you at
+  this point.
+\item
+  \href{https://fsolt.org/blog/2018/08/15/switch-to-r.html}{Solt,
+  Frederick. 2018. ``How to Switch Your Workflow from Stata to R, One
+  Bit at a Time.''}
+\end{enumerate}
+
+\emph{Assignments}:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Use the interactive \texttt{swirl} package (``Learn \textsf{R} in
+  \textsf{R}'') to learn (or review) some \textsf{R} basics. First, run
+  the following code to get to the \texttt{swirl} interface:
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{install.packages}\NormalTok{(}\StringTok{"swirl"}\NormalTok{)}
+\KeywordTok{library}\NormalTok{(}\StringTok{"swirl"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{quote}
+Then follow the prompts to the course
+\texttt{1:~R Programming:~The basics of programming in R} and complete
+lessons 1 through 9. (When it asks whether you want Coursera credit,
+just say no.)
+\end{quote}
+
+\pagebreak
+
+\hypertarget{week-4-february-5-visualization}{%
+\subsection{Week 4, February 5:
+Visualization}\label{week-4-february-5-visualization}}
+
+\emph{Readings}:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \href{http://dx.doi.org.proxy.lib.uiowa.edu/10.1017/S1537592707072209}{Kastellec,
+  Jonathan P. and Eduardo L. Leoni. 2007. ``Using Graphs Instead of
+  Tables in Political Science.'' \emph{Perspectives on Politics}
+  5(4):755--771.}
+\item
+  \href{https://moderndive.com/3-viz.html}{Ismay, Chester, and Albert Y.
+  Kim. 2018. ``Data Visualization via ggplot2,'' \emph{Modern Dive: An
+  Introduction to Statistical and Data Sciences via R}, Chapter 3.}
+\item
+  \href{https://cran.r-project.org/web/packages/dotwhisker/vignettes/dotwhisker-vignette.html}{Solt,
+  Frederick, and Yue Hu. 2015. ``\texttt{dotwhisker}: Dot-and-Whisker
+  Plots of Regression Results.'' Available at The Comprehensive R
+  Archive Network (CRAN).}, and especially
+  \href{https://cran.r-project.org/web/packages/dotwhisker/vignettes/kl2007_examples.html}{how
+  to remake the examples from Kastellec and Leoni (2007) using
+  \texttt{dotwhisker}}.
+\end{enumerate}
+
+\emph{Assignments}:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \href{https://socviz.co/lookatdata.html}{Healy, Kieran. 2018.
+  \emph{Data Visualization: A Practical Introduction}, Chapters 1 and
+  3.}
+\end{enumerate}
+
+\emph{Recommended}:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \href{http://www.cookbook-r.com/Graphs/}{Chang, Winston. 2013.
+  \emph{Cookbook for R}, Chapter 8: Graphs.} Skim a couple sections to
+  get a feel for this as a reference. I myself refer to it all. the.
+  time.
+\item
+  \href{https://serialmentor.com/dataviz/visualizing-uncertainty.html}{Wilke,
+  Claus O. 2019. ``Visualizing Uncertainty,'' \emph{Fundamentals of Data
+  Visualization}}
+\end{enumerate}
+
+\hypertarget{week-5-february-12-wranglin-data}{%
+\subsection{Week 5, February 12: Wranglin'
+Data}\label{week-5-february-12-wranglin-data}}
+
+\emph{Readings}:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \href{https://cran.r-project.org/web/packages/rio/vignettes/rio.html}{Leeper,
+  Thomas J. 2016. ``\texttt{rio}: A Swiss-Army Knife for Data I/O.
+  Import, Export, and Convert Data Files.''}
+\item
+  \href{https://moderndive.com/4-tidy.html}{Ismay, Chester, and Albert
+  Y. Kim. 2018. ``Data Visualization via ggplot2,'' \emph{Modern Dive:
+  An Introduction to Statistical and Data Sciences via R}, Chapters 4
+  and 5.}
+\item
+  \href{https://socviz.co/groupfacettx.html}{Healy, Kieran. 2018.
+  \emph{Data Visualization: A Practical Introduction}, Chapters 4 and
+  5.}
+\end{enumerate}
+
+\emph{Assignment}:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \href{https://www.datacamp.com/courses/introduction-to-the-tidyverse}{Robinson,
+  David. Datacamp Course: Introduction to the Tidyverse.}
+\end{enumerate}
+
+\emph{Recommended}:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \href{https://github.com/rstudio/cheatsheets/raw/master/data-transformation.pdf}{RStudio's
+  Data Transformation Cheat Sheet.} I had
+  \href{https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf}{the
+  old version} open on a dedicated desktop on my computer for at least a
+  year---maybe two!---before I finally stopped looking at it like twenty
+  times a day. Lots of people print it out; I've even heard of people
+  laminating it.
+\end{enumerate}
+
+\hypertarget{week-6-february-19-wranglin-data-ii-working-with-text}{%
+\subsection{Week 6, February 19: Wranglin' Data II, Working with
+Text}\label{week-6-february-19-wranglin-data-ii-working-with-text}}
+
+\emph{Assignment}:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \href{https://www.datacamp.com/courses/string-manipulation-in-r-with-stringr}{Wickham,
+  Charlotte. Datacamp Course: String Manipulation in R with stringr.}
+\end{enumerate}
+
+\emph{Recommended}:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \href{https://github.com/rstudio/cheatsheets/raw/master/strings.pdf}{RStudio's
+  Work with Strings Cheat Sheet.}
+\item
+  \href{https://www.tidytextmining.com/index.html}{Silge, Julia, and
+  David Robinson. 2018. \emph{Text Mining with R: A Tidy Approach}.}
+\end{enumerate}
+
+\pagebreak
+
+\hypertarget{week-7-february-26-scraping-and-managing-data}{%
+\subsection{Week 7, February 26: Scraping (and Managing)
+Data}\label{week-7-february-26-scraping-and-managing-data}}
+
+\emph{Readings}:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \href{https://rawgit.com/Reproducible-Science-Curriculum/rr-organization1/master/organization-01-slides.html}{Bryan,
+  Jennifer. ``Organization I: File Naming.''}
+\item
+  \href{https://politicalsciencereplication.wordpress.com/2015/03/16/good-practice-in-data-collection-and-storing/}{Janz,
+  Nicole. 2015. ``Good Practice in Data Collection and Storing.''
+  \emph{Political Science Replication}, March 16.}
+\item
+  \href{http://varianceexplained.org/r/trump-tweets/}{Robinson, David.
+  2016. ``Text Analysis of Trump's Tweets Confirms He Writes Only the
+  (Angrier) Android Half.'' \emph{Variance Explained}, August 9.}
+\item
+  \href{https://cran.r-project.org/web/packages/gesis/vignettes/gesis.html}{Persson,
+  Eric. 2017. \texttt{gesis}: R Client for GESIS Data Catalogue (DBK). R
+  package version 0.2.1},
+  \href{https://cran.r-project.org/web/packages/icpsrdata/vignettes/icpsrdata-vignette.html}{Solt,
+  Frederick and Kellen Gracey. 2016. \texttt{icpsrdata}: Reproducible
+  Data Retrieval from the ICPSR Archive. R package version 0.3.0.}, and
+  \href{https://cran.r-project.org/web/packages/ropercenter/vignettes/ropercenter-vignette.html}{Frederick
+  Solt (2018). \texttt{ropercenter}: Reproducible Data Retrieval from
+  the Roper Center Data Archive. R package version 0.2.0.}
+\item
+  \href{https://blog.rstudio.org/2014/11/24/rvest-easy-web-scraping-with-r/}{RStudio.
+  2014. ``\texttt{rvest}: Easy Web Scraping with R.'' \emph{RStudio
+  Blog}, November 24.}
+\end{enumerate}
+
+\hypertarget{week-8-march-5-multilevel-models-of-multiple-surveys-i}{%
+\subsection{Week 8, March 5: Multilevel Models of Multiple Surveys
+I}\label{week-8-march-5-multilevel-models-of-multiple-surveys-i}}
+
+\emph{Readings}:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \href{http://www.jstor.org.proxy.lib.uiowa.edu/stable/25193796}{Solt,
+  Frederick. 2008. ``Economic Inequality and Democratic Political
+  Engagement.'' \emph{American Journal of Political Science}
+  52(1):48-60.}
+\item
+  \href{https://www-journals-uchicago-edu.proxy.lib.uiowa.edu/doi/pdfplus/10.1086/690971}{Solt,
+  Frederick, Yue Hu, Kevan Hudson, Jungmin Song, and Dong `Erico' Yu.
+  2017. ``Economic Inequality and Class Consciousness.'' \emph{Journal
+  of Politics} 79(3):1079-1083.} Yes, \emph{again}, but this time, work
+  through
+  \href{https://github.com/fsolt/class_consciousness/blob/master/paper/class_consciousness.Rnw}{the
+  replication code}.
+\end{enumerate}
+
+\hypertarget{week-9-march-12-multilevel-models-of-multiple-surveys-ii}{%
+\subsection{Week 9, March 12: Multilevel Models of Multiple Surveys
+II}\label{week-9-march-12-multilevel-models-of-multiple-surveys-ii}}
+
+\emph{Readings}:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \href{http://mc-stan.org/rstanarm/articles/rstanarm.html}{Gabry,
+  Jonah, and Ben Goodrich. 2018. ``How to Use the \texttt{rstanarm}
+  Package.''}
+\end{enumerate}
+
+\hypertarget{week-10-march-19-spring-break}{%
+\subsection{Week 10, March 19: Spring
+Break}\label{week-10-march-19-spring-break}}
+
+\hypertarget{week-11-march-26-crowdsourcing-cross-national-data}{%
+\subsection{Week 11, March 26: Crowdsourcing Cross-National
+Data}\label{week-11-march-26-crowdsourcing-cross-national-data}}
+
+\emph{Readings}:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \href{http://dx.doi.org.proxy.lib.uiowa.edu/10.1017/S0003055416000058}{Benoit,
+  Kenneth, Drew Conway, Benjamin E. Lauderdale, Michael Laver, and Slava
+  Mikhaylov. 2016. ``Crowd-sourced Text Analysis: Reproducible and Agile
+  Production of Political Data.'' \emph{American Political Science
+  Review} 110(2):278-295.}
+\end{enumerate}
+
+\emph{Assignment}:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Take-home exam: open book, open notes, open internet. Don't click the
+  GitHub invitation link until you have three hours to spend completing
+  the exam.
+\end{enumerate}
+
+\hypertarget{week-12-april-2-estimating-cross-national-latent-variables}{%
+\subsection{Week 12, April 2: Estimating Cross-National Latent
+Variables}\label{week-12-april-2-estimating-cross-national-latent-variables}}
+
+\emph{Readings}:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \href{http://pan.oxfordjournals.org.proxy.lib.uiowa.edu/content/18/4/426}{Pemstein,
+  Daniel, Stephen A. Meserve, and James Melton. 2010. ``Democratic
+  Compromise: A Latent Variable Analysis of Ten Measures of Regime
+  Type.'' \emph{Political Analysis} 18(4):426-449.}
+\item
+  \href{http://dx.doi.org.proxy.lib.uiowa.edu/10.1017/S0003055414000070}{Fariss,
+  Christopher J. 2014. ``Respect for Human Rights Has Improved Over
+  Time: Modeling the Changing Standard of Accountability.''
+  \emph{American Political Science Review} 108(2):297-318.}
+\item
+  \href{http://www.journals.uchicago.edu.proxy.lib.uiowa.edu/doi/10.1086/682150}{Linzer,
+  Drew A., and Jeffrey K. Staton. 2015. ``A Global Measure of Judicial
+  Independence, 1948-2012.'' \emph{Journal of Law and Courts}
+  3(2):223-256.}
+\item
+  Solt, Frederick. 2019. ``Measuring Income Inequality Across Countries
+  and Over Time: The Standardized World Income Inequality Database''.
+\end{enumerate}
+
+\pagebreak
+
+\hypertarget{week-13-april-9-analysis-with-cross-national-latent-variables}{%
+\subsection{Week 13, April 9: Analysis with Cross-National Latent
+Variables}\label{week-13-april-9-analysis-with-cross-national-latent-variables}}
+
+\emph{Readings}:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \href{http://rap.sagepub.com/content/2/3/2053168015605343}{Crabtree,
+  Charles D., and Fariss, Christopher J. 2015. ``Uncovering Patterns
+  Among Latent Variables: Human Rights and De Facto Judicial
+  Independence.'' \emph{Research \& Politics} 2(3):1-9.}
+\end{enumerate}
+
+\emph{Assignment}:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \href{http://www.unified-democracy-scores.org/example.html}{Pemstein,
+  Meserve, and Melton provide an example} of how use Stata to employ
+  their Unified Democracy Scores in research. Replicate their example
+  but show instead how to use the UDS in \textsf{R}. You \emph{might}
+  find \href{http://dx.doi.org/10.7910/DVN/LVYOKM}{Crabtree and Fariss's
+  reproducibility materials} to be a bit helpful, but you should of
+  course use the \texttt{tidyverse} methods we've learned this semester.
+\end{enumerate}
+
+\hypertarget{week-14-april-16-public-opinion-in-one-country-as-a-latent-variable}{%
+\subsection{Week 14, April 16: Public Opinion in One Country as a Latent
+Variable}\label{week-14-april-16-public-opinion-in-one-country-as-a-latent-variable}}
+
+\emph{Readings}:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \href{http://pan.oxfordjournals.org.proxy.lib.uiowa.edu/content/22/1/115.abstract}{McGann,
+  Anthony J. 2014. ``Estimating the Political Center from Aggregate
+  Data: An Item Response Theory Alternative to the Stimson Dyad Ratios
+  Algorithm.'' \emph{Political Analysis} 22(1):115-129.}
+\end{enumerate}
+
+\hypertarget{week-15-april-23-public-opinion-as-a-cross-national-latent-variable}{%
+\subsection{Week 15, April 23: Public Opinion as a Cross-National Latent
+Variable}\label{week-15-april-23-public-opinion-as-a-cross-national-latent-variable}}
+
+\emph{Readings}:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  TBA
+\end{enumerate}
+
+\hypertarget{week-16-april-30-presentations}{%
+\subsection{Week 16, April 30:
+Presentations}\label{week-16-april-30-presentations}}
+
+\emph{Readings}:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \href{https://huber.research.yale.edu/materials/HowToPresentAtConferences.pdf}{Huber,
+  Gregory. ``How to Present Your Work at Conferences.''}
+\end{enumerate}
+
+\emph{Recommended}:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \href{https://speakerdeck.com/mseckington/the-art-of-talk-design}{Secklington,
+  Melinda. 2018. ``The Art of Talk Design.''}
+\item
+  \href{https://speakerdeck.com/mseckington/the-art-of-slide-design}{Secklington,
+  Melinda. 2017. ``The Art of Slide Design.''}
+\end{enumerate}
+
+\pagebreak
+
+\hypertarget{further-course-information}{%
+\section{Further Course Information}\label{further-course-information}}
+
+\hypertarget{administrative-home}{%
+\subsubsection{Administrative Home}\label{administrative-home}}
+
+The College of Liberal Arts and Sciences (CLAS) is the administrative
+home of this course and governs its add/drop deadlines, the
+second-grade-only option, and other policies. These policies vary by
+college. See the \href{http://clas.uiowa.edu/students/handbook}{CLAS
+\emph{Student Academic Handbook}}.
+
+\hypertarget{electronic-communication}{%
+\subsubsection{Electronic
+Communication}\label{electronic-communication}}
+
+Students are responsible for official correspondences sent to their UI
+email address (uiowa.edu) and must use this address for all
+communication within UI
+(\href{http://www.uiowa.edu/~our/opmanual/iii/15.htm\#152}{\emph{Operations
+Manual}}, III.15.2. Scroll down to k.11.)
+
+\hypertarget{accommodations-for-disabilities}{%
+\subsubsection{Accommodations for
+Disabilities}\label{accommodations-for-disabilities}}
+
+UI is committed to an educational experience that is accessible to all
+students. A student may request academic accommodations for a disability
+(such as mental health, attention, learning, vision, and physical or
+health-related condition) by registering with Student Disability
+Services (SDS). The student should then discuss accommodations with the
+course instructor. See \url{https://sds.studentlife.uiowa.edu/} for more
+information.
+
+\hypertarget{nondiscrimination-in-the-classroom}{%
+\subsubsection{Nondiscrimination in the
+Classroom}\label{nondiscrimination-in-the-classroom}}
+
+UI is committed to making the classroom a respectful and inclusive space
+for all people irrespective of their gender, sexual, racial, religious
+or other identities. Toward this goal, students are invited to
+optionally share their preferred names and pronouns with their
+instructors and classmates. The University of Iowa prohibits
+discrimination and harassment against individuals on the basis of race,
+class, gender, sexual orientation, national origin, and other identity
+categories set forth in the University's Human Rights policy. For more
+information, contact the Office of Equal Opportunity and Diversity. See
+\textless{}diversity.uiowa.edu\textgreater{} for more information.
+
+\hypertarget{academic-honesty}{%
+\subsubsection{Academic Honesty}\label{academic-honesty}}
+
+All CLAS students or students taking classes offered by CLAS have, in
+essence, agreed to the College's
+\href{https://clas.uiowa.edu/students/handbook/academic-fraud-honor-code}{Code
+of Academic Honesty}. Misconduct is reported to the College, resulting
+in suspension or other sanctions, with sanctions communicated with the
+student through the UI email address See
+\url{https://clas.uiowa.edu/students/handbook/academic-fraud-honor-code}
+for more information.
+
+\hypertarget{clas-final-examination-policies}{%
+\subsubsection{CLAS Final Examination
+Policies}\label{clas-final-examination-policies}}
+
+The final exam schedule for each semester is announced around the fifth
+week of classes; students are responsible for knowing the date, time,
+and place of a final exam. Students should not make travel plans until
+knowing this final exam information. No exams of any kind are allowed
+the week before finals. See
+\url{https://clas.uiowa.edu/faculty/teaching-policies-resources-examination-policies}
+for more information.
+
+\hypertarget{making-a-complaint}{%
+\subsubsection{Making a Complaint}\label{making-a-complaint}}
+
+Students with a suggestion or complaint should first visit the
+instructor, \href{mailto:frederick-solt@uiowa.edu}{Professor Solt}, and
+then the departmental DEO, \href{mailto:brian-lai@uiowa.edu}{Dr.~Brian
+Lai} (Office: 343 SH). Students may then bring the concern to CLAS See
+\url{https://clas.uiowa.edu/students/handbook/student-rights-responsibilities}
+for more information.
+
+\hypertarget{understanding-sexual-harassment}{%
+\subsubsection{Understanding Sexual
+Harassment}\label{understanding-sexual-harassment}}
+
+Sexual harassment subverts the mission of the University and threatens
+the well-being of students, faculty, and staff. All members of the UI
+community must uphold the UI mission and contribute to a safe
+environment that enhances learning. Incidents of sexual harassment must
+be reported immediately. For assistance, definitions, and the full
+University policy, see \url{https://osmrc.uiowa.edu/}.
+
+\hypertarget{reacting-safely-to-severe-weather}{%
+\subsubsection{Reacting Safely to Severe
+Weather}\label{reacting-safely-to-severe-weather}}
+
+In severe weather, class members should seek appropriate shelter
+immediately, leaving the classroom if necessary. The class will continue
+if possible when the event is over. For more information on Hawk Alert
+and the siren warning system, visit the
+\href{https://police.uiowa.edu/emergency-communications}{Department of
+Public Safety website}.
+
+\hypertarget{student-resources}{%
+\subsubsection{Student Resources}\label{student-resources}}
+
+I encourage interested students to make use of
+\href{http://www.uiowa.edu/~writingc/}{the Writing Center} and
+\href{https://tippie.uiowa.edu/clas/scheduler/logon.aspx?}{the Speaking
+Center}.
+
+
+
+
+\end{document}
+
+\makeatletter
+\def\@maketitle{%
+  \newpage
+%  \null
+%  \vskip 2em%
+%  \begin{center}%
+  \let \footnote \thanks
+    {\fontsize{18}{20}\selectfont\raggedright  \setlength{\parindent}{0pt} \@title \par}%
+}
+%\fi
+\makeatother
