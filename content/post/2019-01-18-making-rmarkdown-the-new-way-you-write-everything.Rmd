@@ -8,5 +8,10 @@ tags: []
 ---
 
 [Articles](http://svmiller.com/blog/2016/02/svm-r-markdown-manuscript/)
+text, code, citations, formatting
+
 [Syllabi](http://svmiller.com/blog/2016/07/r-markdown-syllabus/)
+dates, citations, formatting
+
 [CV](http://svmiller.com/blog/2016/03/svm-r-markdown-cv/)
+
