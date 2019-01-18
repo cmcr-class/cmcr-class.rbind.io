@@ -1,0 +1,10 @@
+---
+title: Getting an Academic Website Online with blogdown
+author: Frederick Solt
+date: '2019-01-18'
+slug: blogdown-for-academics
+categories: []
+tags: []
+---
+
+https://bookdown.org/yihui/blogdown/
