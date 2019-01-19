@@ -11,7 +11,7 @@ enableEmoji = true
 blogdir = "blog"
 
 [permalinks]
-    post = "/blog/:year/:month/:day/:slug/"
+    post = "blog/:year/:month/:day/:slug/"
 
 [[menu.main]]
     name = "Home"
@@ -27,7 +27,7 @@ blogdir = "blog"
     weight = 3
 [[menu.main]]
     name = "Blog"
-    url = "/blog/"
+    url = "/blog.html"
     weight = 4
 [[menu.main]]
     name = "Discussion"
