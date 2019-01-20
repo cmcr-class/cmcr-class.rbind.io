@@ -24,11 +24,27 @@
       <i class="fa fa-fw fa-envelope-o"></i>
     </a>
   </li>
+{{ if isset .Site.Params "twitter_username" }}
+  <li> 
+    <a href="https://twitter.com/{{.Site.Params.twitter_username}}">
+      <i class="fa fa-lg fa-twitter"></i>
+    </a>
+  </li>
+{{ end }}
+{{ if isset .Site.Params "github_username" }}
   <li> 
     <a href="https://github.com/{{.Site.Params.github_username}}">
+{{ end }}
       <i class="fa fa-lg fa-github"></i>
     </a>
   </li>
+{{ if isset .Site.Params "gscholar_code" }}
+  <li> 
+    <a href="https://scholar.google.com/citations?user={{.Site.Params.gscholar_code}}">
+      <i class="ai ai-google-scholar"></i>
+    </a>
+  </li>
+{{ end }}
 </ul>
     </div>
 </aside>
