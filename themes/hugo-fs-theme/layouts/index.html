@@ -2,9 +2,8 @@
 
 <div class="page">
 
-{{ range where .Data.Pages "Title" "Home" }}
-    {{ .Content }}
-{{ end }}
+  <h2>{{ .Site.Params.home_title }}</h2>
+  <p class="font-125">{{ .Site.Params.home_text | markdownify }}</p>
 
 </div>
 
