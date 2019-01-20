@@ -6,7 +6,7 @@ theme = "hugo-fs-theme"
 googleAnalytics = ""
 disqusShortname = ""
 ignoreFiles = ["\\.Rmd$", "_files$", "_cache$"]
-uglyURLS = true
+uglyURLS = false
 enableEmoji = true
 blogdir = "blog"
 
@@ -27,7 +27,7 @@ blogdir = "blog"
     weight = 3
 [[menu.main]]
     name = "Blog"
-    url = "/blog.html"
+    url = "/blog/"
     weight = 4
 [[menu.main]]
     name = "Discussion"
@@ -37,6 +37,7 @@ blogdir = "blog"
 [params]
     description = "Computational Methods for Comparative Research"
     subtitle = "Prof. Frederick Solt"
+    home_text = "In this course, you will learn to identify common methodological issues encountered in quantitative comparative research and to address them using computational techniques.  Topics covered include data wrangling, exploration, and analysis (i.e., 'data science'); Bayesian estimation of latent variables such as democracy, judicial independence, and respect for human rights across countries and over time; and computational approaches to the study to the dynamics of public opinion both within and across countries. This course is cross-listed in Comparative Politics and Methodology; it may be used to meet requirements in either subfield (but not both)."
 
     author = "Frederick Solt"
     dateFormat = "2006/01/02"
@@ -44,13 +45,13 @@ blogdir = "blog"
     github_username = "cmcr-class"
 
     # options for highlight.js (version, additional languages, and theme)
-    highlightjsVersion = "9.11.0"
-    highlightjsCDN = "//cdn.bootcss.com"
+    highlightjsVersion = "9.12.0"
+    highlightjsCDN = "//cdnjs.cloudflare.com/ajax/libs"
     highlightjsLang = ["r", "yaml"]
     highlightjsTheme = "github"
 
-    MathJaxCDN = "//cdn.bootcss.com"
-    MathJaxVersion = "2.7.1"
+    MathJaxCDN = "//cdnjs.cloudflare.com/ajax/libs"
+    MathJaxVersion = "2.7.5"
 
     [params.logo]
     url = "logo.png"
