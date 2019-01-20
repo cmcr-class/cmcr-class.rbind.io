@@ -1,4 +1,4 @@
 ---
 layout: blog_list
-title: Course Notes
+title: Lecture Notes
 ---
