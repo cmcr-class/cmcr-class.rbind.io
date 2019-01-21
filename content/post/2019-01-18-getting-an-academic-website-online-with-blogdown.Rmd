@@ -3,7 +3,7 @@ title: Getting an Academic Website Online with blogdown
 author: Frederick Solt
 date: '2019-01-18'
 slug: blogdown-for-academics
-draft: false
+draft: true
 tags:
     - note
 ---
@@ -24,7 +24,7 @@ install.packages("blogdown")    # install the blogdown package
 blogdown::install_hugo()        # install Hugo (a function in the blogdown package)
 ```
 
-1.  Now, in the lower right pane of RStudio, you'll see the Files tab; as advertised, it provides an alternate way of browsing through your files.  The first file listed in your new repo should be called .gitignore.  More truth in advertising: this file is where you list documents for this project that you don't want to save in the project's git (and, in turn, GitHub) repo.  Open it up and paste in the following:
+1.  In the lower right pane of RStudio, you'll see the Files tab; as advertised, it provides an alternate way of browsing through your files.  The first file listed in your new repo should be called .gitignore.  More truth in advertising: this file is where you list documents for this project that you don't want to save in the project's git (and, in turn, GitHub) repo.  Open it up and paste in the following:
 
 ```
 .Rproj.user
@@ -36,7 +36,14 @@ Thumbs.db
 blogdown/
 public/
 ```
-The first four lines are already there, the fifth and sixth are irrelevant system files on Macs and Windows machines respectively, and the last two are directories (that is, folders) [that blogdown uses that we don't need backed up](https://bookdown.org/yihui/blogdown/version-control.html).
+The first four lines were already there, the fifth and sixth are irrelevant system files on Macs and Windows machines respectively, and the last two are directories (that is, folders) [that blogdown uses that we don't need backed up](https://bookdown.org/yihui/blogdown/version-control.html).
+
+1.  Now we're ready to create the site.  There are a ton of [different Hugo themes](https://themes.gohugo.io), but given that we're building you an academic website, the Academic theme is a good place to start. Back to the console:
+
+```{r, eval=FALSE}
+blogdown::new_site(theme = "gcushen/hugo-academic", theme_example = TRUE)
+```
+
 
 ## Publishing Your Website Using Netlify
 

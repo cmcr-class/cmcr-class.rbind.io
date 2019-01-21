@@ -3,7 +3,7 @@ title: Getting an Academic Website Online with blogdown
 author: Frederick Solt
 date: '2019-01-18'
 slug: blogdown-for-academics
-draft: false
+draft: true
 tags:
     - note
 ---
@@ -23,7 +23,7 @@ tags:
 <pre class="r"><code>install.packages(&quot;blogdown&quot;)    # install the blogdown package
 blogdown::install_hugo()        # install Hugo (a function in the blogdown package)</code></pre>
 <ol style="list-style-type: decimal">
-<li>Now, in the lower right pane of RStudio, you’ll see the Files tab; as advertised, it provides an alternate way of browsing through your files. The first file listed in your new repo should be called .gitignore. More truth in advertising: this file is where you list documents for this project that you don’t want to save in the project’s git (and, in turn, GitHub) repo. Open it up and paste in the following:</li>
+<li>In the lower right pane of RStudio, you’ll see the Files tab; as advertised, it provides an alternate way of browsing through your files. The first file listed in your new repo should be called .gitignore. More truth in advertising: this file is where you list documents for this project that you don’t want to save in the project’s git (and, in turn, GitHub) repo. Open it up and paste in the following:</li>
 </ol>
 <pre><code>.Rproj.user
 .Rhistory
@@ -33,7 +33,11 @@ blogdown::install_hugo()        # install Hugo (a function in the blogdown packa
 Thumbs.db
 blogdown/
 public/</code></pre>
-<p>The first four lines are already there, the fifth and sixth are irrelevant system files on Macs and Windows machines respectively, and the last two are directories (that is, folders) <a href="https://bookdown.org/yihui/blogdown/version-control.html">that blogdown uses that we don’t need backed up</a>.</p>
+<p>The first four lines were already there, the fifth and sixth are irrelevant system files on Macs and Windows machines respectively, and the last two are directories (that is, folders) <a href="https://bookdown.org/yihui/blogdown/version-control.html">that blogdown uses that we don’t need backed up</a>.</p>
+<ol style="list-style-type: decimal">
+<li>Now we’re ready to create the site. There are a ton of <a href="https://themes.gohugo.io">different Hugo themes</a>, but given that we’re building you an academic website, the Academic theme is a good place to start. Back to the console:</li>
+</ol>
+<pre class="r"><code>blogdown::new_site(theme = &quot;gcushen/hugo-academic&quot;, theme_example = TRUE)</code></pre>
 </div>
 <div id="publishing-your-website-using-netlify" class="section level2">
 <h2>Publishing Your Website Using Netlify</h2>
