@@ -4,7 +4,7 @@ output:
     keep_tex: true
     fig_caption: yes
     latex_engine: pdflatex
-    template: ~/Documents/Projects/cmcr-class.github.io/syllabus/svm-latex-syllabus.tex
+    template: svm-latex-syllabus.tex
 geometry: margin=1in
 
 title: "POLI 7450: Computational Methods for Comparative Research"
