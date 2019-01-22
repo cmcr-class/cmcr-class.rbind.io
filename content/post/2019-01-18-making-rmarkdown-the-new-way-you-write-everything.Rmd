@@ -32,7 +32,37 @@ First, you should get some Bib$\TeX$ reference manager software.^[A Bib$\TeX$ fi
 Keep all your sources in your personal Bib$\TeX$ file: it'll get long, but since it's just plain text, never really big.  Make sure it gets backed up!^[If you don't have another backup solution already in place for your work, start a GitHub repo for it!]  But each project repo should have its own Bib$\TeX$ file as well.  That way, your project repo is self-contained---it doesn't rely on files that are located elsewhere on your computer.  Just make a new Bib$\TeX$ file for each project, keep it in the paper directory, and drag sources to it from your personal Bib$\TeX$ file as you cite them.  Just be sure that you only add new sources to your personal Bib$\TeX$ file and not directly to any project's file, so that you always know all the sources you've entered are in one place and you never end up duplicating that work.
 
 ### The RMarkdown File
+The RMarkdown file is where you're going to put nearly all of your attention as you're writing: it contains all of your text and R code.  The trick to using RMarkdown to write a beautifully formatted article is in the front matter, which is called the YAML header.  (YAML stands for Yet Another Markup Language.  Those kidders.)  Anyway, let's look at the header in the [example_article.Rmd](https://github.com/cmcr-class/example_article/blob/master/paper/example_article.Rmd) file:
 
+```
+---
+output: 
+  pdf_document:
+    citation_package: natbib
+    keep_tex: true
+    fig_caption: true
+    latex_engine: pdflatex
+    template: svm-latex-ms2.tex
+title: "An Example Article"
+thanks: "The paper's revision history and the materials needed to reproduce its analyses can be found [on Github here](http://github.com/fsolt/example_article). Corresponding author: [frederick-solt@uiowa.edu](mailto:frederick-solt@uiowa.edu). Current version: `r format(Sys.time(), '%B %d, %Y')`."
+author:
+- name: Frederick Solt
+  affiliation: University of Iowa
+abstract: "Here's where you write 100 to 250 words, depending on the journal, that describe your objective, methods, results, and conclusion."
+keywords: "these, always seem silly, to me, given google, but regardless"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+fontsize: 11pt
+spacing: single
+bibliography: \dummy{`r file.path(getwd(), 'example_article')`}
+biblio-style: apsr
+citecolor: black
+linkcolor: black
+endnote: no
+---
+```
+The stuff you'll want to change here is pretty obvious, I think.  For now at least, definitely leave everything under `output:` alone.  For more detail on each entry, see [Steven V. Miller's post on his template](http://svmiller.com/blog/2016/02/svm-r-markdown-manuscript/).
+
+The example file also includes examples of pretty much everything you're likely to want to do in an article manuscript: headings, footnotes, embedded R code (and how to hide it), plots with captions and how to refer to them, block quotes, comments (that is, notes to self), and, of course, citations.
 
 ## See also:
 As you saw above, Steven V. Miller did a great job putting together templates for these---and other---important academic documents.  For more detail, see his blog posts:
