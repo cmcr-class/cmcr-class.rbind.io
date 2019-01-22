@@ -6,6 +6,9 @@ slug: blogdown-for-academics
 draft: true
 tags:
     - note
+output:
+  html_document:
+    self_contained: yes
 ---
 
 
@@ -14,7 +17,7 @@ tags:
 <h2>Building Your Academic Website With blogdown</h2>
 <p>Okay, you’ve gotten <a href="https://happygitwithr.com">RStudio installed and linked up with GitHub</a>. You’ve gotten started with RMarkdown, and you’re <a href="/blog/rmarkdown-everywhere">ready to use it to write all of your academic documents</a> so your work will be reproducible. The next step is to get an academic website to display your work online. Conveniently, we can use RStudio, GitHub, and RMarkdown to do that, too! First, we need to build the site:</p>
 <ol style="list-style-type: decimal">
-<li>We start by creating a new project repo on GitHub and opening it in RStudio (<a href="https://happygitwithr.com/new-github-first.html">you remember how to do that, right?</a>). Call it whatever you like.</li>
+<li>We start by creating a new project repo on GitHub and opening it in RStudio (<a href="https://happygitwithr.com/new-github-first.html">you remember how to do that, right?</a>). Call it whatever you like; the name won’t be important.</li>
 </ol>
 <p><img src="/post/2019-01-18-getting-an-academic-website-online-with-blogdown_files/Screen%20Shot%202019-01-21%20at%207.26.04%20AM.png" width="600" /></p>
 <ol style="list-style-type: decimal">
@@ -60,4 +63,8 @@ public/</code></pre>
 https://cmcr-class.netlify.com/*  https://cmcr-class.rbind.io/:splat  301!</code></pre>
 <p>Be sure to swap out <code>cmcr-class</code> for whatever you named your subdomain, of course. The first line redirects any nonsecure HTTP links to your site to secure HTTPS links. The second ensures that anyone who happens to try to visit your site via netlify.io gets redirected to your preferred rbind.io address so that all of your visitors will have the same address for any given page. And then you’re done.</p>
 <p>The last choice, if an rbind.io subdomain isn’t custom enough for you, if you just <em>need</em> the ultimate in domain name customization, you can (wait for it) buy a custom domain name. Custom domains are generally pretty cheap, up to maybe $10 a year, and they require a bit more configuring, but don’t let that scare you off: as long as you choose your domain reasonably carefully, you’re only going to have to do this work once. <a href="https://www.netlify.com/docs/custom-domains/">Directions from Netlify are here</a>, and the company you buy the domain from will likely have directions for you too.</p>
+</div>
+<div id="references" class="section level2">
+<h2>References</h2>
+<p><a href="https://alison.rbind.io/slides/blogdown-workshop-slides.html" class="uri">https://alison.rbind.io/slides/blogdown-workshop-slides.html</a></p>
 </div>

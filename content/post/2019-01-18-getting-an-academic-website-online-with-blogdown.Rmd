@@ -6,6 +6,9 @@ slug: blogdown-for-academics
 draft: true
 tags:
     - note
+output:
+  html_document:
+    self_contained: yes
 ---
 
 
@@ -13,7 +16,7 @@ tags:
 
 Okay, you've gotten [RStudio installed and linked up with GitHub](https://happygitwithr.com).  You've gotten started with RMarkdown, and you're [ready to use it to write all of your academic documents](/blog/rmarkdown-everywhere) so your work will be reproducible.  The next step is to get an academic website to display your work online.  Conveniently, we can use RStudio, GitHub, and RMarkdown to do that, too!  First, we need to build the site:
 
-1.  We start by creating a new project repo on GitHub and opening it in RStudio ([you remember how to do that, right?](https://happygitwithr.com/new-github-first.html)).  Call it whatever you like.
+1.  We start by creating a new project repo on GitHub and opening it in RStudio ([you remember how to do that, right?](https://happygitwithr.com/new-github-first.html)).  Call it whatever you like; the name won't be important.
 
 ![](/post/2019-01-18-getting-an-academic-website-online-with-blogdown_files/Screen Shot 2019-01-21 at 7.26.04 AM.png){width=600px}
 
@@ -70,4 +73,5 @@ Be sure to swap out `cmcr-class` for whatever you named your subdomain, of cours
 
 The last choice, if an rbind.io subdomain isn't custom enough for you, if you just *need* the ultimate in domain name customization, you can (wait for it) buy a custom domain name.  Custom domains are generally pretty cheap, up to maybe $10 a year, and they require a bit more configuring, but don't let that scare you off: as long as you choose your domain reasonably carefully, you're only going to have to do this work once.  [Directions from Netlify are here](https://www.netlify.com/docs/custom-domains/), and the company you buy the domain from will likely have directions for you too.
 
- 
+## References
+https://alison.rbind.io/slides/blogdown-workshop-slides.html
