@@ -39,7 +39,7 @@ The RMarkdown file is where you're going to put nearly all of your attention as 
 output: 
   pdf_document:
     citation_package: natbib
-    keep_tex: true
+    keep_tex: false
     fig_caption: true
     latex_engine: pdflatex
     template: svm-latex-ms2.tex
@@ -64,12 +64,47 @@ The stuff you'll want to change here is pretty obvious, I think.  For now at lea
 
 The example file also includes examples of pretty much everything you're likely to want to do in an article manuscript: headings, footnotes, embedded R code (and how to hide it), plots with captions and how to refer to them, block quotes, comments (that is, notes to self), and, of course, citations.
 
-# Syllabi
-Syllabi are similar to articles: you'll need a template, a Bib$\TeX$ file, and an RMarkdown file.
+## Syllabi
 
-[Syllabi](http://svmiller.com/blog/2016/07/r-markdown-syllabus/)
-dates, citations, formatting
+To write a syllabus in RMarkdown, you'll need to start with a good template.  Fortunately, [Steven V. Miller has made one for this too](https://github.com/fsolt/svm-r-markdown-templates/blob/master/svm-latex-syllabus.tex): svm-latex-syllabus.tex.  And, of course, you'll need an RMarkdown file with the appropriate YAML header.  Steve describes the details [in his blog post on the template](http://svmiller.com/blog/2016/07/r-markdown-syllabus/), so I'll skip that here.  He also writes in that post about how to automatically generate the dates you need for your course schedule, but nowadays there's an easier way of doing that I want to show you.  Put this chunk near the top of your document:
 
-# CV
+````
+```{r include = FALSE}`r ''`
+library(tidyverse)
+library(lubridate)
+
+firstday <- "2019-01-15"
+    
+meetings <- ymd(firstday) + c(0:15) * weeks(1)
+
+meeting_headers <- paste0("Week ", 1:16, ", ", months(meetings), " ", day(meetings))
+
+```
+````
+
+```{r include = FALSE}
+library(lubridate)
+
+firstday <- "2019-01-15"
+    
+meetings <- ymd(firstday) + c(0:15) * weeks(1)
+
+meeting_headers <- paste0("Week ", 1:16, ", ", months(meetings), " ", day(meetings))
+
+```
+
+Then you can make headers for each week with
+
+```
+## `r meeting_headers[1]`: Something Interesting
+
+```
+which will display
+
+`r meeting_headers[1]`: Something Interesting
+
+Unfortunately, I don't think there's a good Bib$\TeX$ integration option for RMarkdown syllabi yet.  I want something that formats full mid-document bibliographic citations, in full APSR format, with links to download.  I really should dig more on this, but in the meantime I'm just typing them in `r emo::ji("frown")`.  [You'll find an example repo here](https://github.com/cmcr-class/example_syllabus) and [the RMarkdown syllabus for *this course* is here](https://github.com/cmcr-class/cmcr-class.rbind.io/blob/master/syllabus/7450CMCR_Syl.Rmd).
+
+## CV
 [CV](http://svmiller.com/blog/2016/03/svm-r-markdown-cv/)
 

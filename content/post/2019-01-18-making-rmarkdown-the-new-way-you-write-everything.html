@@ -35,7 +35,7 @@ tags:
 output: 
   pdf_document:
     citation_package: natbib
-    keep_tex: true
+    keep_tex: false
     fig_caption: true
     latex_engine: pdflatex
     template: svm-latex-ms2.tex
@@ -59,14 +59,29 @@ endnote: no
 <p>The example file also includes examples of pretty much everything you’re likely to want to do in an article manuscript: headings, footnotes, embedded R code (and how to hide it), plots with captions and how to refer to them, block quotes, comments (that is, notes to self), and, of course, citations.</p>
 </div>
 </div>
-<div id="syllabi" class="section level1">
-<h1>Syllabi</h1>
-<p>Syllabi are similar to articles: you’ll need a template, a Bib<span class="math inline">\(\TeX\)</span> file, and an RMarkdown file.</p>
-<p><a href="http://svmiller.com/blog/2016/07/r-markdown-syllabus/">Syllabi</a>
-dates, citations, formatting</p>
+<div id="syllabi" class="section level2">
+<h2>Syllabi</h2>
+<p>To write a syllabus in RMarkdown, you’ll need to start with a good template. Fortunately, <a href="https://github.com/fsolt/svm-r-markdown-templates/blob/master/svm-latex-syllabus.tex">Steven V. Miller has made one for this too</a>: svm-latex-syllabus.tex. And, of course, you’ll need an RMarkdown file with the appropriate YAML header. Steve describes the details <a href="http://svmiller.com/blog/2016/07/r-markdown-syllabus/">in his blog post on the template</a>, so I’ll skip that here. He also writes in that post about how to automatically generate the dates you need for your course schedule, but nowadays there’s an easier way of doing that I want to show you. Put this chunk near the top of your document:</p>
+<pre><code>```{r include = FALSE}
+library(tidyverse)
+library(lubridate)
+
+firstday &lt;- &quot;2019-01-15&quot;
+    
+meetings &lt;- ymd(firstday) + c(0:15) * weeks(1)
+
+meeting_headers &lt;- paste0(&quot;Week &quot;, 1:16, &quot;, &quot;, months(meetings), &quot; &quot;, day(meetings))
+
+```</code></pre>
+<p>Then you can make headers for each week with</p>
+<pre><code>## Week 1, January 15: Something Interesting
+</code></pre>
+<p>which will display</p>
+<p>Week 1, January 15: Something Interesting</p>
+<p>Unfortunately, I don’t think there’s a good Bib<span class="math inline">\(\TeX\)</span> integration option for RMarkdown syllabi yet. I want something that formats full mid-document bibliographic citations, in full APSR format, with links to download. I really should dig more on this, but in the meantime I’m just typing them in 🙍. <a href="https://github.com/cmcr-class/example_syllabus">You’ll find an example repo here</a> and <a href="https://github.com/cmcr-class/cmcr-class.rbind.io/blob/master/syllabus/7450CMCR_Syl.Rmd">the RMarkdown syllabus for <em>this course</em> is here</a>.</p>
 </div>
-<div id="cv" class="section level1">
-<h1>CV</h1>
+<div id="cv" class="section level2">
+<h2>CV</h2>
 <p><a href="http://svmiller.com/blog/2016/03/svm-r-markdown-cv/">CV</a></p>
 </div>
 <div class="footnotes">
