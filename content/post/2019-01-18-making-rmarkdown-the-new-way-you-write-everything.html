@@ -10,8 +10,42 @@ tags:
 
 
 
-<p><a href="http://svmiller.com/blog/2016/02/svm-r-markdown-manuscript/">Articles</a>
-text, code, citations, formatting</p>
+<p>RMarkdown is just super-great. To start, it’s plain text, so you can edit with basically anything. Next, <a href="https://pandoc.org/MANUAL.html#pandocs-markdown">its formatting</a> is, at least for the most part, easy to remember and easy to interpret. Plus, because it’s <b><i>R</i></b>Markdown, it lets you mix text and R code so that all of your work is in the same document, making it easy for others (and your future self) to see exactly what you did. And it’s so versatile, you can use it for <em>all</em> your writing.</p>
+<p><img src="/post/2019-01-18-making-rmarkdown-the-new-way-you-write-everything_files/Screen%20Shot%202019-01-20%20at%204.10.13%20PM.png" width="600" /></p>
+<p>Here, I’m going to talk about how to get yourself set up to write three important kinds of academic documents in RMarkdown: articles (and the like, including seminar papers), syllabi, and CVs.</p>
+<div id="articles" class="section level2">
+<h2>Articles</h2>
+<p>Start any research project you have with a fresh new project repo–create it on GitHub and open it in RStudio (<a href="https://happygitwithr.com/new-github-first.html">you remember how to do that, right?</a>).<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> Then go to the Files tab in the lower right pane of RStudio, click on New Folder button, and call the new folder “paper” (we’ll worry about other directories that you might need in a project repo another time).</p>
+<p>In this directory, we’re going to put three separate files to produce pretty PDF output: the RMarkdown file, which is where you write up your research; a Bib<span class="math inline">\(\TeX\)</span> file, which contains bibliographic information about the sources you cite; and a template file, which specifies how the final output should look. <a href="https://github.com/cmcr-class/example_article">There’s an example repo here</a>. I’m going to discuss the three files in reverse order, from the one that requires the least attention from you to the one that needs the most.</p>
+<div id="the-template" class="section level3">
+<h3>The Template</h3>
+<p>There are many article templates out there; there’s even an <a href="https://github.com/rstudio/rticles">R package called rticles</a> that makes starting a new draft extra easy. The journals that package’s templates are modelled on lean toward the physical sciences, though, so instead we’re going to work with a template <a href="https://github.com/svmiller/svm-r-markdown-templates/blob/master/svm-rmarkdown-article-example.Rmd">originally written</a> by our fellow political scientist Steven V. Miller and slightly modified by me.<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> Anyway, the file is called svm-latex-ms2.tex; put a copy of it in your paper directory each time you start an article project. If you find a different template you’d like to use, just put that in there instead. And that’s that.</p>
+</div>
+<div id="the-bibtex-file" class="section level3">
+<h3>The Bib<span class="math inline">\(\TeX\)</span> File</h3>
+<p>If we want RMarkdown to automatically generate our bibliography (and we darn sure do), we need to provide information on all of the sources we’re citing. That’s what the Bib<span class="math inline">\(\TeX\)</span>, or .bib, file is for. Whenever you come across an article that you know you’re going to need later, or think you might need later, or just find interesting, you add it to your personal Bib<span class="math inline">\(\TeX\)</span> file. So how exactly do you do that?</p>
+<p>First, you should get some Bib<span class="math inline">\(\TeX\)</span> reference manager software.<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a> If you’re a Mac user like me, give <a href="https://bibdesk.sourceforge.io">BibDesk</a> a try; I’ve been using it for many, many years. If not, <a href="http://www.jabref.org">JabRef</a> is the standard. Then, as you’re doing your reading, keep your personal Bib<span class="math inline">\(\TeX\)</span> file open in that reference manager. You’ll see that pretty much all journals have a button labelled “export citation” or some such. Hit the button, choose BibTeX format, and click through. Depending on the journal publisher, this may download a small .bib file or pop open a new window. If the former, drag the downloaded file your personal Bib<span class="math inline">\(\TeX\)</span> file in your reference manager to add the new source; if the latter, copy the text, click on your personal Bib<span class="math inline">\(\TeX\)</span> file, and then paste. This should add the new source. Then—and this is important for friction-free writing later—take a minute and double-check all the entries in the reference manager. Some journals’ citation exports only include first initials, not the whole first name. Make sure the cite key (more on cite keys below) matches whatever convention you choose to adopt. And so on. If you’re careful right when you add a source, you’ll never have to worry about any errors in your bibliographies ever again.</p>
+<p><img src="/post/2019-01-18-making-rmarkdown-the-new-way-you-write-everything_files/Screen%20Shot%202019-01-21%20at%207.44.40%20PM.png" width="600" /></p>
+<p>Keep all your sources in your personal Bib<span class="math inline">\(\TeX\)</span> file: it’ll get long, but since it’s just plain text, never really big. Make sure it gets backed up!<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a> But each project repo should have its own Bib<span class="math inline">\(\TeX\)</span> file as well. That way, your project repo is self-contained—it doesn’t rely on files that are located elsewhere on your computer. Just make a new Bib<span class="math inline">\(\TeX\)</span> file for each project, keep it in the paper directory, and drag sources to it from your personal Bib<span class="math inline">\(\TeX\)</span> file as you cite them. Just be sure that you only add new sources to your personal Bib<span class="math inline">\(\TeX\)</span> file and not directly to any project’s file, so that you always know all the sources you’ve entered are in one place and you never end up duplicating that work.</p>
+</div>
+<div id="the-rmarkdown-file" class="section level3">
+<h3>The RMarkdown File</h3>
+</div>
+</div>
+<div id="see-also" class="section level2">
+<h2>See also:</h2>
+<p>As you saw above, Steven V. Miller did a great job putting together templates for these—and other—important academic documents. For more detail, see his blog posts:</p>
+<p><a href="http://svmiller.com/blog/2016/02/svm-r-markdown-manuscript/">Miller, Steven V. 2016. “An R Markdown Template for Academic Manuscripts”</a></p>
 <p><a href="http://svmiller.com/blog/2016/07/r-markdown-syllabus/">Syllabi</a>
 dates, citations, formatting</p>
 <p><a href="http://svmiller.com/blog/2016/03/svm-r-markdown-cv/">CV</a></p>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>There’s really no reason not to have a separate project repo for every project: you have unlimited free repos on GitHub, and the marginal space used on your drive is truly tiny. The main advantage is that having a project repo for each project keeps your work organized. I keep all of my project repos together in a directory called “projects” in my Documents folder.<a href="#fnref1" class="footnote-back">↩</a></p></li>
+<li id="fn2"><p>There are a couple of little changes that are in there just because I’m hopelessly fussy, but one important one that allows us to easily keep our Bib<span class="math inline">\(\TeX\)</span> file right in the project repo. To Steve, in addition to my thanks for your great work on this, I owe you a PR. To everyone else, just like everything else having to do with templates, you don’t have to worry about it.<a href="#fnref2" class="footnote-back">↩</a></p></li>
+<li id="fn3"><p>A Bib<span class="math inline">\(\TeX\)</span> file is just more plain text, so you <em>can</em> write or edit it in just about anything, but dedicated software makes it much nicer to work with.<a href="#fnref3" class="footnote-back">↩</a></p></li>
+<li id="fn4"><p>If you don’t have another backup solution already in place for your work, start a GitHub repo for it!<a href="#fnref4" class="footnote-back">↩</a></p></li>
+</ol>
+</div>

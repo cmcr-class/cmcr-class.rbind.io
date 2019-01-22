@@ -8,8 +8,36 @@ tags:
     - rmarkdown
 ---
 
-[Articles](http://svmiller.com/blog/2016/02/svm-r-markdown-manuscript/)
-text, code, citations, formatting
+RMarkdown is just super-great.  To start, it's plain text, so you can edit with basically anything. Next, [its formatting](https://pandoc.org/MANUAL.html#pandocs-markdown) is, at least for the most part, easy to remember and easy to interpret.  Plus, because it's <b><i>R</i></b>Markdown, it lets you mix text and R code so that all of your work is in the same document, making it easy for others (and your future self) to see exactly what you did.  And it's so versatile, you can use it for _all_ your writing.
+
+![](/post/2019-01-18-making-rmarkdown-the-new-way-you-write-everything_files/Screen Shot 2019-01-20 at 4.10.13 PM.png){width=600px}
+
+Here, I'm going to talk about how to get yourself set up to write three important kinds of academic documents in RMarkdown: articles (and the like, including seminar papers), syllabi, and CVs.
+
+## Articles
+Start any research project you have with a fresh new project repo--create it on GitHub and open it in RStudio ([you remember how to do that, right?](https://happygitwithr.com/new-github-first.html)).^[There's really no reason not to have a separate project repo for every project: you have unlimited free repos on GitHub, and the marginal space used on your drive is truly tiny.  The main advantage is that having a project repo for each project keeps your work organized.  I keep all of my project repos together in a directory called "projects" in my Documents folder.]  Then go to the Files tab in the lower right pane of RStudio, click on New Folder button, and call the new folder "paper" (we'll worry about other directories that you might need in a project repo another time).
+
+In this directory, we're going to put three separate files to produce pretty PDF output: the RMarkdown file, which is where you write up your research; a Bib$\TeX$ file, which contains bibliographic information about the sources you cite; and a template file, which specifies how the final output should look.  [There's an example repo here](https://github.com/cmcr-class/example_article). I'm going to discuss the three files in reverse order, from the one that requires the least attention from you to the one that needs the most.
+
+### The Template
+There are many article templates out there; there's even an [R package called rticles](https://github.com/rstudio/rticles) that makes starting a new draft extra easy.  The journals that package's templates are modelled on lean toward the physical sciences, though, so instead we're going to work with a template [originally written](https://github.com/svmiller/svm-r-markdown-templates/blob/master/svm-rmarkdown-article-example.Rmd) by our fellow political scientist Steven V. Miller and slightly modified by me.^[There are a couple of little changes that are in there just because I'm hopelessly fussy, but one important one that allows us to easily keep our Bib$\TeX$ file right in the project repo.  To Steve, in addition to my thanks for your great work on this, I owe you a PR.  To everyone else, just like everything else having to do with templates, you don't have to worry about it.]  Anyway, the file is called svm-latex-ms2.tex; put a copy of it in your paper directory each time you start an article project.  If you find a different template you'd like to use, just put that in there instead.  And that's that.
+
+### The Bib$\TeX$ File
+If we want RMarkdown to automatically generate our bibliography (and we darn sure do), we need to provide information on all of the sources we're citing.  That's what the Bib$\TeX$, or .bib, file is for.  Whenever you come across an article that you know you're going to need later, or think you might need later, or just find interesting, you add it to your personal Bib$\TeX$ file. So how exactly do you do that?
+
+First, you should get some Bib$\TeX$ reference manager software.^[A Bib$\TeX$ file is just more plain text, so you _can_ write or edit it in just about anything, but dedicated software makes it much nicer to work with.]  If you're a Mac user like me, give [BibDesk](https://bibdesk.sourceforge.io) a try; I've been using it for many, many years.  If not, [JabRef](http://www.jabref.org) is the standard.  Then, as you're doing your reading, keep your personal Bib$\TeX$ file open in that reference manager.  You'll see that pretty much all journals have a button labelled "export citation" or some such.  Hit the button, choose BibTeX format, and click through.  Depending on the journal publisher, this may download a small .bib file or pop open a new window.  If the former, drag the downloaded file your personal Bib$\TeX$ file in your reference manager to add the new source; if the latter, copy the text, click on your personal Bib$\TeX$ file, and then paste.  This should add the new source.  Then---and this is important for friction-free writing later---take a minute and double-check all the entries in the reference manager.  Some journals' citation exports only include first initials, not the whole first name.  Make sure the cite key (more on cite keys below) matches whatever convention you choose to adopt.  And so on.  If you're careful right when you add a source, you'll never have to worry about any errors in your bibliographies ever again.
+
+![](/post/2019-01-18-making-rmarkdown-the-new-way-you-write-everything_files/Screen Shot 2019-01-21 at 7.44.40 PM.png){width=600px}
+
+Keep all your sources in your personal Bib$\TeX$ file: it'll get long, but since it's just plain text, never really big.  Make sure it gets backed up!^[If you don't have another backup solution already in place for your work, start a GitHub repo for it!]  But each project repo should have its own Bib$\TeX$ file as well.  That way, your project repo is self-contained---it doesn't rely on files that are located elsewhere on your computer.  Just make a new Bib$\TeX$ file for each project, keep it in the paper directory, and drag sources to it from your personal Bib$\TeX$ file as you cite them.  Just be sure that you only add new sources to your personal Bib$\TeX$ file and not directly to any project's file, so that you always know all the sources you've entered are in one place and you never end up duplicating that work.
+
+### The RMarkdown File
+
+
+## See also:
+As you saw above, Steven V. Miller did a great job putting together templates for these---and other---important academic documents.  For more detail, see his blog posts:
+
+[Miller, Steven V. 2016. "An R Markdown Template for Academic Manuscripts"](http://svmiller.com/blog/2016/02/svm-r-markdown-manuscript/)
 
 [Syllabi](http://svmiller.com/blog/2016/07/r-markdown-syllabus/)
 dates, citations, formatting
