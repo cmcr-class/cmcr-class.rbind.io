@@ -1,21 +1,42 @@
 ---
 title: Making RMarkdown the New Way You Write Everything
 author: Frederick Solt
-date: '2019-01-18'
-slug: rmarkdown-everywhere
+date: '2019-01-22'
 tags:
-    - note
-    - rmarkdown
+  - note
+  - rmarkdown
+slug: rmarkdown-everywhere
 output:
   html_document:
     self_contained: yes
 ---
 
+```{r, include=FALSE}
+# H/T https://stackoverflow.com/questions/20409172/how-to-display-verbatim-inline-r-code-with-backticks-using-rmarkdown
+rinline <- function(code) {
+  sprintf('``` `r %s` ```', code)
+}
+
+rinline_inchunk <- function(code) {
+  sprintf(' `r %s` ', code)
+}
+```
+
+
 RMarkdown is just super-great.  To start, it's plain text, so you can edit with basically anything. Next, [its formatting](https://pandoc.org/MANUAL.html#pandocs-markdown) is, at least for the most part, easy to remember and easy to interpret.  Plus, because it's <b><i>R</i></b>Markdown, it lets you mix text and R code so that all of your work is in the same document, making it easy for others ([and your future self](https://statmodeling.stat.columbia.edu/2014/12/31/closest-collaborator-cant-talk/)) to see exactly what you did and, if desired, reproduce your work.  And it's so versatile, you can use it for _all_ your writing.
 
 ![](/post/2019-01-18-making-rmarkdown-the-new-way-you-write-everything_files/Screen Shot 2019-01-20 at 4.10.13 PM.png){width=600px}
 
-Here, I'm going to talk about how to get yourself set up to write three important kinds of academic documents in RMarkdown: articles (and the like, including seminar papers), syllabi, and CVs.
+Here, I'm going to talk about how to get yourself set up to write three important kinds of academic documents in RMarkdown: articles (and the like, including seminar papers), syllabi, and CVs.  
+
+Since all of these are documents we will want as PDFs (as opposed to web pages), you'll need to install $\LaTeX$ on your computer.  The easiest way to do this is by using the `tinytex` package:
+
+```{r, eval=FALSE}
+install.packages("tinytex")
+tinytex::install_tinytex()
+```
+
+Okay, let's get started!
 
 ## Articles
 Start any research project you have with a fresh new project repo--create it on GitHub and open it in RStudio ([you remember how to do that, right?](https://happygitwithr.com/new-github-first.html)).^[There's really no reason not to have a separate project repo for every project: you have unlimited free repos on GitHub, and the marginal space used on your drive is truly tiny.  The main advantage is that having a project repo for each project keeps your work organized.  I keep all of my project repos together in a directory called "projects" in my Documents folder.]  Then go to the Files tab in the lower right pane of RStudio, click on New Folder button, and call the new folder "paper" (we'll worry about other directories that you might need in a project repo another time).
@@ -47,32 +68,32 @@ output:
     latex_engine: pdflatex
     template: svm-latex-ms2.tex
 title: "An Example Article"
-thanks: "The paper's revision history and the materials needed to reproduce its analyses can be found [on Github here](http://github.com/fsolt/example_article). Corresponding author: [frederick-solt@uiowa.edu](mailto:frederick-solt@uiowa.edu). Current version: `r format(Sys.time(), '%B %d, %Y')`."
+thanks: "The paper's revision history and the materials needed to reproduce its analyses can be found [on Github here](http://github.com/fsolt/example_article). Corresponding author: [frederick-solt@uiowa.edu](mailto:frederick-solt@uiowa.edu). Current version: `r rinline_inchunk("format(Sys.time(), '%B %d, %Y')")`."
 author:
 - name: Frederick Solt
   affiliation: University of Iowa
 abstract: "Here's where you write 100 to 250 words, depending on the journal, that describe your objective, methods, results, and conclusion."
 keywords: "these, always seem silly, to me, given google, but regardless"
-date: "`r format(Sys.time(), '%B %d, %Y')`"
+date: "`r rinline_inchunk("format(Sys.time(), '%B %d, %Y')")`"
 fontsize: 11pt
 spacing: single
-bibliography: \dummy{`r file.path(getwd(), 'example_article')`}
+bibliography: \dummy{`r rinline_inchunk('file.path(getwd(), list.files(getwd(), "bib$"))')`}
 biblio-style: apsr
 citecolor: black
 linkcolor: black
 endnote: no
 ---
 ```
-The stuff you'll want to change here is pretty obvious, I think.  For now at least, definitely leave everything under `output:` alone.  For more detail on each entry in the YAML header, see [Steven V. Miller's post on his template](http://svmiller.com/blog/2016/02/svm-r-markdown-manuscript/).
+The stuff you'll want to change here is pretty obvious, I think.  For now at least, definitely leave everything under `output:` alone; there's no need to change anything with R code either, except maybe if you would want to freeze the date for some reason.  For more detail on each entry in the YAML header, see [Steven V. Miller's post on his template](http://svmiller.com/blog/2016/02/svm-r-markdown-manuscript/).
 
 The example file also includes examples of pretty much everything you're likely to want to do in an article manuscript: headings, footnotes, embedded R code (and how to hide it), plots with captions and how to refer to them, block quotes, comments (that is, notes to self), and, of course, citations.
 
 ## Syllabi
 
-To write a syllabus in RMarkdown, you'll need to start with a good template.  Fortunately, [Steven V. Miller has made one for this too](https://github.com/fsolt/svm-r-markdown-templates/blob/master/svm-latex-syllabus.tex): svm-latex-syllabus.tex.  And, of course, you'll need an RMarkdown file with the appropriate YAML header.  Steve describes the details [in his blog post on the template](http://svmiller.com/blog/2016/07/r-markdown-syllabus/), so I'll skip that here.  He also writes in that post about how to automatically generate the dates you need for your course schedule, but nowadays there's an easier way of doing that I want to show you.  Put this chunk near the top of your document:
+To write a syllabus in RMarkdown, you'll need to start with a good template.  Fortunately, [Steven V. Miller has made one for this purpose too](https://github.com/fsolt/svm-r-markdown-templates/blob/master/svm-latex-syllabus.tex): svm-latex-syllabus.tex.  And, of course, you'll need an RMarkdown file with the appropriate YAML header.  Steve describes the details [in his blog post on the template](http://svmiller.com/blog/2016/07/r-markdown-syllabus/), so I'll skip that here.  He also writes in that post about how to automatically generate the dates you need for your course schedule, but nowadays there's an easier way of doing that I want to show you.  Put this chunk near the top of your document:
 
 ````
-```{r include = FALSE}`r ''`
+`r ''````{r include = FALSE}
 library(tidyverse)
 library(lubridate)
 
@@ -84,7 +105,6 @@ meeting_headers <- paste0("Week ", 1:16, ", ", months(meetings), " ", day(meetin
 
 ```
 ````
-
 ```{r include = FALSE}
 library(lubridate)
 
@@ -99,15 +119,19 @@ meeting_headers <- paste0("Week ", 1:16, ", ", months(meetings), " ", day(meetin
 Then you can make headers for each week with
 
 ```
-## `r meeting_headers[1]`: Something Interesting
-
+## `r rinline_inchunk("meeting_headers[1]")`: Something Interesting
 ```
-which will display
+
+which will display as
 
 `r meeting_headers[1]`: Something Interesting
 
-Unfortunately, I don't think there's a good Bib$\TeX$ integration option for RMarkdown syllabi yet.  I want something that formats full mid-document bibliographic citations, in full APSR format, with links to download.  I really should dig more on this, but in the meantime I'm just typing them in `r emo::ji("frown")`.  [You'll find an example repo here](https://github.com/cmcr-class/example_syllabus) and [the RMarkdown syllabus for *this course* is here](https://github.com/cmcr-class/cmcr-class.rbind.io/blob/master/syllabus/7450CMCR_Syl.Rmd).
+Neat, huh?  The next time you teach, instead of fussing with all the dates, you just have to change `firstday` in the chunk above to the first day your class meets in the new semester, and that's it.  More time to update the readings!
+
+Speaking of readings, sadly, I don't think there's a good Bib$\TeX$ integration option for RMarkdown syllabi yet.  Being extremely picky, I want something that formats full mid-document bibliographic citations, in complete APSR format, with links to the reading online.  I suppose I should dig more on this, but in the meantime I'm just typing them in `r emo::ji("cry")`.  [You'll find an example repo here](https://github.com/cmcr-class/example_syllabus) and [the RMarkdown syllabus for *this very course* is here](https://github.com/cmcr-class/cmcr-class.rbind.io/blob/master/syllabus/7450CMCR_Syl.Rmd).
 
 ## CV
-[CV](http://svmiller.com/blog/2016/03/svm-r-markdown-cv/)
+Finally, let's do your CV, too.  Our RMarkdown template hero, Steven V. Miller, has us covered there as well.  [The template is here](https://raw.githubusercontent.com/svmiller/svm-r-markdown-templates/master/svm-latex-cv.tex) and [his post describing how to put it to use is here](http://svmiller.com/blog/2016/03/svm-r-markdown-cv/). And for once, at least, I don't have much to add.
+
+So there you go: articles, syllabi, and CVs are easy and beautiful in RMarkdown. Now you can write up not just your research reproducibly, but your teaching and professional documents as well.  
 
