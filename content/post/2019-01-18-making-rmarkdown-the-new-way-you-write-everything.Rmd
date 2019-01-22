@@ -8,7 +8,7 @@ tags:
     - rmarkdown
 ---
 
-RMarkdown is just super-great.  To start, it's plain text, so you can edit with basically anything. Next, [its formatting](https://pandoc.org/MANUAL.html#pandocs-markdown) is, at least for the most part, easy to remember and easy to interpret.  Plus, because it's <b><i>R</i></b>Markdown, it lets you mix text and R code so that all of your work is in the same document, making it easy for others (and your future self) to see exactly what you did.  And it's so versatile, you can use it for _all_ your writing.
+RMarkdown is just super-great.  To start, it's plain text, so you can edit with basically anything. Next, [its formatting](https://pandoc.org/MANUAL.html#pandocs-markdown) is, at least for the most part, easy to remember and easy to interpret.  Plus, because it's <b><i>R</i></b>Markdown, it lets you mix text and R code so that all of your work is in the same document, making it easy for others ([and your future self](https://statmodeling.stat.columbia.edu/2014/12/31/closest-collaborator-cant-talk/)) to see exactly what you did and, if desired, reproduce your work.  And it's so versatile, you can use it for _all_ your writing.
 
 ![](/post/2019-01-18-making-rmarkdown-the-new-way-you-write-everything_files/Screen Shot 2019-01-20 at 4.10.13 PM.png){width=600px}
 
@@ -17,7 +17,7 @@ Here, I'm going to talk about how to get yourself set up to write three importan
 ## Articles
 Start any research project you have with a fresh new project repo--create it on GitHub and open it in RStudio ([you remember how to do that, right?](https://happygitwithr.com/new-github-first.html)).^[There's really no reason not to have a separate project repo for every project: you have unlimited free repos on GitHub, and the marginal space used on your drive is truly tiny.  The main advantage is that having a project repo for each project keeps your work organized.  I keep all of my project repos together in a directory called "projects" in my Documents folder.]  Then go to the Files tab in the lower right pane of RStudio, click on New Folder button, and call the new folder "paper" (we'll worry about other directories that you might need in a project repo another time).
 
-In this directory, we're going to put three separate files to produce pretty PDF output: the RMarkdown file, which is where you write up your research; a Bib$\TeX$ file, which contains bibliographic information about the sources you cite; and a template file, which specifies how the final output should look.  [There's an example repo here](https://github.com/cmcr-class/example_article). I'm going to discuss the three files in reverse order, from the one that requires the least attention from you to the one that needs the most.
+In this directory, we're going to put three separate files to produce the pretty PDF output we want: the RMarkdown file, which is where you write up your research; a Bib$\TeX$ file, which contains bibliographic information about the sources you cite; and a template file, which specifies how the final output should look.  [There's an example repo here](https://github.com/cmcr-class/example_article). I'm going to discuss the three files in reverse order, from the one that requires the least attention from you to the one that needs the most.
 
 ### The Template
 There are many article templates out there; there's even an [R package called rticles](https://github.com/rstudio/rticles) that makes starting a new draft extra easy.  The journals that package's templates are modelled on lean toward the physical sciences, though, so instead we're going to work with a template [originally written](https://github.com/svmiller/svm-r-markdown-templates/blob/master/svm-rmarkdown-article-example.Rmd) by our fellow political scientist Steven V. Miller and slightly modified by me.^[There are a couple of little changes that are in there just because I'm hopelessly fussy, but one important one that allows us to easily keep our Bib$\TeX$ file right in the project repo.  To Steve, in addition to my thanks for your great work on this, I owe you a PR.  To everyone else, just like everything else having to do with templates, you don't have to worry about it.]  Anyway, the file is called svm-latex-ms2.tex; put a copy of it in your paper directory each time you start an article project.  If you find a different template you'd like to use, just put that in there instead.  And that's that.
@@ -60,17 +60,16 @@ linkcolor: black
 endnote: no
 ---
 ```
-The stuff you'll want to change here is pretty obvious, I think.  For now at least, definitely leave everything under `output:` alone.  For more detail on each entry, see [Steven V. Miller's post on his template](http://svmiller.com/blog/2016/02/svm-r-markdown-manuscript/).
+The stuff you'll want to change here is pretty obvious, I think.  For now at least, definitely leave everything under `output:` alone.  For more detail on each entry in the YAML header, see [Steven V. Miller's post on his template](http://svmiller.com/blog/2016/02/svm-r-markdown-manuscript/).
 
 The example file also includes examples of pretty much everything you're likely to want to do in an article manuscript: headings, footnotes, embedded R code (and how to hide it), plots with captions and how to refer to them, block quotes, comments (that is, notes to self), and, of course, citations.
 
-## See also:
-As you saw above, Steven V. Miller did a great job putting together templates for these---and other---important academic documents.  For more detail, see his blog posts:
-
-[Miller, Steven V. 2016. "An R Markdown Template for Academic Manuscripts"](http://svmiller.com/blog/2016/02/svm-r-markdown-manuscript/)
+# Syllabi
+Syllabi are similar to articles: you'll need a template, a Bib$\TeX$ file, and an RMarkdown file.
 
 [Syllabi](http://svmiller.com/blog/2016/07/r-markdown-syllabus/)
 dates, citations, formatting
 
+# CV
 [CV](http://svmiller.com/blog/2016/03/svm-r-markdown-cv/)
 
