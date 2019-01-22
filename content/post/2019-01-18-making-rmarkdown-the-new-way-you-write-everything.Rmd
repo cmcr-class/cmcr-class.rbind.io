@@ -6,6 +6,9 @@ slug: rmarkdown-everywhere
 tags:
     - note
     - rmarkdown
+output:
+  html_document:
+    self_contained: yes
 ---
 
 RMarkdown is just super-great.  To start, it's plain text, so you can edit with basically anything. Next, [its formatting](https://pandoc.org/MANUAL.html#pandocs-markdown) is, at least for the most part, easy to remember and easy to interpret.  Plus, because it's <b><i>R</i></b>Markdown, it lets you mix text and R code so that all of your work is in the same document, making it easy for others ([and your future self](https://statmodeling.stat.columbia.edu/2014/12/31/closest-collaborator-cant-talk/)) to see exactly what you did and, if desired, reproduce your work.  And it's so versatile, you can use it for _all_ your writing.
