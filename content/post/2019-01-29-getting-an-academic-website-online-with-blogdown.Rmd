@@ -1,0 +1,147 @@
+---
+title: Getting an Academic Website Online with blogdown
+author: Frederick Solt
+date: '2019-01-29'
+tags:
+  - note
+slug: blogdown-for-academics
+draft: yes
+output:
+  html_document:
+    self_contained: yes
+---
+
+
+## Building Your Academic Website With blogdown
+
+Okay, you've gotten [RStudio installed and linked up with GitHub](https://happygitwithr.com).  You've gotten started with RMarkdown, and you're [ready to use it to write all of your academic documents](/blog/rmarkdown-everywhere) so your work will be reproducible.  The next step is to get an academic website to display your work online.^[Why should you get your work online?  [David Robinson](https://twitter.com/drob), Chief Data Scientist at [DataCamp](https://www.datacamp.com) has done the best job I've seen articulating the answers.  Read [his post on the value of blogging your work with data](http://varianceexplained.org/r/start-blog/), and he just gave a keynote talk at [rstudio::conf 2019](https://resources.rstudio.com/rstudio-conf-2019) titled "The unreasonable effectiveness of public work" ([slides](http://bit.ly/drob-rstudio-2019) , [video](https://resources.rstudio.com/rstudio-conf-2019/the-unreasonable-effectiveness-of-public-work))worth checking out, too.]  Conveniently, we can use RStudio, GitHub, and RMarkdown to do that, too!  First, we need to build the site:
+
+1.  We start by creating a new project repo on GitHub and opening it in RStudio ([you remember how to do that, right?](https://happygitwithr.com/new-github-first.html)).  Call it whatever you like; the name won't be important.
+
+    ![](/post/2019-01-18-getting-an-academic-website-online-with-blogdown_files/Screen Shot 2019-01-21 at 7.26.04 AM.png){width=600px}
+
+1.  The R package we need for this task is called [blogdown](https://bookdown.org/yihui/blogdown/), which is built on top of [a framework for building websites called Hugo](https://gohugo.io).  Install them both by typing this into the console, in the bottom left pane of RStudio:
+
+    ```{r, eval=FALSE}
+    install.packages("blogdown")    # install the blogdown package
+    blogdown::install_hugo()        # install Hugo (a function in the blogdown package)
+    ```
+
+1.  In the lower right pane of RStudio, you'll see the Files tab; as advertised, it provides an alternate way of browsing through your files.  The first file listed in your new repo should be called .gitignore.  More truth in advertising: this file is where you list documents for this project that you don't want to save in the project's git (and, in turn, GitHub) repo.  Open it up and paste in the following:
+
+    ```
+    .Rproj.user
+    .Rhistory
+    .RData
+    .Ruserdata
+    .DS_Store
+    Thumbs.db
+    blogdown/
+    public/
+    ```
+The first four lines were already there, the fifth and sixth are irrelevant system files on Macs and Windows machines respectively, and the last two are directories (that is, folders) [that blogdown uses that we don't need backed up](https://bookdown.org/yihui/blogdown/version-control.html).
+
+1.  Now we're ready to build the site.  There are a ton of [different Hugo themes](https://themes.gohugo.io), but as I've mentioned before, I'm super-fussy, so I made my own, which we'll be using here.  Let's get started:
+
+    ```{r, eval=FALSE}
+    blogdown::new_site(theme = "fsolt/hugo-prof", theme_example = TRUE)
+    ```
+
+1. Building the site also automatically starts serving it locally--a tiny rendition of our site pops up in the lower left pane of RStudio, in the Viewer tab.  Later, you can start serving the site by clicking on RStudio's Addins button (right at the top of the window, under the title bar) and selecting "Serve Site."  Anyway, back in the Viewer tab, at the top left, go ahead and click on the little square with an arrow to "Show in a new window."  It should look vaguely familiar.
+
+1. Hugo allows you to customize themes using the config.toml file.  So click the Files tab (again, that's in the lower left pane), open the config.toml file, and let's get your page set up better for _your_ needs.  Here's what that file holds:
+
+    ```
+    baseurl = "http://example.netlify.io/"
+    relativeurls = false
+    languageCode = "en-us"
+    title = "Your Name"
+    theme = "hugo-prof"
+    googleAnalytics = ""
+    disqusShortname = ""
+    ignoreFiles = ["\\.Rmd$", "_files$", "_cache$"]
+    uglyURLS = false
+    enableEmoji = true
+    blogdir = "blog"
+    
+    [permalinks]
+        post = "blog/:year/:month/:day/:slug/"
+    
+    [[menu.main]]
+        name = "Home"
+        url = "/"
+        weight = 1
+    [[menu.main]]           # comment out this row, plus the name, url, and weight to omit  
+       name = "Research"    
+       url = "/research/"
+       weight = 2
+    [[menu.main]]           # comment out this row, plus the name, url, and weight to omit 
+       name = "Teaching"
+       url = "/teaching/"
+       weight = 3
+    [[menu.main]]           # comment out this row, plus the name, url, and weight to omit 
+        name = "Blog"
+        url = "/blog/"
+        weight = 4
+    [[menu.main]]
+        name = "CV"
+        url = "/cv/"
+        weight = 5
+    
+    [params]
+        description = "Your name and a few keywords on your academic interests" 
+        subtitle = "A few keywords on your academic interests"
+        home_text = "A paragraph or so of professional bio.  Write it in the config.toml file---it's called home_text---as one long string."
+    
+        author = "Your Name"
+        dateFormat = "2006/01/02"
+        email = "your_email@uppermidwest.edu"
+        github_username = "your_github_username"
+        twitter_username = "your_twitter_username"  # leave empty quotes to omit
+        gscholar_code = "your_gscholar_code"        # leave empty quotes to omit    
+    
+    
+        # options for highlight.js (version, additional languages, and theme)
+        highlightjsVersion = "9.12.0"
+        highlightjsCDN = "//cdnjs.cloudflare.com/ajax/libs"
+        highlightjsLang = ["r", "yaml"]
+        highlightjsTheme = "github"
+    
+        MathJaxCDN = "//cdnjs.cloudflare.com/ajax/libs"
+        MathJaxVersion = "2.7.5"
+    ```
+
+Right off, you'll want to change the `title` of the site (line 4); the `description`, `subtitle`, and `home_text` (lines 38-40); plus the `author`, `email`, `github_username`, `twitter_username`, and `gscholar_code` (lines 42-47).  As the comments note, if you don't yet have [the twitter](https://twitter.com) (if not, I really think you should give it a try) or a [Google Scholar account](https://scholar.google.com) (it's probably too soon for you to have one of those, otoh).
+
+1. There's a lot more to do in the config.toml file. See the five `[[menu.main]]` items?  They are at lines 16-35 of the file.  They specify the links that will appear in the sidebar to navigate your site.  You can use hashtags to 'comment them out,' that is, to make them appear to be comments for humans rather than actual code.  While we're here, let's comment out the teaching and research links to make them disappear.  Of course, as soon as you have something to share on these fronts, delete the '#'s and bring them back.  And when you'd like to add another item to the sidebar, maybe a dedicated page for your dissertation or some other big project, you can do that easily: just add four lines for it, starting with `[[menu.main]]` and including a `name` (what you want the link to say), `url` (where you want the link to go), and `weight` (where in the list you want the link to appear).
+
+
+
+
+## Publishing Your Website Using Netlify
+
+Once you have your website looking good on your own machine, you're ready to get it online.  
+
+
+## Changing the Domain Name
+
+By default, Netlify will provide your website with some random address (for cmcr-class, I got boring-mayer-5d40c1.netlify.com).  There are a number of ways to get a more presentable address.  The quickest and easiest way is to simply rename the site on Netlify: if you're not still there, log into Netlify and choose your site, then click on Settings.  Under "Site details," you'll see "Site information" (the first bit of which will be the "Site name," which in turn should still display that random address Netlify assigned you). At the bottom of "Site details" is a button labelled "Change site name."  Clicking there will let you choose a different subdomain, that is, all the stuff before .netlify.com.  As long as no one's beat you to it, you can have pretty much any name you want.
+
+![screenshot of renaming the cmcr-class site on Netlify](/post/2019-01-18-getting-an-academic-website-online-with-blogdown_files/netlify_rename.png){width=600px}
+
+Your next step up in customization---requiring only a bit more effort and no more expense---is to get a free rbind.io subdomain from RStudio.  Submit [the request form](https://github.com/rbind/support/issues/new) (cleverly disguised as a GitHub issue) and wait for one of the extremely good-hearted volunteers who provide this service to get back to you.  For me, this only took about an hour, if that even, but if it takes longer, please be patient.  Follow the directions in their response (#1) to reconfigure Netlify to use your new custom rbind domain.  When you do this, Netlify will warn you that rbind.io is owned by someone else or some such.  Don't panic.  You knew that already; you're not stealing it.  Just click through.  It'll be fine. 
+
+![screenshot of rbind.io response](/post/2019-01-18-getting-an-academic-website-online-with-blogdown_files/Screen Shot 2019-01-20 at 1.19.54 PM.png){width=400px}
+
+Yep, I got the "Check DNS configuration" hint from Netlify after adding the rbind subdomain (#2).  And, yep, I ignored it.  Easy.  Here's the tl;dr on #3: create a plain text document in the project directory for your website called `_redirects` with the following contents:
+
+```
+http://cmcr-class.rbind.io/*    https://cmcr-class.rbind.io/:splat  301!
+https://cmcr-class.netlify.com/*  https://cmcr-class.rbind.io/:splat  301!
+```
+Be sure to swap out `cmcr-class` for whatever you named your subdomain, of course.  The first line redirects any nonsecure HTTP links to your site to secure HTTPS links.  The second ensures that anyone who happens to try to visit your site via netlify.io gets redirected to your preferred rbind.io address so that all of your visitors will have the same address for any given page.  And then you're done.
+
+The last choice, if an rbind.io subdomain isn't custom enough for you, if you just *need* the ultimate in domain name customization, you can (wait for it) buy a custom domain name.  Custom domains are generally pretty cheap, up to maybe $10 a year, and they require a bit more configuring, but don't let that scare you off: as long as you choose your domain reasonably carefully, you're only going to have to do this work once.  [Directions from Netlify are here](https://www.netlify.com/docs/custom-domains/), and the company you buy the domain from will likely have directions for you too.
+
+## References
+https://alison.rbind.io/slides/blogdown-workshop-slides.html
