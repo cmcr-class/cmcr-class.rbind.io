@@ -34,7 +34,7 @@ public/</code></pre>
 <p>The first four lines were already there, the fifth and sixth are irrelevant system files on Macs and Windows machines respectively, and the last two are directories (that is, folders) <a href="https://bookdown.org/yihui/blogdown/version-control.html">that blogdown uses that we don’t need backed up</a>.</p></li>
 <li><p>Now we’re ready to build the site. There are a ton of <a href="https://themes.gohugo.io">different Hugo themes</a>, but as I’ve mentioned before, I’m super-fussy, so I made my own, which we’ll be using here. Let’s get started:</p>
 <pre class="r"><code>blogdown::new_site(theme = &quot;fsolt/hugo-prof&quot;, theme_example = TRUE)</code></pre></li>
-<li><p>Building the site also automatically starts serving it locally–a tiny rendition of our site pops up in the lower left pane of RStudio, in the Viewer tab. Later, you can start serving the site by clicking on RStudio’s Addins button (right at the top of the window, under the title bar) and selecting “Serve Site.” Anyway, back in the Viewer tab, at the top left, go ahead and click on the little square with an arrow to “Show in a new window.” It should look vaguely familiar.</p></li>
+<li><p>Building the site also automatically starts serving it locally–a tiny rendition of our site pops up in the lower left pane of RStudio, in the Viewer tab. Later, you can start serving the site by clicking on RStudio’s Addins button (right at the top of the window, under the title bar) and selecting “Serve Site.” Anyway, back in the Viewer tab, at the top left, go ahead and click on the little square with an arrow to “Show in a new window.” It’ll pop up in your browser, and it should look, ah, vaguely familiar. Anyway, <code>new_site</code> also created a bunch of files, so we should commit them to git and push the changes to GitHub. Go to the Git tab in the upper right pane of RStudio, click on the “Staged” checkboxes next to each file, and hit the “Commit” button. In the upper right of the review-changes window that pops up, type a description of what this commit will do: “add hugo-prof theme” does the trick.</p></li>
 <li><p>Hugo allows you to customize themes using the config.toml file. So click the Files tab (again, that’s in the lower left pane), open the config.toml file, and let’s get your page set up better for <em>your</em> needs. Here’s what that file holds:</p>
 <pre><code>baseurl = &quot;http://example.netlify.io/&quot;
 relativeurls = false
@@ -69,7 +69,7 @@ blogdir = &quot;blog&quot;
     weight = 4
 [[menu.main]]
     name = &quot;CV&quot;
-    url = &quot;/cv/&quot;
+    url = &quot;/cv.pdf&quot;
     weight = 5
 
 [params]
@@ -84,6 +84,11 @@ blogdir = &quot;blog&quot;
     twitter_username = &quot;your_twitter_username&quot;  # leave empty quotes to omit
     gscholar_code = &quot;your_gscholar_code&quot;        # leave empty quotes to omit    
 
+    page_color = &quot;white&quot;
+    text_color = &quot;black&quot;
+    link_color = &quot;rgb(0, 0, 152)&quot;
+    hover_color = &quot;rgb(255, 102, 0)&quot;
+
 
     # options for highlight.js (version, additional languages, and theme)
     highlightjsVersion = &quot;9.12.0&quot;
@@ -92,11 +97,18 @@ blogdir = &quot;blog&quot;
     highlightjsTheme = &quot;github&quot;
 
     MathJaxCDN = &quot;//cdnjs.cloudflare.com/ajax/libs&quot;
-    MathJaxVersion = &quot;2.7.5&quot;</code></pre></li>
+    MathJaxVersion = &quot;2.7.5&quot;</code></pre>
+<p>Right off, you’ll want to change the <code>title</code> of the site (line 4); the <code>description</code>, <code>subtitle</code>, and <code>home_text</code> (lines 38-40); plus the <code>author</code>, <code>email</code>, <code>github_username</code>, <code>twitter_username</code>, and <code>gscholar_code</code> (lines 42-47). As the comments note, if you don’t yet have <a href="https://twitter.com">the twitter</a> (if not, I really think you should give it a try) or a <a href="https://scholar.google.com">Google Scholar account</a> (it’s probably too soon for you to have one of those, otoh). After you’ve made the appropriate changes, save the file. Check out the site in your browser—it should show your changes. Commit and push (“add personal info”).</p></li>
+<li><p>There’s a lot more to do in the config.toml file. See the five <code>[[menu.main]]</code> items? They are at lines 16-35 of the file. They specify the links that will appear in the sidebar to navigate your site. You can use hashtags to ‘comment them out,’ that is, to make them appear to be comments for humans rather than actual code. While we’re here, let’s comment out the teaching and research links to make them disappear. Of course, as soon as you have something to share on these fronts, delete the ’#’s and bring them back. And when you’d like to add another item to the sidebar, maybe a dedicated page for your dissertation or some other big project, you can do that easily: just add four lines for it, starting with <code>[[menu.main]]</code> and including a <code>name</code> (what you want the link to say), <code>url</code> (where you want the link to go), and <code>weight</code> (where in the list you want the link to appear). Commit and push (“revise sidebar”).</p></li>
+<li><p>My color preferences are, um, <a href="https://en.wikipedia.org/wiki/Color_blindness#Deuteranomaly">somewhat idiosyncratic</a>, and you doubtless have your own in any event. You can change the colors of the page here, too, using the <code>page_color</code>, <code>text_color</code>, <code>link_color</code>, and <code>hover_color</code> parameters (lines 49-52 in the file). These parameters accept <a href="https://htmlcolorcodes.com">any color that HTML does</a>, so you can specify a name, a hex code, a rgb value, whatever. Plugging in the following, for example, will give your page a <a href="https://uiowa.edu">Hawkeye</a> makeover:</p>
+<pre><code>    page_color = &quot;#f0f0f0&quot;
+    text_color = &quot;#424242&quot;
+    link_color = &quot;black&quot;
+    hover_color = &quot;#fcd116&quot;</code></pre></li>
 </ol>
-<p>Right off, you’ll want to change the <code>title</code> of the site (line 4); the <code>description</code>, <code>subtitle</code>, and <code>home_text</code> (lines 38-40); plus the <code>author</code>, <code>email</code>, <code>github_username</code>, <code>twitter_username</code>, and <code>gscholar_code</code> (lines 42-47). As the comments note, if you don’t yet have <a href="https://twitter.com">the twitter</a> (if not, I really think you should give it a try) or a <a href="https://scholar.google.com">Google Scholar account</a> (it’s probably too soon for you to have one of those, otoh).</p>
+<p>Commit and push (“change to Hawkeye color scheme”).</p>
 <ol style="list-style-type: decimal">
-<li>There’s a lot more to do in the config.toml file. See the five <code>[[menu.main]]</code> items? They are at lines 16-35 of the file. They specify the links that will appear in the sidebar to navigate your site. You can use hashtags to ‘comment them out,’ that is, to make them appear to be comments for humans rather than actual code. While we’re here, let’s comment out the teaching and research links to make them disappear. Of course, as soon as you have something to share on these fronts, delete the ’#’s and bring them back. And when you’d like to add another item to the sidebar, maybe a dedicated page for your dissertation or some other big project, you can do that easily: just add four lines for it, starting with <code>[[menu.main]]</code> and including a <code>name</code> (what you want the link to say), <code>url</code> (where you want the link to go), and <code>weight</code> (where in the list you want the link to appear).</li>
+<li>Time for content. Intuitively enough, Hugo puts that in the <code>content/</code> directory. Remember <a href="http://cmcr-class.rbind.io/blog/2019/01/22/rmarkdown-everywhere/">the CV you learned to make for yourself last week in RMarkdown</a>? Right now, your site is showing <a href="https://github.com/svmiller/svm-r-markdown-templates/blob/master/svm-rmarkdown-cv.Rmd">the one Steven V. Miller made for William Sealy Gosset</a>. Since you’re <em>a</em> student, not <a href="https://en.wikipedia.org/wiki/William_Sealy_Gosset"><em>the</em> Student</a>, you’ll want to change that right away. This is a two-step process: (1) put your CV file, “SoltCV.pdf” for example,<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> in the <code>content/</code> directory, and (2) change the url under the <code>[[menu.main]]</code> item for the CV in the config.toml file at line 34 from <code>&quot;/cv.pdf&quot;</code> to the name of your CV file, keeping the slash.</li>
 </ol>
 </div>
 <div id="publishing-your-website-using-netlify" class="section level2">
@@ -129,5 +141,6 @@ https://cmcr-class.netlify.com/*  https://cmcr-class.rbind.io/:splat  301!</code
 <hr />
 <ol>
 <li id="fn1"><p>Why should you get your work online? <a href="https://twitter.com/drob">David Robinson</a>, Chief Data Scientist at <a href="https://www.datacamp.com">DataCamp</a> has done the best job I’ve seen articulating the answers. Read <a href="http://varianceexplained.org/r/start-blog/">his post on the value of blogging your work with data</a>, and he just gave a keynote talk at <a href="https://resources.rstudio.com/rstudio-conf-2019">rstudio::conf 2019</a> titled “The unreasonable effectiveness of public work” (<a href="http://bit.ly/drob-rstudio-2019">slides</a> , <a href="https://resources.rstudio.com/rstudio-conf-2019/the-unreasonable-effectiveness-of-public-work">video</a>)worth checking out, too.<a href="#fnref1" class="footnote-back">↩</a></p></li>
+<li id="fn2"><p>I really recommend you include your name in the filename, rather than just calling the file <code>cv.pdf</code> like Gosset’s. On the off chance someone excitedly downloads your CV to show to their colleagues as just the sort of person who should be hired, you don’t want to force them to pause and rename the file before forwarding it to the hiring committee. The moment might quickly pass, after all.<a href="#fnref2" class="footnote-back">↩</a></p></li>
 </ol>
 </div>

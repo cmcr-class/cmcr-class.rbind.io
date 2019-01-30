@@ -47,7 +47,7 @@ The first four lines were already there, the fifth and sixth are irrelevant syst
     blogdown::new_site(theme = "fsolt/hugo-prof", theme_example = TRUE)
     ```
 
-1. Building the site also automatically starts serving it locally--a tiny rendition of our site pops up in the lower left pane of RStudio, in the Viewer tab.  Later, you can start serving the site by clicking on RStudio's Addins button (right at the top of the window, under the title bar) and selecting "Serve Site."  Anyway, back in the Viewer tab, at the top left, go ahead and click on the little square with an arrow to "Show in a new window."  It should look vaguely familiar.
+1. Building the site also automatically starts serving it locally--a tiny rendition of our site pops up in the lower left pane of RStudio, in the Viewer tab.  Later, you can start serving the site by clicking on RStudio's Addins button (right at the top of the window, under the title bar) and selecting "Serve Site."  Anyway, back in the Viewer tab, at the top left, go ahead and click on the little square with an arrow to "Show in a new window."  It'll pop up in your browser, and it should look, ah, vaguely familiar.  Anyway, `new_site` also created a bunch of files, so we should commit them to git and push the changes to GitHub. Go to the Git tab in the upper right pane of RStudio, click on the "Staged" checkboxes next to each file, and hit the "Commit" button.  In the upper right of the review-changes window that pops up, type a description of what this commit will do: "add hugo-prof theme" does the trick.
 
 1. Hugo allows you to customize themes using the config.toml file.  So click the Files tab (again, that's in the lower left pane), open the config.toml file, and let's get your page set up better for _your_ needs.  Here's what that file holds:
 
@@ -85,7 +85,7 @@ The first four lines were already there, the fifth and sixth are irrelevant syst
         weight = 4
     [[menu.main]]
         name = "CV"
-        url = "/cv/"
+        url = "/cv.pdf"
         weight = 5
     
     [params]
@@ -99,8 +99,13 @@ The first four lines were already there, the fifth and sixth are irrelevant syst
         github_username = "your_github_username"
         twitter_username = "your_twitter_username"  # leave empty quotes to omit
         gscholar_code = "your_gscholar_code"        # leave empty quotes to omit    
-    
-    
+
+        page_color = "white"
+        text_color = "black"
+        link_color = "rgb(0, 0, 152)"
+        hover_color = "rgb(255, 102, 0)"
+
+
         # options for highlight.js (version, additional languages, and theme)
         highlightjsVersion = "9.12.0"
         highlightjsCDN = "//cdnjs.cloudflare.com/ajax/libs"
@@ -111,12 +116,22 @@ The first four lines were already there, the fifth and sixth are irrelevant syst
         MathJaxVersion = "2.7.5"
     ```
 
-Right off, you'll want to change the `title` of the site (line 4); the `description`, `subtitle`, and `home_text` (lines 38-40); plus the `author`, `email`, `github_username`, `twitter_username`, and `gscholar_code` (lines 42-47).  As the comments note, if you don't yet have [the twitter](https://twitter.com) (if not, I really think you should give it a try) or a [Google Scholar account](https://scholar.google.com) (it's probably too soon for you to have one of those, otoh).
+    Right off, you'll want to change the `title` of the site (line 4); the `description`, `subtitle`, and `home_text` (lines 38-40); plus the `author`, `email`, `github_username`, `twitter_username`, and `gscholar_code` (lines 42-47).  As the comments note, if you don't yet have [the twitter](https://twitter.com) (if not, I really think you should give it a try) or a [Google Scholar account](https://scholar.google.com) (it's probably too soon for you to have one of those, otoh). After you've made the appropriate changes, save the file.  Check out the site in your browser---it should show your changes.  Commit and push ("add personal info").
 
-1. There's a lot more to do in the config.toml file. See the five `[[menu.main]]` items?  They are at lines 16-35 of the file.  They specify the links that will appear in the sidebar to navigate your site.  You can use hashtags to 'comment them out,' that is, to make them appear to be comments for humans rather than actual code.  While we're here, let's comment out the teaching and research links to make them disappear.  Of course, as soon as you have something to share on these fronts, delete the '#'s and bring them back.  And when you'd like to add another item to the sidebar, maybe a dedicated page for your dissertation or some other big project, you can do that easily: just add four lines for it, starting with `[[menu.main]]` and including a `name` (what you want the link to say), `url` (where you want the link to go), and `weight` (where in the list you want the link to appear).
+1. There's a lot more to do in the config.toml file. See the five `[[menu.main]]` items?  They are at lines 16-35 of the file.  They specify the links that will appear in the sidebar to navigate your site.  You can use hashtags to 'comment them out,' that is, to make them appear to be comments for humans rather than actual code.  While we're here, let's comment out the teaching and research links to make them disappear.  Of course, as soon as you have something to share on these fronts, delete the '#'s and bring them back.  And when you'd like to add another item to the sidebar, maybe a dedicated page for your dissertation or some other big project, you can do that easily: just add four lines for it, starting with `[[menu.main]]` and including a `name` (what you want the link to say), `url` (where you want the link to go), and `weight` (where in the list you want the link to appear).  Commit and push ("revise sidebar").
 
+1. My color preferences are, um, [somewhat idiosyncratic](https://en.wikipedia.org/wiki/Color_blindness#Deuteranomaly), and you doubtless have your own in any event.  You can change the colors of the page here, too, using the `page_color`, `text_color`, `link_color`, and `hover_color` parameters (lines 49-52 in the file).  These parameters accept [any color that HTML does](https://htmlcolorcodes.com), so you can specify a name, a hex code, a rgb value, whatever.  Plugging in the following, for example, will give your page a [Hawkeye](https://uiowa.edu) makeover:
 
+    ```
+        page_color = "#f0f0f0"
+        text_color = "#424242"
+        link_color = "black"
+        hover_color = "#fcd116"
+    ```
 
+Commit and push ("change to Hawkeye color scheme").
+
+1. Time for content.  Intuitively enough, Hugo puts that in the `content/` directory.  Remember [the CV you learned to make for yourself last week in RMarkdown](http://cmcr-class.rbind.io/blog/2019/01/22/rmarkdown-everywhere/)?  Right now, your site is showing [the one Steven V. Miller made for William Sealy Gosset ](https://github.com/svmiller/svm-r-markdown-templates/blob/master/svm-rmarkdown-cv.Rmd).  Since you're _a_ student, not [_the_ Student](https://en.wikipedia.org/wiki/William_Sealy_Gosset), you'll want to change that right away.  This is a two-step process: (1) put your CV file, "SoltCV.pdf" for example,^[I really recommend you include your name in the filename, rather than just calling the file `cv.pdf` like Gosset's.  On the off chance someone excitedly downloads your CV to show to their colleagues as just the sort of person who should be hired, you don't want to force them to pause and rename the file before forwarding it to the hiring committee.  The moment might quickly pass, after all.]  in the `content/` directory, and (2) change the url under the `[[menu.main]]` item for the CV in the config.toml file at line 34 from `"/cv.pdf"` to the name of your CV file, keeping the slash.
 
 ## Publishing Your Website Using Netlify
 
