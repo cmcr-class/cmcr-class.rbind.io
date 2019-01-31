@@ -1,4 +1,4 @@
-baseurl = "http://cmcr-class.github.io"
+baseurl = "http://cmcr-class.rbind.io"
 relativeurls = false
 languageCode = "en-us"
 title = "POLI 7002/7450"
