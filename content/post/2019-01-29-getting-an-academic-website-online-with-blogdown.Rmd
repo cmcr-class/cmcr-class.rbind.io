@@ -6,7 +6,6 @@ tags:
   - note
 slug: blogdown-for-academics
 draft: false
-twitter_image: https://bookdown.org/yihui/blogdown/images/logo.png
 output:
   html_document:
     self_contained: yes
