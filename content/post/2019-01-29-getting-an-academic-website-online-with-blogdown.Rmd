@@ -163,7 +163,7 @@ By default, Netlify will provide your website with some random address (for cmcr
 
 Your next step up in customization---requiring only a bit more effort and no more expense---is to get a free rbind.io subdomain from RStudio.  Submit [the request form](https://github.com/rbind/support/issues/new) (cleverly disguised as a GitHub issue) and wait for one of the extremely good-hearted volunteers who provide this service to get back to you.  For me, this only took about an hour, if that even, but if it takes longer, please be patient.  Follow the directions in their response (#1) to reconfigure Netlify to use your new custom rbind domain.  When you do this, Netlify will warn you that rbind.io is owned by someone else or some such.  Don't panic.  You knew that already; you're not stealing it.  Just click through.  It'll be fine. 
 
-![screenshot of rbind.io response](/post/2019-01-18-getting-an-academic-website-online-with-blogdown_files/Screen Shot 2019-01-20 at 1.19.54 PM.png){width=400px}
+![screenshot of rbind.io response](/post/2019-01-18-getting-an-academic-website-online-with-blogdown_files/Screen Shot 2019-01-20 at 1.19.54 PM.png){width=600px}
 
 Yep, I got the "Check DNS configuration" hint from Netlify after adding the rbind subdomain (#2).  And, yep, I ignored it.  Easy.  Here's the tl;dr on #3: create a plain text document in the project directory for your website called `_redirects` with the following contents:
 
