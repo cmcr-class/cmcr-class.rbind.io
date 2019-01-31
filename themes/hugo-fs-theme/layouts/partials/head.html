@@ -12,7 +12,7 @@
     <meta property="description" content="{{ .Site.Params.description }}">
     <meta property="og:description" content="{{ .Site.Params.description }}">
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:image" content="{{ .Site.baseurl }}images/{{ Site.Params.logo }}">
+    <meta name="twitter:image" content="https://fsolt.org/img/fsolt.jpeg">
     {{ else }}
     <title>{{ .Page.Title }} &middot; {{ .Site.Title }}</title>
     <meta property="og:title" content="{{ .Page.Title }} &middot; {{ .Site.Title }}">
@@ -20,10 +20,10 @@
     
       {{ if .Params.twitter_image }}
       <meta name="twitter:card" content="summary_large_image">
-      <meta name="twitter:image" content="{{ .Params.twitter_image }}" >
+      <meta name="twitter:image" content="https://fsolt.org/{{ .Params.twitter_image }}" >
       {{ else }}
       <meta name="twitter:card" content="summary">
-      <meta name="twitter:image" content="{{ .Site.baseurl }}images/{{ Site.Params.logo }}">
+      <meta name="twitter:image" content="https://fsolt.org/img/fsolt.jpeg">
       {{ end }}
       
       {{ $defaultDescription := .Site.Params.description }}
@@ -44,9 +44,7 @@
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="/css/custom.css">
   <link rel="stylesheet" href="/css/academicons.css">
-  <style type="text/css">
-    {{ partial "colors.css" . | safeCSS }}
-  </style>
+  
 
 {{ partial "head_highlightjs" . }}
 
