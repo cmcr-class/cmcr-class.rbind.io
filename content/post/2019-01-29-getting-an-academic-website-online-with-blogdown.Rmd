@@ -152,7 +152,7 @@ After you click through the sign up process, hit the button that says "New site 
 
 Then, after an authorization from GitHub that should just pop up and dismiss itself, you'll get to choose the repo you want to publish.  That would be the one with the name you chose in the very first step of building your site . . . I told you to remember that name!^[Of course, you _could_ just read it off of the title bar of your RStudio window.]
 
-Finally, you have to specify the build settings.  For the build command, enter "hugo".  For the publish directory, enter "public".  The branch to deploy is "master".  Hit the button to deploy the site, and your site is online!
+Finally, you have to specify the build settings.  For the build command, enter "hugo".  For the publish directory, enter "public".  The branch to deploy is "master".  Hit the button to deploy the site, and that's it.  Your site is online!
 
 
 ## Changing the Domain Name
