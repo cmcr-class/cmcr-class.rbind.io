@@ -115,7 +115,7 @@ library("swirl")
 *Readings*:
 
 1. [Kastellec, Jonathan P. and Eduardo L. Leoni. 2007. "Using Graphs Instead of Tables in Political Science." *Perspectives on Politics* 5(4):755--771.](http://dx.doi.org.proxy.lib.uiowa.edu/10.1017/S1537592707072209)
-1. [Ismay, Chester, and Albert Y. Kim.  2018.  "Data Visualization via ggplot2," *Modern Dive: An Introduction to Statistical and Data Sciences via R*, Chapter 3.](https://moderndive.com/3-viz.html)
+1. [Ismay, Chester, and Albert Y. Kim.  2018. *Modern Dive: An Introduction to Statistical and Data Sciences via R*, Chapter 3.](https://moderndive.com/3-viz.html)
 1. [Solt, Frederick, and Yue Hu.  2015.  "\texttt{dotwhisker}: Dot-and-Whisker Plots of Regression Results."  Available at The Comprehensive R Archive Network (CRAN).](https://cran.r-project.org/web/packages/dotwhisker/vignettes/dotwhisker-vignette.html), and especially [how to remake the examples from Kastellec and Leoni (2007) using \texttt{dotwhisker}](https://cran.r-project.org/web/packages/dotwhisker/vignettes/kl2007_examples.html).
 
 *Assignments*:
@@ -132,7 +132,7 @@ library("swirl")
 *Readings*:
 
 1. [Leeper, Thomas J. 2016. "\texttt{rio}: A Swiss-Army Knife for Data I/O. Import, Export, and Convert Data Files."](https://cran.r-project.org/web/packages/rio/vignettes/rio.html)
-1. [Ismay, Chester, and Albert Y. Kim.  2018.  "Data Visualization via ggplot2," *Modern Dive: An Introduction to Statistical and Data Sciences via R*, Chapters 4 and 5.](https://moderndive.com/4-tidy.html)
+1. [Ismay, Chester, and Albert Y. Kim.  2018.  *Modern Dive: An Introduction to Statistical and Data Sciences via R*, Chapters 4 and 5.](https://moderndive.com/4-tidy.html)
 1. [Healy, Kieran. 2018.  *Data Visualization: A Practical Introduction*, Chapters 4 and 5.](https://socviz.co/groupfacettx.html) 
 
 *Assignment*:
