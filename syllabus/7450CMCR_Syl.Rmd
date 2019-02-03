@@ -164,7 +164,7 @@ library("swirl")
 1. [Janz, Nicole. 2015. "Good Practice in Data Collection and Storing." *Political Science Replication*, March 16.](https://politicalsciencereplication.wordpress.com/2015/03/16/good-practice-in-data-collection-and-storing/)
 1. [Robinson, David.  2016.  "Text Analysis of Trump's Tweets Confirms He Writes Only the (Angrier) Android Half." *Variance Explained*, August 9.](http://varianceexplained.org/r/trump-tweets/)
 1. [Persson, Eric. 2017. \texttt{gesis}: R Client for GESIS Data Catalogue (DBK). R package version
-  0.2.1](https://cran.r-project.org/web/packages/gesis/vignettes/gesis.html), [Solt, Frederick and Kellen Gracey. 2016. \texttt{icpsrdata}: Reproducible Data Retrieval from the ICPSR Archive. R package version 0.3.0.](https://cran.r-project.org/web/packages/icpsrdata/vignettes/icpsrdata-vignette.html), and [Frederick Solt (2018). \texttt{ropercenter}: Reproducible Data Retrieval from the Roper Center Data Archive. R package version 0.2.0.](https://cran.r-project.org/web/packages/ropercenter/vignettes/ropercenter-vignette.html)
+  0.2.1](https://cran.r-project.org/web/packages/gesis/vignettes/gesis.html); [Solt, Frederick and Kellen Gracey. 2016. \texttt{icpsrdata}: Reproducible Data Retrieval from the ICPSR Archive. R package version 0.3.0.](https://cran.r-project.org/web/packages/icpsrdata/vignettes/icpsrdata-vignette.html); and [Frederick Solt. 2018. \texttt{ropercenter}: Reproducible Data Retrieval from the Roper Center Data Archive. R package version 0.2.0.](https://cran.r-project.org/web/packages/ropercenter/vignettes/ropercenter-vignette.html)
 1. [RStudio.  2014.  "\texttt{rvest}: Easy Web Scraping with R."  *RStudio Blog*, November 24.](https://blog.rstudio.org/2014/11/24/rvest-easy-web-scraping-with-r/)
 
 
