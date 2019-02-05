@@ -140,7 +140,9 @@ The first four lines were already there, the fifth and sixth are irrelevant syst
 
 1. David Robinson's got you all fired up and ready to blog about your data?  Good!  Click the "Addins" button again (remember, it's just under the title bar) and select "New Post."  A pop-up will appear with blanks for the title of the post and so on.  Be sure to choose the RMarkdown format so you can include R code and output.  The `hugo-prof` theme will put your post at the top of the blog page, with older posts appearing reverse chronologically below.  Each post also has its own dedicated page, linked from the main blog page via the post's title.  As you work on the post, save regularly, commit, and push.  Each time you save, the locally served version of your website will update in your browser so that you can see exactly how your page is going to look.
 
-1. When you're ready to have separate pages for your research and teaching, first remember to uncomment the relevant lines in the config.toml file that we commented out above.  Then, you'll need to edit the file `content/teaching/_index.Rmd` to add your teaching interests, experience, and courses taught and `content/research/_index.Rmd` to add your research interests, projects, conference presentations, working papers, and publications.  And we're done!
+1. When you're ready to have separate pages for your research and teaching, first remember to uncomment the relevant lines in the config.toml file that we commented out above.  Then, you'll need to edit the file `content/teaching/_index.Rmd` to add your teaching interests, experience, and courses taught and `content/research/_index.Rmd` to add your research interests, projects, conference presentations, working papers, and publications.  
+
+And we're done!
 
 ## Publishing Your Website Using Netlify
 
@@ -177,4 +179,4 @@ The last choice, if an rbind.io subdomain isn't custom enough for you, if you ju
 
 Whatever level of customization you choose, go back now to your config.toml file and on the first line, put your new address in as the `baseurl`.
 
-You can add other bells and whistles, [like Google Analytics or Disqus comments](https://bookdown.org/yihui/blogdown/templates.html#how-to), pretty easily with blogdown, too.  To explore all the details of the package, see [Xie, Yihui, Amber Thomas, and Alison Presmanes Hill. 2017. _blogdown: Creating Websites with R Markdown_.  CRC Press.](https://bookdown.org/yihui/blogdown/). Having a website is an important way of sharing your work, every academic should have one, and with blogdown it's easy to set up and maintain your own. Let me know when your site is up!  
+You can add other bells and whistles, [like Google Analytics or Disqus comments](https://bookdown.org/yihui/blogdown/templates.html#how-to), pretty easily with blogdown, too.  To explore all the details of the package, see [Xie, Yihui, Amber Thomas, and Alison Presmanes Hill. 2017. _blogdown: Creating Websites with R Markdown_.  CRC Press](https://bookdown.org/yihui/blogdown/). Having a website is an important way of sharing your work, every academic should have one, and with blogdown it's easy to set up and maintain your own. Let me know when your site is up!  
