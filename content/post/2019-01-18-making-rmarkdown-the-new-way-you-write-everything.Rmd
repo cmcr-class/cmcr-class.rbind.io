@@ -88,6 +88,16 @@ The stuff you'll want to change here is pretty obvious, I think.  For now at lea
 
 The example file also includes examples of pretty much everything you're likely to want to do in an article manuscript: headings, footnotes, embedded R code (and how to hide it), plots with captions and how to refer to them, block quotes, comments (that is, notes to self), and, of course, citations.
 
+***Addendum***: One more thing we need to get our bibliographies formatted in APSR style is (drumroll) the APSR bibliography style file.  [Download it from here](https://mirror.hmc.edu/ctan/macros/latex/contrib/harvard/apsr.bst) (right-click to get a contextual menu, then select "Download Linked File" or "Save Target As..." or whatever similar option your browser gives you).  Now we have to (1) put this file somewhere safe, and (2) let R know where it is.  For (1), on a Mac, go to the Finder, then use the Go menu, select Go to Folder..., and enter `Users/your_own_username/Library/` (this folder is hidden by default).  Make a folder called `texmf` there, make one.  On Windows, make a `texmf` folder within your user at `C:\Users\your_own_username`.  Inside the `texmf` folder, make a `bibtex` folder.  Inside _that_, make a `bst` folder.^[There's a chance that you'll find at least some of these folders in these locations already.  If so, just use the ones you've got; don't make more.]  Drop the `apsr.bst` file there.  Okay, on to (2).  First, install the `usethis` package: `install.packages("usethis")`.  Then past this  `usethis::edit_r_environ()` into the console to open the .Renviron file, which is ordinarily hidden.  Add the following line to that file but make sure to replace the example (Mac) path below with _the path to the bst folder you just made_, save, and restart R from RStudio's Session menu.  
+
+```
+BSTINPUTS="/Users/your_own_username/Library/texmf/bibtex/bst"
+```
+
+***Troubleshooting***: $\LaTeX$, unfortunately, doesn't play nice with filepaths with spaces in them---that is, if there are any spaces in the names of any of the folders your .Rmd file is nested in, and it looks for a separate .bib file (at least the way I have coded it up in this template), RStudio's knit button won't be able to make you a pretty PDF.  Correct this as you see fit.  Personally, my filepaths tend to look like this: `Users/fsolt/Projects/whatever_title/paper/whatever_title.Rmd`.
+
+All right, _now_ we're ready to rock this.
+
 ## Syllabi
 
 To write a syllabus in RMarkdown, you'll need to start with a good template.  Fortunately, [Steven V. Miller has made one for this purpose too](https://github.com/fsolt/svm-r-markdown-templates/blob/master/svm-latex-syllabus.tex): svm-latex-syllabus.tex.  And, of course, you'll need an RMarkdown file with the appropriate YAML header.  Steve describes the details [in his blog post on the template](http://svmiller.com/blog/2016/07/r-markdown-syllabus/), so I'll skip that here.  He also writes in that post about how to automatically generate the dates you need for your course schedule, but nowadays there's an easier way of doing that I want to show you.  Put this chunk near the top of your document:
