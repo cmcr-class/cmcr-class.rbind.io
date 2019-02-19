@@ -150,9 +150,9 @@ list.files(path = "cmcr04_files", pattern="ZA.*")
 
 ## Data Access with Login: `gesis`
 
-Note that you should actually save your username and password in your [.Rprofile](http://www.statmethods.net/interface/customizing.html) as "gesis_user" and "gesis_pass" to keep your information private.
+Note that you should actually save your username and password in your [.Renviron](https://usethis.r-lib.org/reference/edit.html) as "GESIS_USER" and "GESIS_PASS" to keep your information private.
 
-<img src="cmcr04_files/Rprofile.png" style="width: 800px;"/>
+<img src="cmcr04_files/Renviron.png" style="width: 800px;"/>
 
 ## Data Access with Login: `gesis`
 
@@ -171,7 +171,7 @@ download_dataset(s = fs,
 
 ## Data Access: A Few More Packages
 
->- [`pewdata`: Reproducible Retrieval of Pew Research Center Datasets](https://cran.r-project.org/package=pewdata).
+>- [`ropercenter`: Reproducible Retrieval of Roper Center Datasets](https://cran.r-project.org/package=ropercenter).
 
 >- [`icpsrdata`: Reproducible Data Retrieval from the ICPSR Archive](https://cran.r-project.org/package=icpsrdata).
 
@@ -212,7 +212,7 @@ suppressPackageStartupMessages(library(dplyr))
 
 - `group_by()` + `summarize()`
 
->- An indispensible resource: RStudio's [Cheatsheet to Data Wrangling](https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf)
+>- An indispensible resource: RStudio's [Cheatsheet to Data Wrangling](https://github.com/rstudio/cheatsheets/raw/master/data-transformation.pdf). I still love [the old one](https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf).
 
 ## Tidying Data
 
