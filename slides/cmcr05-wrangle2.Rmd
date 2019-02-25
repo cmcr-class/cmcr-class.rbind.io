@@ -345,7 +345,8 @@ str_replace(days, "([aeiou])(.*?)([aeiou])", "\\3\\2\\1")
 - Capture groups can be nested: the count goes with the opening paren
 
 ```{r}
-monster_truck_days <- str_replace(days, "(.*(day))", "\\1\\1\\1\\2\\2") 
+monster_truck_days <- str_replace(days, "(.*(day))",
+                                  "\\1\\1\\1\\2\\2\\2") 
 monster_truck_days
 ```
 
@@ -359,7 +360,7 @@ str_detect(monster_truck_days, "(day){3}")
 
 ## Regular Expressions: An Example
 
-<img src="cmcr05_files/weather_txt.png" style="width: 800px;"/>
+<img src="cmcr05_files/weather_text.png" style="width: 700px;"/>
 
 ## Regular Expressions: An Example
 
@@ -372,12 +373,11 @@ weather
 
 ```{r}
 day_pattern <- str_c(days, collapse = "|")
-
 weather_df <- weather %>% 
-    data_frame(text = .,
-               day_date = if_else(str_detect(text, day_pattern),
-                                 text,
-                                 NA_character_)) %>% 
+    tibble(text = .,
+           day_date = if_else(str_detect(text, day_pattern),
+                              text,
+                              NA_character_)) %>% 
     filter(!(str_detect(text, "^\\s*$")))
 weather_df
 ```
