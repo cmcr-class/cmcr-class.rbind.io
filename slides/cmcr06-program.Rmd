@@ -91,7 +91,7 @@ library(tidyverse) # includes purrr
 
 >- Elements of *lists* can be of different types
 
->- A `data_frame` is a list of variables 
+>- A `tibble` is a list of variables 
     + Each variable is a named atomic vector of the same length
 
 >- `NULL` is a vector of length 0 
@@ -124,14 +124,12 @@ library(tidyverse) # includes purrr
 ## Example: A Function
 
 ```{r}
-library(stringr)
-
 get_exercises <- function(ch) {
-  ex <- data_frame(line = readLines(ch),
-             header = str_extract(line, "^#+ .*")) %>%
-    fill(header) %>%
-    filter(str_detect(header, "Exercises"))
-  return(ex$line)
+    ex <- tibble(line = readLines(ch),
+                 header = str_extract(line, "^#+ .*")) %>%
+        fill(header) %>%
+        filter(str_detect(header, "Exercises"))
+    return(ex$line)
 }
 ```
 
