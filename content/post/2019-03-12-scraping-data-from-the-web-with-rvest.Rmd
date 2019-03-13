@@ -1,0 +1,155 @@
+---
+title: Scraping Data from the Web with rvest
+author: Frederick Solt
+date: '2019-03-12'
+tags:
+  - note
+slug: scraping-data
+draft: yes
+output:
+  html_document:
+    self_contained: yes
+---
+
+Although there are lots of R packages that offer special purpose data-download tools---Eric Persson's [`gesis`](https://cran.r-project.org/web/packages/gesis/vignettes/gesis.html) is one of my favorites, and I'm fond of [`icpsrdata`](https://cran.r-project.org/web/packages/icpsrdata/vignettes/icpsrdata-vignette.html) and [`ropercenter`](https://cran.r-project.org/web/packages/ropercenter/vignettes/ropercenter-vignette.html) too---but the Swiss Army knife of webscraping is the `rvest` package.  That is to say, if there's a specialized tool for the data you're after, you're much better off using _that_ tool, but if not, then `rvest` will help you to get the job done. 
+
+In this post, I'll explain how to do two common webscraping tasks using `rvest`: scraping tables from the web straight into R and scraping the links to a bunch of files so you can then do a batch download.
+
+## Scraping Tables
+
+Scraping data from tables on the web is a simple, three-step process:
+
+1. read the html of the webpage with the table using `read_html()`
+
+2. extract the table using `html_table()`
+
+3. wrangle as needed
+
+So let's suppose we wanted to get the latest [population figures for the countries of Latin America from Wikipedia](http://en.wikipedia.org/wiki/List_of_Latin_American_countries_by_population)
+
+![](/post/2019-03-12-scraping-data-from-the-web-with-rvest_files/wiki_latam.png){width=80%}
+
+### Step 1: Read the Webpage
+We load the `tidyverse` and `rvest` packages, then paste the url of the Wikipedia page into `read_html()`
+
+```{r}
+library(tidyverse)
+library(rvest)
+
+webpage <- read_html("http://en.wikipedia.org/wiki/List_of_Latin_American_countries_by_population")
+```
+
+
+### Step 2: Extract the Table
+So far, so good.  Next, we extract the table using `html_table()`.  Because the last row of the table doesn't span all of the columns, we need to use the argument `fill = TRUE` to set the remaining columns to `NA`.  Helpfully, the function will prompt us to do this if we don't recognize we need to.  One wrinkle is that `html_table()` returns a list of all of the tables on the webpage.  In this case, there's only one table, but we still get back a list of length one.  Since what we really want is a dataframe, not a list, we'll use `first()` to grab the first element of the list. If we had a longer list and wanted some middle element, we'd use `nth()`.  And we'll make the dataframe into a tibble for the extra goodness that that format gives us.
+
+```{r}
+latam_pop <- webpage %>% 
+    html_table(fill=TRUE) %>%   # generates a list of all tables
+    first() %>%                 # gets the first element of the list
+    as_tibble()                 # makes the dataframe a tibble
+    
+latam_pop
+```
+
+### Step 3: Wrangle as Needed
+
+Nice, clean, tidy data is rare in the wild, and data scraped from the web is definitely wild.  So let's practice our data-wrangling skills here a bit.  The column names of tables are usually not suitable for use as variable names, and our Wikipedia population table is not exceptional in this respect:
+
+```{r}
+names(latam_pop)
+```
+
+These names are problematic because they have embedded spaces and punctuation marks that may even cause errors when the names are wrapped in backticks, which means we need a way of renaming them without even specifying their names the first time, if you see what I mean.  One solution is the `clean_names()` function of the `janitor` package:
+
+```{r, message=FALSE}
+latam_pop <- latam_pop %>% janitor::clean_names()
+
+names(latam_pop)
+```
+
+These names won't win any awards, but they won't cause errors, so the `janitor` totally succeeded in cleaning up.  It's a great option for taking care of big messes fast.  At the other end of the scale, if you only need to fixing just a few problematic names, is to use `rename()`'s new(-ish) assign-by-position ability:
+
+```{r}
+latam_pop <- webpage %>% 
+    html_table(fill=TRUE) %>%   # generates a list of all tables
+    first() %>%                 # gets the first element of the list
+    as_tibble() %>%             # makes the dataframe a tibble
+    rename("est_pop_2015" = 3)  # rename the third variable
+
+names(latam_pop)
+```
+
+An intermediate option is to assign a complete vector of names:
+
+```{r}
+names(latam_pop) <- c("rank", "country", "est_pop_2015",
+                      "percent_latam", "annual_growth_rate",
+                      "annual_growth", "doubling_time",
+                      "official_pop", "date_pop",
+                      "source")
+
+names(latam_pop)
+```
+
+
+
+Okay, enough about variable names; we have other problems here.  For one thing, several of the country/territory names have their colonial powers in parentheses, and there are also Wikipedia-style footnote numbers in brackets that we don't want here either:
+
+```{r}
+latam_pop$country[17:27]
+```
+
+We can use regex to get rid of that stuff.  In the regex pattern below, recall that the double slashes are "escapes": they mean that we want actual brackets (not a character class) and parentheses (not a capture group).  The `.*`s stand for "anything, repeated zero or more times", and the `|` means "or."  So this `str_replace_all()` is going to replace matched brackets or parentheses and anything between them with nothing.
+
+Finally, while we're at it, we'll also get rid of the line listing the region's total population.
+
+```{r}
+latam_pop <- latam_pop %>% 
+    mutate(country = str_replace_all(country, "\\[.*\\]|\\(.*\\)", "") %>% 
+               str_trim()) %>% 
+    filter(country!="Total")
+
+latam_pop$country[17:nrow(latam_pop)]
+```
+
+Another common problem with webscraped tables: are the numbers encoded as strings?  Probably so.
+
+```{r}
+latam_pop$official_pop
+str(latam_pop$official_pop)
+```
+
+Yep.  So let's replace the commas with nothing and use `as.numeric()` to make the result actually numeric.
+
+```{r}
+latam_pop <- latam_pop %>% 
+    mutate(official_pop = str_replace_all(official_pop, ",", "") %>%
+               as.numeric())
+
+latam_pop$official_pop
+str(latam_pop$official_pop)
+```
+
+One last issue is to get the dates for these population figures into POSIXct format.  This is complicated a bit by the fact for some countries we only have a year rather than a full date:
+
+```{r}
+latam_pop$date_pop
+```
+
+We deal with this using `if_else()` and `str_detect()` to find which dates begin (`^`) with a digit (`\\d`), and then let the `lubridate` package's `parse_date_time()` function know that those are years and the rest are in "month day, year" format.
+
+```{r, warning=FALSE}
+latam_pop <- latam_pop %>% 
+    mutate(date_pop = if_else(str_detect(date_pop, "^\\d"),
+                              lubridate::parse_date_time(date_pop, "y"),
+                              lubridate::parse_date_time(date_pop, "m d, y")))
+
+latam_pop$date_pop
+```
+
+And we're done!
+
+## Scraping Files
+
+
