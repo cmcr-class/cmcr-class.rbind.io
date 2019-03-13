@@ -60,7 +60,7 @@ Nice, clean, tidy data is rare in the wild, and data scraped from the web is def
 names(latam_pop)
 ```
 
-These names are problematic because they have embedded spaces and punctuation marks that may even cause errors when the names are wrapped in backticks, which means we need a way of renaming them without even specifying their names the first time, if you see what I mean.  One solution is the `clean_names()` function of the `janitor` package:
+These names are problematic because they have embedded spaces and punctuation marks that may even cause errors when the names are wrapped in backticks, which means we need a way of renaming them without even specifying their names the first time, if you see what I mean.  One solution is the `clean_names()` function of the `janitor` package:^[Remember, if you haven't installed it before, you will need to download `janitor` to your machine with `install.packages("janitor")` before this code will work.]
 
 ```{r, message=FALSE}
 latam_pop <- latam_pop %>% janitor::clean_names()
@@ -68,7 +68,7 @@ latam_pop <- latam_pop %>% janitor::clean_names()
 names(latam_pop)
 ```
 
-These names won't win any awards, but they won't cause errors, so the `janitor` totally succeeded in cleaning up.  It's a great option for taking care of big messes fast.  At the other end of the scale, if you only need to fixing just a few problematic names, is to use `rename()`'s new(-ish) assign-by-position ability:
+These names won't win any awards, but they won't cause errors, so `janitor` totally succeeded in cleaning up.  It's a great option for taking care of big messes fast.  At the other end of the scale, if you only need to fixing just one or a few problematic names, you can use `rename()`'s new(-ish) assign-by-position ability:
 
 ```{r}
 latam_pop <- webpage %>% 
@@ -80,7 +80,7 @@ latam_pop <- webpage %>%
 names(latam_pop)
 ```
 
-An intermediate option is to assign a complete vector of names:
+An intermediate option is to assign a complete vector of names (that is, one for every variable):
 
 ```{r}
 names(latam_pop) <- c("rank", "country", "est_pop_2015",
@@ -152,4 +152,81 @@ And we're done!
 
 ## Scraping Files
 
+It's also pretty common to want to get a bunch of files linked from a website.  Consider this example from my own work on [the Standardized World Income Inequality Database](https://fsolt.org/swiid/).  The SWIID depends on [source data on income inequality](https://fsolt.org/swiid/swiid_source/) from international organizations and national statistical offices around the world, including Armenia's Statistical Committee (ArmStat).  ArmStat has a regular report on food security and poverty that includes a chapter titled "Accessibility of Food" that has some data that I want.
+
+![](/post/2019-03-12-scraping-data-from-the-web-with-rvest_files/sg0.png){width=80%}
+![](/post/2019-03-12-scraping-data-from-the-web-with-rvest_files/Screen Shot 2019-03-13 at 1.52.39 PM.png){width=80%}
+
+
+
+```{r}
+armstat_page <- "http://www.armstat.am/en/?nid=81&pthid=pov&year="
+
+arm_page <- armstat_page %>% 
+  read_html() %>% 
+  html_nodes("h4 a")
+
+get_access_link <- function(link) {
+  access <- map(link, function(link) {
+    t <- read_html(link) %>% 
+      html_nodes("tr") 
+    t2 <- t[str_detect(t %>% html_text(), "Accessibility|ACCESSIBILITY")] %>% 
+      html_node("a") %>% 
+      html_attr("href") %>% 
+      str_replace("\\.\\.", "http://www.armstat.am") 
+    return(t2)
+  }) %>% 
+    unlist()
+  return(access)
+}
+
+arm_reports <- tibble(title = arm_page %>% html_text() %>% tolower(),
+                      link1 = arm_page %>% html_attr("href")) %>% 
+  filter(str_detect(title, "december") & !str_detect(title, "armenian")) %>% 
+  mutate(link1 = str_replace(link1, "\\.", "http://www.armstat.am/en"),
+         link2 = get_access_link(link1),
+         year = str_extract(title, "\\d{4}"))
+
+get_arm_ginis <- function(link) {
+  file_yr <- str_extract(link, "\\d{2,4}") %>% 
+    if_else(str_length(.) == 2, str_c("20", .), .)
+  file_name <- paste0("data-raw/armstat", file_yr, ".pdf")
+  if (!file.exists(file_name)) download.file(link, file_name)
+  ginis <- extract_tables(file_name, pages = 11)[[1]] %>% 
+    as_tibble()
+  if (!any(str_detect(ginis$V1, "Gini"))) {
+    ginis <- extract_tables(file_name, pages = 12)[[1]]
+  }
+  ginis1 <- ginis %>% 
+    first_row_to_names() %>% 
+    mutate(v1 = replace(v1, v1=="", NA_character_)) %>% 
+    fill(v1, .direction = "up") %>% 
+    filter(str_detect(v1, "inequality")) %>% 
+    gather(key = year, value = gini, -v1) %>% 
+    filter(!gini=="") %>% 
+    mutate(report = as.numeric(file_yr),
+           link = link)
+  return(ginis1)
+}
+
+armstat <- arm_reports %>% 
+  filter(year >= 2016) %>% 
+  `[[`("link2") %>% 
+  map_df(., ~ get_arm_ginis(.x)) %>% 
+  arrange(desc(report), desc(year), v1) %>% 
+  distinct(year, v1, .keep_all = TRUE) %>% 
+  transmute(country = "Armenia",
+            year = as.numeric(year),
+            gini = as.numeric(gini),
+            gini_se = NA,
+            welfare_def = if_else(str_detect(v1, "consumption"), "con", "gross"),
+            equiv_scale = "pc",
+            monetary = FALSE,
+            series = paste("NSS Armenia", welfare_def, equiv_scale),
+            source1 = "National Statistical Service of Armenia",
+            page = "95",
+            link = link)
+
+rm(arm_page, arm_reports)
+```
 
