@@ -152,20 +152,66 @@ And we're done!
 
 ## Scraping Files
 
-It's also pretty common to want to get a bunch of files linked from a website.  Consider this example from my own work on [the Standardized World Income Inequality Database](https://fsolt.org/swiid/).  The SWIID depends on [source data on income inequality](https://fsolt.org/swiid/swiid_source/) from international organizations and national statistical offices around the world, including Armenia's Statistical Committee (ArmStat).  ArmStat has a regular report on food security and poverty that includes a chapter titled "Accessibility of Food" that has some data that I want.
+It's also pretty common to want to get a bunch of files linked from a website.  Consider this example from my own work on [the Standardized World Income Inequality Database](https://fsolt.org/swiid/).  The SWIID depends on [source data on income inequality](https://fsolt.org/swiid/swiid_source/) from international organizations and national statistical offices around the world, including Armenia's Statistical Committee (ArmStat).  ArmStat has a regular report on food security and poverty that includes a chapter titled "Accessibility of Food" that has some data on income and consumption inequality that I want.
 
+Here's the page with the list of poverty reports:
 ![](/post/2019-03-12-scraping-data-from-the-web-with-rvest_files/sg0.png){width=80%}
-![](/post/2019-03-12-scraping-data-from-the-web-with-rvest_files/Screen Shot 2019-03-13 at 1.52.39 PM.png){width=80%}
 
+Clicking on the top link shows a list of chapters.  Note the chapter on "Accessibility of Food":
+![](/post/2019-03-12-scraping-data-from-the-web-with-rvest_files/Screen Shot 2019-03-14 at 12.20.19 PM.png){width=80%}
+
+Clicking on that pdf icon shows the pdf file of the chapter, with the lovely data:
+![](/post/2019-03-12-scraping-data-from-the-web-with-rvest_files/Screen Shot 2019-03-13 at 1.51.38 PM.png){width=80%}
+
+But again, we want to download that file for that chapter for every one of the dozens of reports listed on that first page.  We _could_ click through over and over, but there's a _lot_ of files here (87 at the moment), and we're still at the start of the alphabet as far as countries go.  We need to automate this process.
+
+Thinking about it a moment, this is maybe a particularly tricky scrape because we need to:
+
+1. get the links for the reports we want from the main page on poverty, and then
+
+2. follow each of those links to get the link for the chapter we want.  
+
+3. After we have all _those_ links, then we can download all the chapter files and extract the data we want from them.  
+
+Reading pdfs into R is another great data acquisition skill, but I think it merits a post of its own, so for now we'll stop once we have all the files we want.
+
+### Step 1: Getting the Links to the Reports
+
+Like with scraping web tables, we will start by pasting our link into `read_html()`, but now we will need some more information about just which part of the page we want to scrape, information we'll get from a neat little tool called SelectorGadget.  The `rvest` package includes [a nice vignette on how to install and use it here](https://cran.r-project.org/web/packages/rvest/vignettes/selectorgadget.html).  With SelectorGadget installed in our bookmarks bar (called the favorites bar in Safari here) and engaged (just click on it), each element of the page gets boxed in color as you mouse over it:
+
+![](/post/2019-03-12-scraping-data-from-the-web-with-rvest_files/sg1.png){width=80%}
+
+The idea is to get everything you want---and nothing you don't want---highlighted in green or yellow.  Clicking on the first link gives us all the links of the reports . . . but also all the other links:
+
+![](/post/2019-03-12-scraping-data-from-the-web-with-rvest_files/sg2.png){width=80%}
+
+So we click on one of the links we _don't_ want to turn it red.  In this case, this actually leaves us with exactly what we want, just the links of the reports:
+
+![](/post/2019-03-12-scraping-data-from-the-web-with-rvest_files/sg3.png){width=80%}
+
+Note that in the wide SelectorGadget box at the bottom of the window, it says "h4 a"---that's the info we'll use to identify the parts of the webpage we want, using `rvest`'s `html_nodes()` function.  This will result in a list of xml nodes.  We'll make a tibble of these nodes, with one variable for the title of the report and one for its link.  The report title is just the link text, which we get by passing the node to `html_text()`; for consistency's sake (some of the titles of the early reports are in all caps), we'll make all of the titles lowercase with `str_to_lower()`. To get the link url, we use `html_attr("href")`.  In this case, the links are expressed relative to the ArmStat homepage, so we need to swap out the dot which stands for that address with the actual address.
+
+```{r}
+library(tidyverse)
+library(rvest)
+
+arm_reports_nodes <- read_html("http://www.armstat.am/en/?nid=81&pthid=pov&year=") %>% 
+  html_nodes("h4 a")
+  
+arm_reports_links <- tibble(report_title = arm_reports_nodes %>%
+                                html_text() %>%
+                                str_to_lower(),
+                            report_link = arm_reports_nodes %>% 
+                                html_attr("href") %>% 
+                                str_replace("\\.", "https://www.armstat.am/en"))
+
+arm_reports_links
+```
+
+### Step 2: Getting the Links to the Chapter Files
 
 
 ```{r}
-armstat_page <- "http://www.armstat.am/en/?nid=81&pthid=pov&year="
-
-arm_page <- armstat_page %>% 
-  read_html() %>% 
-  html_nodes("h4 a")
-
 get_access_link <- function(link) {
   access <- map(link, function(link) {
     t <- read_html(link) %>% 
@@ -180,53 +226,50 @@ get_access_link <- function(link) {
   return(access)
 }
 
-arm_reports <- tibble(title = arm_page %>% html_text() %>% tolower(),
-                      link1 = arm_page %>% html_attr("href")) %>% 
-  filter(str_detect(title, "december") & !str_detect(title, "armenian")) %>% 
-  mutate(link1 = str_replace(link1, "\\.", "http://www.armstat.am/en"),
-         link2 = get_access_link(link1),
-         year = str_extract(title, "\\d{4}"))
 
-get_arm_ginis <- function(link) {
-  file_yr <- str_extract(link, "\\d{2,4}") %>% 
-    if_else(str_length(.) == 2, str_c("20", .), .)
-  file_name <- paste0("data-raw/armstat", file_yr, ".pdf")
-  if (!file.exists(file_name)) download.file(link, file_name)
-  ginis <- extract_tables(file_name, pages = 11)[[1]] %>% 
-    as_tibble()
-  if (!any(str_detect(ginis$V1, "Gini"))) {
-    ginis <- extract_tables(file_name, pages = 12)[[1]]
-  }
-  ginis1 <- ginis %>% 
-    first_row_to_names() %>% 
-    mutate(v1 = replace(v1, v1=="", NA_character_)) %>% 
-    fill(v1, .direction = "up") %>% 
-    filter(str_detect(v1, "inequality")) %>% 
-    gather(key = year, value = gini, -v1) %>% 
-    filter(!gini=="") %>% 
-    mutate(report = as.numeric(file_yr),
-           link = link)
-  return(ginis1)
-}
 
-armstat <- arm_reports %>% 
-  filter(year >= 2016) %>% 
-  `[[`("link2") %>% 
-  map_df(., ~ get_arm_ginis(.x)) %>% 
-  arrange(desc(report), desc(year), v1) %>% 
-  distinct(year, v1, .keep_all = TRUE) %>% 
-  transmute(country = "Armenia",
-            year = as.numeric(year),
-            gini = as.numeric(gini),
-            gini_se = NA,
-            welfare_def = if_else(str_detect(v1, "consumption"), "con", "gross"),
-            equiv_scale = "pc",
-            monetary = FALSE,
-            series = paste("NSS Armenia", welfare_def, equiv_scale),
-            source1 = "National Statistical Service of Armenia",
-            page = "95",
-            link = link)
+# chapters_page <- read_html(link)
 
-rm(arm_page, arm_reports)
+# chapter_links <- tibble(chapter_title = chapters_page %>% 
+#     html_nodes("td") %>% 
+#     html_text(),
+#     chapter_link = chapters_page %>% 
+#     html_nodes("td") %>%
+#         html_node("a") %>%  # a tags define links
+#         html_attr("href"))
+#     
+# 
+# arm_reports <- tibble(title = arm_page %>% html_text() %>% tolower(),
+#                       link1 = arm_page %>% html_attr("href")) %>% 
+#   filter(str_detect(title, "december") &        # We want reports that cover the whole year
+#              !str_detect(title, "armenian"))    # We don't want the reports written in Armenian
+# 
+# # %>% 
+# #   mutate(link1 = str_replace(link1, "\\.", "http://www.armstat.am/en"),
+# #          link2 = get_access_link(link1),
+# #          year = str_extract(title, "\\d{4}"))
+# 
+# get_arm_ginis <- function(link) {
+#   file_yr <- str_extract(link, "\\d{2,4}") %>% 
+#     if_else(str_length(.) == 2, str_c("20", .), .)
+#   file_name <- paste0("data-raw/armstat", file_yr, ".pdf")
+#   if (!file.exists(file_name)) download.file(link, file_name)
+#   ginis <- extract_tables(file_name, pages = 11)[[1]] %>% 
+#     as_tibble()
+#   if (!any(str_detect(ginis$V1, "Gini"))) {
+#     ginis <- extract_tables(file_name, pages = 12)[[1]]
+#   }
+#   ginis1 <- ginis %>% 
+#     first_row_to_names() %>% 
+#     mutate(v1 = replace(v1, v1=="", NA_character_)) %>% 
+#     fill(v1, .direction = "up") %>% 
+#     filter(str_detect(v1, "inequality")) %>% 
+#     gather(key = year, value = gini, -v1) %>% 
+#     filter(!gini=="") %>% 
+#     mutate(report = as.numeric(file_yr),
+#            link = link)
+#   return(ginis1)
+# }
+
 ```
 
