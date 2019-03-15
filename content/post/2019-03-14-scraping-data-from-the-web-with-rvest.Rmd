@@ -145,8 +145,10 @@ We deal with this using `if_else()` and `str_detect()` to find which dates begin
 ```{r, warning=FALSE}
 latam_pop <- latam_pop %>% 
     mutate(date_pop = if_else(str_detect(date_pop, "^\\d"),
-                              lubridate::parse_date_time(date_pop, "y"),
-                              lubridate::parse_date_time(date_pop, "m d, y")))
+                              lubridate::parse_date_time(date_pop,
+                                                         "y"),
+                              lubridate::parse_date_time(date_pop,
+                                                         "m d, y")))
 
 latam_pop$date_pop
 ```
@@ -211,8 +213,10 @@ reports_links <- tibble(report_title = reports_nodes %>%
                                 str_to_lower(),
                             report_link = reports_nodes %>% 
                                 html_attr("href") %>% 
-                                str_replace("\\.", "https://www.armstat.am/en")) %>% 
-    filter(str_detect(report_title, "december") & !str_detect(report_title, "armenian"))
+                                str_replace("\\.",
+                                            "https://www.armstat.am/en")) %>% 
+    filter(str_detect(report_title, "december") & 
+               !str_detect(report_title, "armenian"))
 
 reports_links
 ```
@@ -226,7 +230,7 @@ Right, so let's take on that first report.  Back to SelectorGadget!  Clicking on
 
 ![](/post/2019-03-14-scraping-data-from-the-web-with-rvest_files/Screen Shot 2019-03-14 at 12.49.01 PM.png){width=100%}
 
-Again, we'll make a tibble of titles and links from our chapter nodes.  Again, we'll use `html_text()` to get the titles and standardize on lowercase letters.  However, this time, the titles are not themselves links---the links are in subsequent cells in the same row in the table that contain no text at all.  We'll use `if_else()` to test if the title is an empty string, and if so, set it to `NA_character_` (the missing data indicator for strings).  We can get the links, meanwhile, by selecting `html_node("a")`---"a" for anchor defines links in html (we didn't need to do this separately when we were getting the report links above because our tag, "h4 a", already included it)---and then `html_attr("href")` as before.  And we'll have to deal with the relative urls again, too (two dots to replace this time, and no `/en`---we figure this out by clicking the link in the actual webpage and comparing it to what `html_attr("href")` gave us).  How do we deal with the fact the rows of our tibble are just cells from the webtable, so our titles have no links and our links have no titles?  Here comes the "fancy footwork": we'll use the `fill()` function to replace any `NA`s in our chapter titles with the last observed chapter title (this is why we set the empty strings to `NA_character_` the way we did above; fill only works on `NA`s).  Then, since each link is actually repeated twice---ArmStat understandably wants to be sure you know that their bilingual documents are available to you in both Armenian and English---we use `distinct()` to get rid of the duplicates.  Finally, we drop the observations without links (that is, the original title cells), leaving us with a neat reconstruction of the table of chapter titles and links:
+Again, we'll make a tibble of titles and links from our chapter nodes.  Again, we'll use `html_text()` to get the titles and standardize on lowercase letters.  However, this time, the titles are not themselves links---the links are in subsequent cells in the same row in the table that contain no text at all.  We'll use `if_else()` to test if the title is an empty string, and if so, set it to `NA_character_` (the missing data indicator for strings).  We can get the links, meanwhile, by selecting `html_node("a")`---"a" for anchor defines links in html (we didn't need to do this separately when we were getting the report links above because our tag, "h4 a", already included it)---and then `html_attr("href")` as before.  And we'll have to deal with the relative urls again, too (two dots to replace this time, and no `/en`---we figure this out by clicking the link in the actual webpage and comparing it to what `html_attr("href")` gave us).  How do we deal with the fact the rows of our tibble are just cells from the webtable, so our titles have no links and our links have no titles?  Here comes that "fancy footwork": we'll use the `fill()` function to replace any `NA`s in our chapter titles with the last observed chapter title (this is why we set the empty strings to `NA_character_` the way we did above; `fill()` only works on `NA`s, not empty strings).  Then, since each link is actually repeated twice---ArmStat understandably wants to be sure you know that their bilingual documents are available to you in both Armenian and English---we use `distinct()` to get rid of the duplicates.  Finally, we drop the observations without links (that is, the original title cells), leaving us with a neat reconstruction of the table of chapter titles and links:
 
 ```{r}
 report_link <- reports_links %>% 
@@ -243,7 +247,8 @@ chapter_links <- tibble(chapter_title = chapter_nodes %>%
                         chapter_link = chapter_nodes %>% 
                             html_node("a") %>% 
                             html_attr("href") %>% 
-                            str_replace("\\.\\.", "https://www.armstat.am/en")) %>% 
+                            str_replace("\\.\\.",
+                                        "https://www.armstat.am/en")) %>% 
     fill(chapter_title) %>% 
     distinct() %>% 
     filter(!is.na(chapter_link))
@@ -313,9 +318,11 @@ This is actually straightforward, now that we have a tibble of report titles and
 
 dir.create("armstat_files")
 
-walk2(reports_links$report_title, reports_links$chapter_link, function(report_title, chapter_link) {
+walk2(reports_links$report_title, reports_links$chapter_link,
+      function(report_title, chapter_link) {
     pdf_path <- file.path("armstat_files",
-                          str_c("armstat", str_extract(report_title, "\\d{4}"), ".pdf"))
+                          str_c("armstat", 
+                                str_extract(report_title, "\\d{4}"), ".pdf"))
     download.file(chapter_link, pdf_path)
 })
 
