@@ -1,0 +1,389 @@
+---
+title: Scraping Tables and Files from the Web with rvest
+author: Frederick Solt
+date: '2019-03-15'
+slug: scraping-with-rvest
+categories: []
+output:
+  html_document:
+    self_contained: yes
+---
+
+
+
+<p>Although there are lots of R packages that offer special purpose data-download tools—Eric Persson’s <a href="https://cran.r-project.org/web/packages/gesis/vignettes/gesis.html"><code>gesis</code></a> is one of my favorites, and I’m fond of <a href="https://cran.r-project.org/web/packages/icpsrdata/vignettes/icpsrdata-vignette.html"><code>icpsrdata</code></a> and <a href="https://cran.r-project.org/web/packages/ropercenter/vignettes/ropercenter-vignette.html"><code>ropercenter</code></a> too—but the Swiss Army knife of webscraping is the <code>rvest</code> package. That is to say, if there’s a specialized tool for the data you’re after, you’re much better off using <em>that</em> tool, but if not, then <code>rvest</code> will help you to get the job done.</p>
+<p>In this post, I’ll explain how to do two common webscraping tasks using <code>rvest</code>: scraping tables from the web straight into R and scraping the links to a bunch of files so you can then do a batch download.</p>
+<div id="scraping-tables" class="section level2">
+<h2>Scraping Tables</h2>
+<p>Scraping data from tables on the web is a simple, three-step process:</p>
+<ol style="list-style-type: decimal">
+<li><p>read the html of the webpage with the table using <code>read_html()</code></p></li>
+<li><p>extract the table using <code>html_table()</code></p></li>
+<li><p>wrangle as needed</p></li>
+</ol>
+<p>So let’s suppose we wanted to get the latest <a href="http://en.wikipedia.org/wiki/List_of_Latin_American_countries_by_population">population figures for the countries of Latin America from Wikipedia</a></p>
+<p><img src="/post/2019-03-14-scraping-data-from-the-web-with-rvest_files/wiki_latam.png" style="width:80.0%" /></p>
+<div id="step-1-read-the-webpage" class="section level3">
+<h3>Step 1: Read the Webpage</h3>
+<p>We load the <code>tidyverse</code> and <code>rvest</code> packages, then paste the url of the Wikipedia page into <code>read_html()</code></p>
+<pre class="r"><code>library(rvest)</code></pre>
+<pre><code>## Loading required package: xml2</code></pre>
+<pre class="r"><code>library(lubridate)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;lubridate&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:base&#39;:
+## 
+##     date</code></pre>
+<pre class="r"><code>library(janitor)
+library(tidyverse)</code></pre>
+<pre><code>## ── Attaching packages ───────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>## ✔ ggplot2 3.1.0       ✔ purrr   0.3.0  
+## ✔ tibble  2.0.1       ✔ dplyr   0.8.0.1
+## ✔ tidyr   0.8.2       ✔ stringr 1.4.0  
+## ✔ readr   1.3.1       ✔ forcats 0.3.0</code></pre>
+<pre><code>## ── Conflicts ──────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ lubridate::as.difftime() masks base::as.difftime()
+## ✖ lubridate::date()        masks base::date()
+## ✖ dplyr::filter()          masks stats::filter()
+## ✖ readr::guess_encoding()  masks rvest::guess_encoding()
+## ✖ lubridate::intersect()   masks base::intersect()
+## ✖ dplyr::lag()             masks stats::lag()
+## ✖ purrr::pluck()           masks rvest::pluck()
+## ✖ lubridate::setdiff()     masks base::setdiff()
+## ✖ lubridate::union()       masks base::union()</code></pre>
+<pre class="r"><code>webpage &lt;- read_html(&quot;http://en.wikipedia.org/wiki/List_of_Latin_American_countries_by_population&quot;)</code></pre>
+</div>
+<div id="step-2-extract-the-table" class="section level3">
+<h3>Step 2: Extract the Table</h3>
+<p>So far, so good. Next, we extract the table using <code>html_table()</code>. Because the last row of the table doesn’t span all of the columns, we need to use the argument <code>fill = TRUE</code> to set the remaining columns to <code>NA</code>. Helpfully, the function will prompt us to do this if we don’t recognize we need to. One wrinkle is that <code>html_table()</code> returns a list of all of the tables on the webpage. In this case, there’s only one table, but we still get back a list of length one. Since what we really want is a dataframe, not a list, we’ll use <code>first()</code> to grab the first element of the list. If we had a longer list and wanted some middle element, we’d use <code>nth()</code>. And we’ll make the dataframe into a tibble for the extra goodness that that format gives us.</p>
+<pre class="r"><code>latam_pop &lt;- webpage %&gt;% 
+    html_table(fill=TRUE) %&gt;%   # generates a list of all tables
+    first() %&gt;%                 # gets the first element of the list
+    as_tibble()                 # makes the dataframe a tibble
+    
+latam_pop</code></pre>
+<pre><code>## # A tibble: 27 x 10
+##    Rank  `Country(or dep… `July 1, 2015pr… `% ofpop.` `Averagerelativ…
+##    &lt;chr&gt; &lt;chr&gt;            &lt;chr&gt;                 &lt;dbl&gt;            &lt;dbl&gt;
+##  1 1     Brazil           204,519,000           33.1              0.86
+##  2 2     Mexico           127,500,000           19.6              1.08
+##  3 3     Colombia         48,218,000             7.81             1.16
+##  4 4     Argentina        43,132,000             6.99             1.09
+##  5 5     Peru             31,153,000             5.05             1.1 
+##  6 6     Venezuela        30,620,000             4.96             1.37
+##  7 7     Chile            18,006,000             2.92             1.05
+##  8 8     Ecuador          16,279,000             2.64             1.57
+##  9 9     Guatemala        16,176,000             2.62             2.93
+## 10 10    Cuba             11,252,000             1.82             0.25
+## # … with 17 more rows, and 5 more variables:
+## #   `Averageabsoluteannualgrowth[3]` &lt;chr&gt;,
+## #   `Estimateddoublingtime(Years)[4]` &lt;chr&gt;,
+## #   `Officialfigure(whereavailable)` &lt;chr&gt;, `Date oflast figure` &lt;chr&gt;,
+## #   Source &lt;chr&gt;</code></pre>
+</div>
+<div id="step-3-wrangle-as-needed" class="section level3">
+<h3>Step 3: Wrangle as Needed</h3>
+<p>Nice, clean, tidy data is rare in the wild, and data scraped from the web is definitely wild. So let’s practice our data-wrangling skills here a bit. The column names of tables are usually not suitable for use as variable names, and our Wikipedia population table is not exceptional in this respect:</p>
+<pre class="r"><code>names(latam_pop)</code></pre>
+<pre><code>##  [1] &quot;Rank&quot;                             
+##  [2] &quot;Country(or dependent territory)&quot;  
+##  [3] &quot;July 1, 2015projection[1]&quot;        
+##  [4] &quot;% ofpop.&quot;                         
+##  [5] &quot;Averagerelativeannualgrowth(%)[2]&quot;
+##  [6] &quot;Averageabsoluteannualgrowth[3]&quot;   
+##  [7] &quot;Estimateddoublingtime(Years)[4]&quot;  
+##  [8] &quot;Officialfigure(whereavailable)&quot;   
+##  [9] &quot;Date oflast figure&quot;               
+## [10] &quot;Source&quot;</code></pre>
+<p>These names are problematic because they have embedded spaces and punctuation marks that may even cause errors when the names are wrapped in backticks, which means we need a way of renaming them without even specifying their names the first time, if you see what I mean. One solution is the <code>clean_names()</code> function of the <code>janitor</code> package:<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></p>
+<pre class="r"><code>latam_pop &lt;- latam_pop %&gt;% janitor::clean_names()
+
+names(latam_pop)</code></pre>
+<pre><code>##  [1] &quot;rank&quot;                                 
+##  [2] &quot;country_or_dependent_territory&quot;       
+##  [3] &quot;july_1_2015projection_1&quot;              
+##  [4] &quot;percent_ofpop&quot;                        
+##  [5] &quot;averagerelativeannualgrowth_percent_2&quot;
+##  [6] &quot;averageabsoluteannualgrowth_3&quot;        
+##  [7] &quot;estimateddoublingtime_years_4&quot;        
+##  [8] &quot;officialfigure_whereavailable&quot;        
+##  [9] &quot;date_oflast_figure&quot;                   
+## [10] &quot;source&quot;</code></pre>
+<p>These names won’t win any awards, but they won’t cause errors, so <code>janitor</code> totally succeeded in cleaning up. It’s a great option for taking care of big messes fast. At the other end of the scale, if you only need to fixing just one or a few problematic names, you can use <code>rename()</code>’s new(-ish) assign-by-position ability:</p>
+<pre class="r"><code>latam_pop &lt;- webpage %&gt;% 
+    html_table(fill=TRUE) %&gt;%   # generates a list of all tables
+    first() %&gt;%                 # gets the first element of the list
+    as_tibble() %&gt;%             # makes the dataframe a tibble
+    rename(&quot;est_pop_2015&quot; = 3)  # rename the third variable
+
+names(latam_pop)</code></pre>
+<pre><code>##  [1] &quot;Rank&quot;                             
+##  [2] &quot;Country(or dependent territory)&quot;  
+##  [3] &quot;est_pop_2015&quot;                     
+##  [4] &quot;% ofpop.&quot;                         
+##  [5] &quot;Averagerelativeannualgrowth(%)[2]&quot;
+##  [6] &quot;Averageabsoluteannualgrowth[3]&quot;   
+##  [7] &quot;Estimateddoublingtime(Years)[4]&quot;  
+##  [8] &quot;Officialfigure(whereavailable)&quot;   
+##  [9] &quot;Date oflast figure&quot;               
+## [10] &quot;Source&quot;</code></pre>
+<p>An intermediate option is to assign a complete vector of names (that is, one for every variable):</p>
+<pre class="r"><code>names(latam_pop) &lt;- c(&quot;rank&quot;, &quot;country&quot;, &quot;est_pop_2015&quot;,
+                      &quot;percent_latam&quot;, &quot;annual_growth_rate&quot;,
+                      &quot;annual_growth&quot;, &quot;doubling_time&quot;,
+                      &quot;official_pop&quot;, &quot;date_pop&quot;,
+                      &quot;source&quot;)
+
+names(latam_pop)</code></pre>
+<pre><code>##  [1] &quot;rank&quot;               &quot;country&quot;            &quot;est_pop_2015&quot;      
+##  [4] &quot;percent_latam&quot;      &quot;annual_growth_rate&quot; &quot;annual_growth&quot;     
+##  [7] &quot;doubling_time&quot;      &quot;official_pop&quot;       &quot;date_pop&quot;          
+## [10] &quot;source&quot;</code></pre>
+<p>Okay, enough about variable names; we have other problems here. For one thing, several of the country/territory names have their colonial powers in parentheses, and there are also Wikipedia-style footnote numbers in brackets that we don’t want here either:</p>
+<pre class="r"><code>latam_pop$country[17:27]</code></pre>
+<pre><code>##  [1] &quot;El Salvador&quot;               &quot;Costa Rica&quot;               
+##  [3] &quot;Panama&quot;                    &quot;Puerto Rico (US)[5]&quot;      
+##  [5] &quot;Uruguay&quot;                   &quot;Guadeloupe (France)&quot;      
+##  [7] &quot;Martinique (France)&quot;       &quot;French Guiana&quot;            
+##  [9] &quot;Saint Martin (France)&quot;     &quot;Saint Barthélemy (France)&quot;
+## [11] &quot;Total&quot;</code></pre>
+<p>We can use regex to get rid of that stuff. In the regex pattern below, recall that the double slashes are “escapes”: they mean that we want actual brackets (not a character class) and parentheses (not a capture group). The <code>.*</code>s stand for “anything, repeated zero or more times”, and the <code>|</code> means “or.” So this <code>str_replace_all()</code> is going to replace matched brackets or parentheses and anything between them with nothing.</p>
+<p>Finally, while we’re at it, we’ll also get rid of the line listing the region’s total population.</p>
+<pre class="r"><code>latam_pop &lt;- latam_pop %&gt;% 
+    mutate(country = str_replace_all(country, &quot;\\[.*\\]|\\(.*\\)&quot;, &quot;&quot;) %&gt;% 
+               str_trim()) %&gt;% 
+    filter(country!=&quot;Total&quot;)
+
+latam_pop$country[17:nrow(latam_pop)]</code></pre>
+<pre><code>##  [1] &quot;El Salvador&quot;      &quot;Costa Rica&quot;       &quot;Panama&quot;          
+##  [4] &quot;Puerto Rico&quot;      &quot;Uruguay&quot;          &quot;Guadeloupe&quot;      
+##  [7] &quot;Martinique&quot;       &quot;French Guiana&quot;    &quot;Saint Martin&quot;    
+## [10] &quot;Saint Barthélemy&quot;</code></pre>
+<p>Another common problem with webscraped tables: are the numbers encoded as strings? Probably so.</p>
+<pre class="r"><code>latam_pop$official_pop</code></pre>
+<pre><code>##  [1] &quot;210,585,000&quot; &quot;122,273,473&quot; &quot;50,174,000&quot;  &quot;43,590,368&quot;  &quot;31,488,625&quot; 
+##  [6] &quot;31,028,637&quot;  &quot;18,191,884&quot;  &quot;17,220,700&quot;  &quot;16,176,133&quot;  &quot;11,238,317&quot; 
+## [11] &quot;10,911,819&quot;  &quot;10,985,059&quot;  &quot;10,075,045&quot;  &quot;8,576,500&quot;   &quot;6,854,536&quot;  
+## [16] &quot;6,071,045&quot;   &quot;6,520,675&quot;   &quot;4,832,234&quot;   &quot;3,764,166&quot;   &quot;3,548,397&quot;  
+## [21] &quot;3,480,222&quot;   &quot;403,314&quot;     &quot;388,364&quot;     &quot;239,648&quot;     &quot;35,742&quot;     
+## [26] &quot;9,131&quot;</code></pre>
+<pre class="r"><code>str(latam_pop$official_pop)</code></pre>
+<pre><code>##  chr [1:26] &quot;210,585,000&quot; &quot;122,273,473&quot; &quot;50,174,000&quot; &quot;43,590,368&quot; ...</code></pre>
+<p>Yep. So let’s replace the commas with nothing and use <code>as.numeric()</code> to make the result actually numeric.</p>
+<pre class="r"><code>latam_pop &lt;- latam_pop %&gt;% 
+    mutate(official_pop = str_replace_all(official_pop, &quot;,&quot;, &quot;&quot;) %&gt;%
+               as.numeric())
+
+latam_pop$official_pop</code></pre>
+<pre><code>##  [1] 210585000 122273473  50174000  43590368  31488625  31028637  18191884
+##  [8]  17220700  16176133  11238317  10911819  10985059  10075045   8576500
+## [15]   6854536   6071045   6520675   4832234   3764166   3548397   3480222
+## [22]    403314    388364    239648     35742      9131</code></pre>
+<pre class="r"><code>str(latam_pop$official_pop)</code></pre>
+<pre><code>##  num [1:26] 2.11e+08 1.22e+08 5.02e+07 4.36e+07 3.15e+07 ...</code></pre>
+<p>One last issue is to get the dates for these population figures into POSIXct format. This is complicated a bit by the fact for some countries we only have a year rather than a full date:</p>
+<pre class="r"><code>latam_pop$date_pop</code></pre>
+<pre><code>##  [1] &quot;March 9, 2019&quot;     &quot;July 1, 2016&quot;      &quot;March 9, 2019&quot;    
+##  [4] &quot;July 1, 2016&quot;      &quot;June 30, 2016&quot;     &quot;2016&quot;             
+##  [7] &quot;2016&quot;              &quot;March 9, 2019&quot;     &quot;July 1, 2015&quot;     
+## [10] &quot;December 31, 2014&quot; &quot;2015&quot;              &quot;2016&quot;             
+## [13] &quot;2016&quot;              &quot;July 1, 2015&quot;      &quot;2016&quot;             
+## [16] &quot;June 30, 2012&quot;     &quot;2016&quot;              &quot;June 30, 2015&quot;    
+## [19] &quot;July 1, 2015&quot;      &quot;July 1, 2014&quot;      &quot;June 30, 2016&quot;    
+## [22] &quot;January 1, 2012&quot;   &quot;January 1, 2012&quot;   &quot;January 1, 2012&quot;  
+## [25] &quot;January 1, 2012&quot;   &quot;January 1, 2012&quot;</code></pre>
+<p>We deal with this using <code>if_else()</code> and <code>str_detect()</code> to find which dates begin (<code>^</code>) with a digit (<code>\\d</code>), and then let the <code>lubridate</code> package’s <code>parse_date_time()</code> function know that those are years and the rest are in “month day, year” format.</p>
+<pre class="r"><code>latam_pop &lt;- latam_pop %&gt;% 
+    mutate(date_pop = if_else(str_detect(date_pop, &quot;^\\d&quot;),
+                              lubridate::parse_date_time(date_pop, &quot;y&quot;),
+                              lubridate::parse_date_time(date_pop, &quot;m d, y&quot;)))
+
+latam_pop$date_pop</code></pre>
+<pre><code>##  [1] &quot;2019-03-09 UTC&quot; &quot;2016-07-01 UTC&quot; &quot;2019-03-09 UTC&quot; &quot;2016-07-01 UTC&quot;
+##  [5] &quot;2016-06-30 UTC&quot; &quot;2016-01-01 UTC&quot; &quot;2016-01-01 UTC&quot; &quot;2019-03-09 UTC&quot;
+##  [9] &quot;2015-07-01 UTC&quot; &quot;2014-12-31 UTC&quot; &quot;2015-01-01 UTC&quot; &quot;2016-01-01 UTC&quot;
+## [13] &quot;2016-01-01 UTC&quot; &quot;2015-07-01 UTC&quot; &quot;2016-01-01 UTC&quot; &quot;2012-06-30 UTC&quot;
+## [17] &quot;2016-01-01 UTC&quot; &quot;2015-06-30 UTC&quot; &quot;2015-07-01 UTC&quot; &quot;2014-07-01 UTC&quot;
+## [21] &quot;2016-06-30 UTC&quot; &quot;2012-01-01 UTC&quot; &quot;2012-01-01 UTC&quot; &quot;2012-01-01 UTC&quot;
+## [25] &quot;2012-01-01 UTC&quot; &quot;2012-01-01 UTC&quot;</code></pre>
+<p>And we’re done! One point worth considering is whether you want this particular scrape to be reproducible. Sometime you won’t—maybe the page you’re scraping is updated regularly, and you always want the latest data. But if you do want to be sure to be able to reproduce what you’ve done in the future, I recommend you take a second, go to <a href="https://archive.org">the Internet Archive</a>, <a href="https://archive.org/web/">archive the page</a>, and then <em>scrape the archived page</em> instead of the live one.</p>
+<p><img src="/post/2019-03-14-scraping-data-from-the-web-with-rvest_files/Screen%20Shot%202019-03-14%20at%206.34.54%20PM.png" style="width:80.0%" /></p>
+</div>
+</div>
+<div id="scraping-files" class="section level2">
+<h2>Scraping Files</h2>
+<p>It’s also pretty common to want to get a bunch of files linked from a website. Consider this example from my own work on <a href="https://fsolt.org/swiid/">the Standardized World Income Inequality Database</a>. The SWIID depends on <a href="https://fsolt.org/swiid/swiid_source/">source data on income inequality</a> from international organizations and national statistical offices around the world, including Armenia’s Statistical Committee (ArmStat). ArmStat has a annual report on food security and poverty that includes a chapter titled “Accessibility of Food” that has some data on income and consumption inequality that I want.</p>
+<p>Here’s the page with the list of poverty reports:
+<img src="/post/2019-03-14-scraping-data-from-the-web-with-rvest_files/sg0.png" style="width:80.0%" /></p>
+<p>Clicking on the top link shows a list of chapters. Note the chapter on “Accessibility of Food”:
+<img src="/post/2019-03-14-scraping-data-from-the-web-with-rvest_files/Screen%20Shot%202019-03-14%20at%2012.20.19%20PM.png" style="width:80.0%" /></p>
+<p>Clicking on that pdf icon shows the pdf file of the chapter, with the lovely data:
+<img src="/post/2019-03-14-scraping-data-from-the-web-with-rvest_files/Screen%20Shot%202019-03-13%20at%201.51.38%20PM.png" style="width:80.0%" /></p>
+<p>But again, we want to download that file for that chapter for every one of the annual reports listed on that first page. We <em>could</em> go carefully down the list of reports, pick out the annual ones, click through over and over, but there’s over a dozen annual reports here, and we’re still at the start of the alphabet as far as countries go. Further, there’ll be <em>another</em> new annual report next year. We need to have this process automated.</p>
+<p>Thinking about it a moment, this is maybe a particularly tricky scraping job because we need to:</p>
+<ol style="list-style-type: decimal">
+<li><p>get the links for the reports we want from the main page on poverty, and then</p></li>
+<li><p>follow each of those links to get the link for the chapter we want.</p></li>
+<li><p>After we have all <em>those</em> links, then we can download all the chapter files and extract the data we want from them. (Reading pdfs into R is another great data acquisition skill, but I think it merits a post of its own, so for now we’ll stop once we have all the files we want.)</p></li>
+</ol>
+<p>In a more straightforward scraping job, step 2 wouldn’t be necessary at all, but it’s not all that uncommon, and it will give us a chance to practice some of our data wrangling skills.</p>
+<div id="step-1-getting-the-links-to-the-reports" class="section level3">
+<h3>Step 1: Getting the Links to the Reports</h3>
+<p>Like with scraping web tables, we will start by pasting our link into <code>read_html()</code>, but now we will need some more information about just which part of the page we want to scrape, information we’ll get from a neat little tool called SelectorGadget. The <code>rvest</code> package includes <a href="https://cran.r-project.org/web/packages/rvest/vignettes/selectorgadget.html">a nice vignette on how to install and use it here</a>. With SelectorGadget installed in our bookmarks bar (called the favorites bar in Safari here) and engaged (just click on it), each element of the page gets boxed in color as you mouse over it:</p>
+<p><img src="/post/2019-03-14-scraping-data-from-the-web-with-rvest_files/sg1.png" style="width:80.0%" /></p>
+<p>The idea is to get everything you want—and nothing you don’t want—highlighted in green or yellow. Clicking on the first link gives us all the links of the reports . . . but also all the other links:</p>
+<p><img src="/post/2019-03-14-scraping-data-from-the-web-with-rvest_files/sg2.png" style="width:80.0%" /></p>
+<p>So we click on one of the links we <em>don’t</em> want to turn it red. In this case, this actually leaves us with exactly what we want, just the links of the reports:</p>
+<p><img src="/post/2019-03-14-scraping-data-from-the-web-with-rvest_files/sg3.png" style="width:80.0%" /></p>
+<p>Note that in the wide SelectorGadget box at the bottom of the window, it says “h4 a”—that’s the info we’ll use to identify the parts of the webpage we want, using <code>rvest</code>’s <code>html_nodes()</code> function. This will result in a list of xml nodes. We’ll make a tibble of these nodes, with one variable for the title of the report and one for its link. The report title is just the link text, which we get by passing the node to <code>html_text()</code>; for consistency’s sake (some of the titles of the early reports are in all caps), we’ll make all of the titles lowercase with <code>str_to_lower()</code>. To get the report link url, we use <code>html_attr("href")</code>. In this case, the urls are expressed relative to the ArmStat homepage, so we also need to swap out the dot which stands for that address with the actual address. We only want the year-end reports, so we’ll use the combination of <code>filter()</code> and <code>str_detect()</code> to keep only those that include “december” in their title, and the titles of some reports indicate that they are only available in Armenian, so we’ll filter those out, too.</p>
+<pre class="r"><code>library(tidyverse)
+library(rvest)
+
+reports_nodes &lt;- read_html(&quot;http://www.armstat.am/en/?nid=81&amp;pthid=pov&amp;year=&quot;) %&gt;% 
+  html_nodes(&quot;h4 a&quot;)
+  
+reports_links &lt;- tibble(report_title = reports_nodes %&gt;%
+                                html_text() %&gt;%
+                                str_to_lower(),
+                            report_link = reports_nodes %&gt;% 
+                                html_attr(&quot;href&quot;) %&gt;% 
+                                str_replace(&quot;\\.&quot;, &quot;https://www.armstat.am/en&quot;)) %&gt;% 
+    filter(str_detect(report_title, &quot;december&quot;) &amp; !str_detect(report_title, &quot;armenian&quot;))
+
+reports_links</code></pre>
+<pre><code>## # A tibble: 13 x 2
+##    report_title                             report_link                    
+##    &lt;chr&gt;                                    &lt;chr&gt;                          
+##  1 food  security  and  poverty, january-d… https://www.armstat.am/en/?nid…
+##  2 food  security  and  poverty, january-d… https://www.armstat.am/en/?nid…
+##  3 food  security  and  poverty, january-d… https://www.armstat.am/en/?nid…
+##  4 food  security  and  poverty, january-d… https://www.armstat.am/en/?nid…
+##  5 food  security  and  poverty, january-d… https://www.armstat.am/en/?nid…
+##  6 food  security  and  poverty, january-d… https://www.armstat.am/en/?nid…
+##  7 food  security  and  poverty, january-d… https://www.armstat.am/en/?nid…
+##  8 food  security  and  poverty, january-d… https://www.armstat.am/en/?nid…
+##  9 food  security  and  poverty, january-d… https://www.armstat.am/en/?nid…
+## 10 food  security  and  poverty, january-d… https://www.armstat.am/en/?nid…
+## 11 food  security  and  poverty, january- … https://www.armstat.am/en/?nid…
+## 12 food security and poverty january-decem… https://www.armstat.am/en/?nid…
+## 13 food security and poverty january-decem… https://www.armstat.am/en/?nid…</code></pre>
+</div>
+<div id="step-2-getting-the-links-to-the-chapter-files" class="section level3">
+<h3>Step 2: Getting the Links to the Chapter Files</h3>
+<p>Now that we have the links to all of the reports, we need to get the link to the chapter file we want from each one of them. We’ll start with the first report and then use the <code>tidyverse</code>’s iteration tools, <code>map</code> and <code>walk</code>, to apply our code to all of the reports.</p>
+<p>Right, so let’s take on that first report. Back to SelectorGadget! Clicking on the link for the first report, engaging SelectorGadget, and clicking on the chapter title “Accessibility of food” gives us the “td” tag, which defines a cell in an html table. This means that each of our chapter nodes will be a separate cell from this web table, and we’ll have to reconstruct the table structure ourselves. If we knew a bit of html, we could use the “tr” tag, which defines rows, instead, and spare ourselves this fancy footwork, but whenever I want to know anything about html I have to look it up. You may be in the same boat, so let’s just plan on doing the footwork.</p>
+<p><img src="/post/2019-03-14-scraping-data-from-the-web-with-rvest_files/Screen%20Shot%202019-03-14%20at%2012.49.01%20PM.png" style="width:80.0%" /></p>
+<p>Again, we’ll make a tibble of titles and links from our chapter nodes. Again, we’ll use <code>html_text()</code> to get the titles and standardize on lowercase letters. However, this time, the titles are not themselves links—the links are in subsequent cells in the same row in the table that contain no text at all. We’ll use <code>if_else()</code> to test if the title is an empty string, and if so, set it to <code>NA_character_</code> (the missing data indicator for strings). We can get the links, meanwhile, by selecting <code>html_node("a")</code>—“a” for anchor defines links in html (we didn’t need to do this separately when we were getting the report links above because our tag, “h4 a”, already included it)—and then <code>html_attr("href")</code> as before. And we’ll have to deal with the relative urls again, too (two dots to replace this time, and no <code>/en</code>—we figure this out by clicking the link in the actual webpage and comparing it to what <code>html_attr("href")</code> gave us). How do we deal with the fact the rows of our tibble are just cells from the webtable, so our titles have no links and our links have no titles? Here comes the “fancy footwork”: we’ll use the <code>fill()</code> function to replace any <code>NA</code>s in our chapter titles with the last observed chapter title (this is why we set the empty strings to <code>NA_character_</code> the way we did above; fill only works on <code>NA</code>s). Then, since each link is actually repeated twice—ArmStat understandably wants to be sure you know that their bilingual documents are available to you in both Armenian and English—we use <code>distinct()</code> to get rid of the duplicates. Finally, we drop the observations without links (that is, the original title cells), leaving us with a neat reconstruction of the table of chapter titles and links:</p>
+<pre class="r"><code>report_link &lt;- reports_links %&gt;% 
+    pull(report_link) %&gt;% 
+    first()
+
+chapter_nodes &lt;- read_html(report_link) %&gt;% 
+    html_nodes(&quot;td&quot;)
+
+chapter_links &lt;- tibble(chapter_title = chapter_nodes %&gt;% 
+                            html_text() %&gt;% 
+                            str_to_lower() %&gt;% 
+                            if_else(. == &quot;&quot;, NA_character_, .),
+                        chapter_link = chapter_nodes %&gt;% 
+                            html_node(&quot;a&quot;) %&gt;% 
+                            html_attr(&quot;href&quot;) %&gt;% 
+                            str_replace(&quot;\\.\\.&quot;, &quot;https://www.armstat.am/en&quot;)) %&gt;% 
+    fill(chapter_title) %&gt;% 
+    distinct() %&gt;% 
+    filter(!is.na(chapter_link))
+    
+chapter_links</code></pre>
+<pre><code>## # A tibble: 10 x 2
+##    chapter_title                         chapter_link                      
+##    &lt;chr&gt;                                 &lt;chr&gt;                             
+##  1 &quot;  &quot;                                  https://www.armstat.am/en/file/ar…
+##  2 cover  page                           https://www.armstat.am/en/file/ar…
+##  3 contents                              https://www.armstat.am/en/file/ar…
+##  4 introduction                          https://www.armstat.am/en/file/ar…
+##  5 &quot;social-economic indicators &quot;         https://www.armstat.am/en/file/ar…
+##  6 prices and  price indexes             https://www.armstat.am/en/file/ar…
+##  7 availability of  food                 https://www.armstat.am/en/file/ar…
+##  8 &quot;forest maintenance, protection and … https://www.armstat.am/en/file/ar…
+##  9 accessibility of food                 https://www.armstat.am/en/file/ar…
+## 10 utilization of food                   https://www.armstat.am/en/file/ar…</code></pre>
+<p>Of course, we just want the “accessibility of food” chapter, and, in fact, really just the link rather than a tibble:</p>
+<pre class="r"><code>accessibilty_chapter &lt;- chapter_links %&gt;% 
+    filter(str_detect(chapter_title, &quot;accessibility&quot;))
+
+accessibilty_chapter</code></pre>
+<pre><code>## # A tibble: 1 x 2
+##   chapter_title         chapter_link                                       
+##   &lt;chr&gt;                 &lt;chr&gt;                                              
+## 1 accessibility of food https://www.armstat.am/en/file/article/f_sec_4_201…</code></pre>
+<pre class="r"><code>just_the_link &lt;- accessibilty_chapter %&gt;% 
+        pull(chapter_link)
+
+just_the_link</code></pre>
+<pre><code>## [1] &quot;https://www.armstat.am/en/file/article/f_sec_4_2018_5.pdf&quot;</code></pre>
+<p>All right, so now we’re going to take everything we just did to get the link for the first report’s accessibility chapter and wrap it into a function that takes a report link and returns <code>just_the_link</code> for the accessibilty chapter:</p>
+<pre class="r"><code>get_chapter_link &lt;- function(report_link) {
+    chapter_nodes &lt;- read_html(report_link) %&gt;% 
+        html_nodes(&quot;td&quot;)
+    
+    chapter_links &lt;- tibble(chapter_title = chapter_nodes %&gt;% 
+                               html_text() %&gt;% 
+                               str_to_lower() %&gt;% 
+                               if_else(. == &quot;&quot;, NA_character_, .),
+                           chapter_link = chapter_nodes %&gt;% 
+                               html_node(&quot;a&quot;) %&gt;% 
+                               html_attr(&quot;href&quot;) %&gt;% 
+                               str_replace(&quot;\\.\\.&quot;, &quot;https://www.armstat.am/&quot;)) %&gt;% 
+        fill(chapter_title) %&gt;% 
+        distinct() %&gt;% 
+        filter(!is.na(chapter_link))
+    
+    accessibilty_chapter &lt;- chapter_links %&gt;% 
+        filter(str_detect(chapter_title, &quot;accessibility&quot;))
+
+    just_the_link &lt;- accessibilty_chapter %&gt;% 
+        pull(chapter_link)
+
+    return(just_the_link)
+}</code></pre>
+<p>Now we can use that function to create a new chapter link variable in our <code>reports_links</code> tibble, with the wrinkle that <code>mutate()</code> expects a vectorized function—that is, one that operates on all the values of the variable at the same time—and <a href="https://www.jimhester.com/2018/04/12/vectorize/">we can meet this expectation by using <code>map_chr()</code></a>:</p>
+<pre class="r"><code>reports_links &lt;- reports_links %&gt;% 
+    mutate(chapter_link = map_chr(report_link, get_chapter_link))
+
+reports_links</code></pre>
+<pre><code>## # A tibble: 13 x 3
+##    report_title             report_link          chapter_link              
+##    &lt;chr&gt;                    &lt;chr&gt;                &lt;chr&gt;                     
+##  1 food  security  and  po… https://www.armstat… https://www.armstat.am//f…
+##  2 food  security  and  po… https://www.armstat… https://www.armstat.am//f…
+##  3 food  security  and  po… https://www.armstat… https://www.armstat.am//f…
+##  4 food  security  and  po… https://www.armstat… https://www.armstat.am//f…
+##  5 food  security  and  po… https://www.armstat… https://www.armstat.am//f…
+##  6 food  security  and  po… https://www.armstat… https://www.armstat.am//f…
+##  7 food  security  and  po… https://www.armstat… https://www.armstat.am//f…
+##  8 food  security  and  po… https://www.armstat… https://www.armstat.am//f…
+##  9 food  security  and  po… https://www.armstat… https://www.armstat.am//f…
+## 10 food  security  and  po… https://www.armstat… https://www.armstat.am//f…
+## 11 food  security  and  po… https://www.armstat… https://www.armstat.am//f…
+## 12 food security and pover… https://www.armstat… https://www.armstat.am//f…
+## 13 food security and pover… https://www.armstat… https://www.armstat.am//f…</code></pre>
+</div>
+</div>
+<div id="step-3-getting-all-the-files" class="section level2">
+<h2>Step 3: Getting! All! the! Files!</h2>
+<p>This is actually straightforward, now that we have a tibble of report titles and links to chapter files. The <code>download.file()</code> function will save the contents of a link (its first argument) to a filepath (its second argument) and the <code>walk2()</code> function allows you to pass a pair of vectors to a function to iteratively use as its two arguments (first the first element of each vector, then the second element of each vector, and so on). We’ll use <code>str_extract()</code> to get the year of the report from its title, and use it to make a file name for the pdf with <code>str_c()</code>. But first we should create a directory to save those files in.</p>
+<pre class="r"><code>dir.create(&quot;armstat_files&quot;)
+
+walk2(reports_links$report_title, reports_links$chapter_link, function(report_title, chapter_link) {
+    pdf_path &lt;- file.path(&quot;armstat_files&quot;,
+                          str_c(&quot;armstat&quot;, str_extract(report_title, &quot;\\d{4}&quot;), &quot;.pdf&quot;))
+    download.file(chapter_link, pdf_path)
+})</code></pre>
+<p>And that’s that. Use your new powers for good, not for evil: be sure to respect the terms of service of any website you scrape.</p>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Remember, if you haven’t installed it before, you will need to download <code>janitor</code> to your machine with <code>install.packages("janitor")</code> before this code will work.<a href="#fnref1" class="footnote-back">↩</a></p></li>
+</ol>
+</div>
