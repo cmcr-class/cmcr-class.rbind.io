@@ -33,8 +33,11 @@ So let's suppose we wanted to get the latest [population figures for the countri
 We load the `tidyverse` and `rvest` packages, then paste the url of the Wikipedia page into `read_html()`
 
 ```{r}
-library(tidyverse)
 library(rvest)
+library(lubridate)
+library(janitor)
+library(tidyverse)
+
 
 webpage <- read_html("http://en.wikipedia.org/wiki/List_of_Latin_American_countries_by_population")
 ```
