@@ -23,7 +23,7 @@ output:
 <li><p>wrangle as needed</p></li>
 </ol>
 <p>So let’s suppose we wanted to get the latest <a href="http://en.wikipedia.org/wiki/List_of_Latin_American_countries_by_population">population figures for the countries of Latin America from Wikipedia</a></p>
-<p><img src="/post/2019-03-14-scraping-data-from-the-web-with-rvest_files/wiki_latam.png" style="width:80.0%" /></p>
+<p><img src="/post/2019-03-14-scraping-data-from-the-web-with-rvest_files/wiki_latam.png" style="width:100.0%" /></p>
 <div id="step-1-read-the-webpage" class="section level3">
 <h3>Step 1: Read the Webpage</h3>
 <p>We load the <code>tidyverse</code> and <code>rvest</code> packages, then paste the url of the Wikipedia page into <code>read_html()</code></p>
@@ -208,34 +208,34 @@ latam_pop$date_pop</code></pre>
 ## [21] &quot;2016-06-30 UTC&quot; &quot;2012-01-01 UTC&quot; &quot;2012-01-01 UTC&quot; &quot;2012-01-01 UTC&quot;
 ## [25] &quot;2012-01-01 UTC&quot; &quot;2012-01-01 UTC&quot;</code></pre>
 <p>And we’re done! One point worth considering is whether you want this particular scrape to be reproducible. Sometime you won’t—maybe the page you’re scraping is updated regularly, and you always want the latest data. But if you do want to be sure to be able to reproduce what you’ve done in the future, I recommend you take a second, go to <a href="https://archive.org">the Internet Archive</a>, <a href="https://archive.org/web/">archive the page</a>, and then <em>scrape the archived page</em> instead of the live one.</p>
-<p><img src="/post/2019-03-14-scraping-data-from-the-web-with-rvest_files/Screen%20Shot%202019-03-14%20at%206.34.54%20PM.png" style="width:80.0%" /></p>
+<p><img src="/post/2019-03-14-scraping-data-from-the-web-with-rvest_files/Screen%20Shot%202019-03-14%20at%206.34.54%20PM.png" style="width:100.0%" /></p>
 </div>
 </div>
 <div id="scraping-files" class="section level2">
 <h2>Scraping Files</h2>
 <p>It’s also pretty common to want to get a bunch of files linked from a website. Consider this example from my own work on <a href="https://fsolt.org/swiid/">the Standardized World Income Inequality Database</a>. The SWIID depends on <a href="https://fsolt.org/swiid/swiid_source/">source data on income inequality</a> from international organizations and national statistical offices around the world, including Armenia’s Statistical Committee (ArmStat). ArmStat has a annual report on food security and poverty that includes a chapter titled “Accessibility of Food” that has some data on income and consumption inequality that I want.</p>
 <p>Here’s the page with the list of poverty reports:
-<img src="/post/2019-03-14-scraping-data-from-the-web-with-rvest_files/sg0.png" style="width:80.0%" /></p>
+<img src="/post/2019-03-14-scraping-data-from-the-web-with-rvest_files/sg0.png" style="width:100.0%" /></p>
 <p>Clicking on the top link shows a list of chapters. Note the chapter on “Accessibility of Food”:
-<img src="/post/2019-03-14-scraping-data-from-the-web-with-rvest_files/Screen%20Shot%202019-03-14%20at%2012.20.19%20PM.png" style="width:80.0%" /></p>
-<p>Clicking on that pdf icon shows the pdf file of the chapter, with the lovely data:
-<img src="/post/2019-03-14-scraping-data-from-the-web-with-rvest_files/Screen%20Shot%202019-03-13%20at%201.51.38%20PM.png" style="width:80.0%" /></p>
-<p>But again, we want to download that file for that chapter for every one of the annual reports listed on that first page. We <em>could</em> go carefully down the list of reports, pick out the annual ones, click through over and over, but there’s over a dozen annual reports here, and we’re still at the start of the alphabet as far as countries go. Further, there’ll be <em>another</em> new annual report next year. We need to have this process automated.</p>
+<img src="/post/2019-03-14-scraping-data-from-the-web-with-rvest_files/Screen%20Shot%202019-03-14%20at%2012.20.19%20PM.png" style="width:100.0%" /></p>
+<p>Clicking on that pdf icon shows the pdf file of the chapter, where we can see, if we scroll down a bit, the table with the lovely data:
+<img src="/post/2019-03-14-scraping-data-from-the-web-with-rvest_files/Screen%20Shot%202019-03-13%20at%201.51.38%20PM.png" style="width:100.0%" /></p>
+<p>But again, we want to download that file for that chapter for every one of the annual reports listed on that first page. We <em>could</em> go carefully down the list of all the reports, pick out the annual reports, click through the chapters over and over, but there’s more than a dozen annual reports here, and we’re still at the start of the alphabet as far as countries go. Further, there’ll be <em>another</em> new annual report next year. We need to have this process automated.</p>
 <p>Thinking about it a moment, this is maybe a particularly tricky scraping job because we need to:</p>
 <ol style="list-style-type: decimal">
 <li><p>get the links for the reports we want from the main page on poverty, and then</p></li>
 <li><p>follow each of those links to get the link for the chapter we want.</p></li>
 <li><p>After we have all <em>those</em> links, then we can download all the chapter files and extract the data we want from them. (Reading pdfs into R is another great data acquisition skill, but I think it merits a post of its own, so for now we’ll stop once we have all the files we want.)</p></li>
 </ol>
-<p>In a more straightforward scraping job, step 2 wouldn’t be necessary at all, but it’s not all that uncommon, and it will give us a chance to practice some of our data wrangling skills.</p>
+<p>In a more straightforward scraping job, step 2 wouldn’t be necessary at all, but this sort of arrangement isn’t all that uncommon (think of articles in issues of journals, for another example), and it will give us a chance to practice some of our data wrangling skills.</p>
 <div id="step-1-getting-the-links-to-the-reports" class="section level3">
 <h3>Step 1: Getting the Links to the Reports</h3>
 <p>Like with scraping web tables, we will start by pasting our link into <code>read_html()</code>, but now we will need some more information about just which part of the page we want to scrape, information we’ll get from a neat little tool called SelectorGadget. The <code>rvest</code> package includes <a href="https://cran.r-project.org/web/packages/rvest/vignettes/selectorgadget.html">a nice vignette on how to install and use it here</a>. With SelectorGadget installed in our bookmarks bar (called the favorites bar in Safari here) and engaged (just click on it), each element of the page gets boxed in color as you mouse over it:</p>
-<p><img src="/post/2019-03-14-scraping-data-from-the-web-with-rvest_files/sg1.png" style="width:80.0%" /></p>
+<p><img src="/post/2019-03-14-scraping-data-from-the-web-with-rvest_files/sg1.png" style="width:100.0%" /></p>
 <p>The idea is to get everything you want—and nothing you don’t want—highlighted in green or yellow. Clicking on the first link gives us all the links of the reports . . . but also all the other links:</p>
-<p><img src="/post/2019-03-14-scraping-data-from-the-web-with-rvest_files/sg2.png" style="width:80.0%" /></p>
+<p><img src="/post/2019-03-14-scraping-data-from-the-web-with-rvest_files/sg2.png" style="width:100.0%" /></p>
 <p>So we click on one of the links we <em>don’t</em> want to turn it red. In this case, this actually leaves us with exactly what we want, just the links of the reports:</p>
-<p><img src="/post/2019-03-14-scraping-data-from-the-web-with-rvest_files/sg3.png" style="width:80.0%" /></p>
+<p><img src="/post/2019-03-14-scraping-data-from-the-web-with-rvest_files/sg3.png" style="width:100.0%" /></p>
 <p>Note that in the wide SelectorGadget box at the bottom of the window, it says “h4 a”—that’s the info we’ll use to identify the parts of the webpage we want, using <code>rvest</code>’s <code>html_nodes()</code> function. This will result in a list of xml nodes. We’ll make a tibble of these nodes, with one variable for the title of the report and one for its link. The report title is just the link text, which we get by passing the node to <code>html_text()</code>; for consistency’s sake (some of the titles of the early reports are in all caps), we’ll make all of the titles lowercase with <code>str_to_lower()</code>. To get the report link url, we use <code>html_attr("href")</code>. In this case, the urls are expressed relative to the ArmStat homepage, so we also need to swap out the dot which stands for that address with the actual address. We only want the year-end reports, so we’ll use the combination of <code>filter()</code> and <code>str_detect()</code> to keep only those that include “december” in their title, and the titles of some reports indicate that they are only available in Armenian, so we’ll filter those out, too.</p>
 <pre class="r"><code>library(tidyverse)
 library(rvest)
@@ -273,7 +273,7 @@ reports_links</code></pre>
 <h3>Step 2: Getting the Links to the Chapter Files</h3>
 <p>Now that we have the links to all of the reports, we need to get the link to the chapter file we want from each one of them. We’ll start with the first report and then use the <code>tidyverse</code>’s iteration tools, <code>map</code> and <code>walk</code>, to apply our code to all of the reports.</p>
 <p>Right, so let’s take on that first report. Back to SelectorGadget! Clicking on the link for the first report, engaging SelectorGadget, and clicking on the chapter title “Accessibility of food” gives us the “td” tag, which defines a cell in an html table. This means that each of our chapter nodes will be a separate cell from this web table, and we’ll have to reconstruct the table structure ourselves. If we knew a bit of html, we could use the “tr” tag, which defines rows, instead, and spare ourselves this fancy footwork, but whenever I want to know anything about html I have to look it up. You may be in the same boat, so let’s just plan on doing the footwork.</p>
-<p><img src="/post/2019-03-14-scraping-data-from-the-web-with-rvest_files/Screen%20Shot%202019-03-14%20at%2012.49.01%20PM.png" style="width:80.0%" /></p>
+<p><img src="/post/2019-03-14-scraping-data-from-the-web-with-rvest_files/Screen%20Shot%202019-03-14%20at%2012.49.01%20PM.png" style="width:100.0%" /></p>
 <p>Again, we’ll make a tibble of titles and links from our chapter nodes. Again, we’ll use <code>html_text()</code> to get the titles and standardize on lowercase letters. However, this time, the titles are not themselves links—the links are in subsequent cells in the same row in the table that contain no text at all. We’ll use <code>if_else()</code> to test if the title is an empty string, and if so, set it to <code>NA_character_</code> (the missing data indicator for strings). We can get the links, meanwhile, by selecting <code>html_node("a")</code>—“a” for anchor defines links in html (we didn’t need to do this separately when we were getting the report links above because our tag, “h4 a”, already included it)—and then <code>html_attr("href")</code> as before. And we’ll have to deal with the relative urls again, too (two dots to replace this time, and no <code>/en</code>—we figure this out by clicking the link in the actual webpage and comparing it to what <code>html_attr("href")</code> gave us). How do we deal with the fact the rows of our tibble are just cells from the webtable, so our titles have no links and our links have no titles? Here comes the “fancy footwork”: we’ll use the <code>fill()</code> function to replace any <code>NA</code>s in our chapter titles with the last observed chapter title (this is why we set the empty strings to <code>NA_character_</code> the way we did above; fill only works on <code>NA</code>s). Then, since each link is actually repeated twice—ArmStat understandably wants to be sure you know that their bilingual documents are available to you in both Armenian and English—we use <code>distinct()</code> to get rid of the duplicates. Finally, we drop the observations without links (that is, the original title cells), leaving us with a neat reconstruction of the table of chapter titles and links:</p>
 <pre class="r"><code>report_link &lt;- reports_links %&gt;% 
     pull(report_link) %&gt;% 
@@ -380,7 +380,7 @@ walk2(reports_links$report_title, reports_links$chapter_link, function(report_ti
                           str_c(&quot;armstat&quot;, str_extract(report_title, &quot;\\d{4}&quot;), &quot;.pdf&quot;))
     download.file(chapter_link, pdf_path)
 })</code></pre>
-<p>And that’s that. Use your new powers for good, not for evil: be sure to respect the terms of service of any website you scrape.</p>
+<p>And that’s that. And remember, use your new powers for good, not for evil: be sure to respect the terms of service of any website you might want to scrape.</p>
 </div>
 <div class="footnotes">
 <hr />
