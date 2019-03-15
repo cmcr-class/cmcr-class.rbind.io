@@ -103,7 +103,7 @@ Okay, enough about variable names; we have other problems here.  For one thing, 
 latam_pop$country[17:27]
 ```
 
-We can use regex to get rid of that stuff.  In the regex pattern below, recall that the double slashes are "escapes": they mean that we want actual brackets (not a character class) and parentheses (not a capture group).  The `.*`s stand for "anything, repeated zero or more times", and the `|` means "or."  So this `str_replace_all()` is going to replace matched brackets or parentheses and anything between them with nothing.
+We can use regex to get rid of that stuff.  In the regex pattern below, recall that the double slashes are "escapes": they mean that we want actual brackets (not a character class) and parentheses (not a capture group).  The `.*`s stand for "anything, repeated zero or more times", and the `|` means "or."  So this `str_replace_all()` is going to replace matched brackets or parentheses and anything between them with nothing.^[A quick note on country names: there are lots of variations.  If you're working with data from different sources, you will need to ensure your country names are standardized.  The `countrycode` package is just what you need for that task.  It standardizes names and can covert between names and bunch of different codes as well!]
 
 Finally, while we're at it, we'll also get rid of the line listing the region's total population.
 
