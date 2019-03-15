@@ -1,7 +1,7 @@
 ---
 title: Scraping Data from the Web with rvest
 author: Frederick Solt
-date: '2019-03-12'
+date: '2019-03-14'
 tags:
   - note
 slug: scraping-data
