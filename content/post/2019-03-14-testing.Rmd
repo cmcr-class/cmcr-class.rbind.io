@@ -1,0 +1,13 @@
+---
+title: testing
+author: Frederick Solt
+date: '2019-03-14'
+tags:
+  - note
+slug: testing
+output:
+  html_document:
+    self_contained: yes
+---
+
+wth
