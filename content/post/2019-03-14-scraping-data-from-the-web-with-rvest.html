@@ -12,16 +12,18 @@ output:
 
 
 
-<p>Although there are lots of R packages that offer special purpose data-download tools—Eric Persson’s <a href="https://cran.r-project.org/web/packages/gesis/vignettes/gesis.html"><code>gesis</code></a> is one of my favorites, and I’m fond of <a href="https://cran.r-project.org/web/packages/icpsrdata/vignettes/icpsrdata-vignette.html"><code>icpsrdata</code></a> and <a href="https://cran.r-project.org/web/packages/ropercenter/vignettes/ropercenter-vignette.html"><code>ropercenter</code></a> too—but the Swiss Army knife of webscraping is the <code>rvest</code> package. That is to say, if there’s a specialized tool for the data you’re after, you’re much better off using <em>that</em> tool, but if not, then <code>rvest</code> will help you to get the job done.</p>
+<p>Although there are lots of R packages that offer special purpose data-download tools—<a href="https://twitter.com/expersso">Eric Persson</a>’s <a href="https://cran.r-project.org/web/packages/gesis/vignettes/gesis.html"><code>gesis</code></a> is one of my favorites, and I’m fond of <a href="https://cran.r-project.org/web/packages/icpsrdata/vignettes/icpsrdata-vignette.html"><code>icpsrdata</code></a> and <a href="https://cran.r-project.org/web/packages/ropercenter/vignettes/ropercenter-vignette.html"><code>ropercenter</code></a> too—but the Swiss Army knife of webscraping is the <code>rvest</code> package. That is to say, if there’s a specialized tool for the online data you’re after, you’re much better off using <em>that</em> tool, but if not, then <code>rvest</code> will help you to get the job done.</p>
 <p>In this post, I’ll explain how to do two common webscraping tasks using <code>rvest</code>: scraping tables from the web straight into R and scraping the links to a bunch of files so you can then do a batch download.</p>
 <div id="scraping-tables" class="section level2">
 <h2>Scraping Tables</h2>
-<p>Scraping data from tables on the web is a simple, three-step process:</p>
+<p>Scraping data from tables on the web with <code>rvest</code> is a simple, three-step process:</p>
 <ol style="list-style-type: decimal">
 <li><p>read the html of the webpage with the table using <code>read_html()</code></p></li>
 <li><p>extract the table using <code>html_table()</code></p></li>
 <li><p>wrangle as needed</p></li>
 </ol>
+<p>As <a href="https://twitter.com/juliasilge">Julia Silge</a> writes, you can just about fit all the code you need into <a href="https://twitter.com/juliasilge/status/951639629182074880">a single tweet</a>!</p>
+<p><img src="/post/2019-03-14-scraping-data-from-the-web-with-rvest_files/Screen%20Shot%202019-03-15%20at%209.48.37%20AM.png" style="width:80.0%" /></p>
 <p>So let’s suppose we wanted to get the latest <a href="http://en.wikipedia.org/wiki/List_of_Latin_American_countries_by_population">population figures for the countries of Latin America from Wikipedia</a></p>
 <p><img src="/post/2019-03-14-scraping-data-from-the-web-with-rvest_files/wiki_latam.png" style="width:100.0%" /></p>
 <div id="step-1-read-the-webpage" class="section level3">
@@ -29,29 +31,17 @@ output:
 <p>We load the <code>tidyverse</code> and <code>rvest</code> packages, then paste the url of the Wikipedia page into <code>read_html()</code></p>
 <pre class="r"><code>library(rvest)</code></pre>
 <pre><code>## Loading required package: xml2</code></pre>
-<pre class="r"><code>library(lubridate)</code></pre>
-<pre><code>## 
-## Attaching package: &#39;lubridate&#39;</code></pre>
-<pre><code>## The following object is masked from &#39;package:base&#39;:
-## 
-##     date</code></pre>
-<pre class="r"><code>library(janitor)
-library(tidyverse)</code></pre>
+<pre class="r"><code>library(tidyverse)</code></pre>
 <pre><code>## ── Attaching packages ───────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
 <pre><code>## ✔ ggplot2 3.1.0       ✔ purrr   0.3.0  
 ## ✔ tibble  2.0.1       ✔ dplyr   0.8.0.1
 ## ✔ tidyr   0.8.2       ✔ stringr 1.4.0  
 ## ✔ readr   1.3.1       ✔ forcats 0.3.0</code></pre>
 <pre><code>## ── Conflicts ──────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
-## ✖ lubridate::as.difftime() masks base::as.difftime()
-## ✖ lubridate::date()        masks base::date()
-## ✖ dplyr::filter()          masks stats::filter()
-## ✖ readr::guess_encoding()  masks rvest::guess_encoding()
-## ✖ lubridate::intersect()   masks base::intersect()
-## ✖ dplyr::lag()             masks stats::lag()
-## ✖ purrr::pluck()           masks rvest::pluck()
-## ✖ lubridate::setdiff()     masks base::setdiff()
-## ✖ lubridate::union()       masks base::union()</code></pre>
+## ✖ dplyr::filter()         masks stats::filter()
+## ✖ readr::guess_encoding() masks rvest::guess_encoding()
+## ✖ dplyr::lag()            masks stats::lag()
+## ✖ purrr::pluck()          masks rvest::pluck()</code></pre>
 <pre class="r"><code>webpage &lt;- read_html(&quot;http://en.wikipedia.org/wiki/List_of_Latin_American_countries_by_population&quot;)</code></pre>
 </div>
 <div id="step-2-extract-the-table" class="section level3">
@@ -148,12 +138,13 @@ names(latam_pop)</code></pre>
 ##  [7] &quot;Martinique (France)&quot;       &quot;French Guiana&quot;            
 ##  [9] &quot;Saint Martin (France)&quot;     &quot;Saint Barthélemy (France)&quot;
 ## [11] &quot;Total&quot;</code></pre>
-<p>We can use regex to get rid of that stuff. In the regex pattern below, recall that the double slashes are “escapes”: they mean that we want actual brackets (not a character class) and parentheses (not a capture group). The <code>.*</code>s stand for “anything, repeated zero or more times”, and the <code>|</code> means “or.” So this <code>str_replace_all()</code> is going to replace matched brackets or parentheses and anything between them with nothing.</p>
-<p>Finally, while we’re at it, we’ll also get rid of the line listing the region’s total population.</p>
+<p>We can use our power tool regex to get rid of that stuff. In the regex pattern below, recall that the double slashes are “escapes”: they mean that we want actual brackets (not a character class) and actual parentheses (not a capture group). Remember too that the <code>.*</code>s stand for “anything, repeated zero or more times”, and the <code>|</code> means “or.” So this <code>str_replace_all()</code> is going to replace matched brackets or parentheses and anything between them with nothing.</p>
+<p>And one more quick note on country names: there are lots of variations. If you’re working with data from different sources, you will need to ensure your country names are standardized. <a href="https://twitter.com/VincentAB">Vincent Arel-Bundock</a>’s <a href="https://cran.r-project.org/web/packages/countrycode/index.html"><code>countrycode</code> package</a> is just what you need for that task. It standardizes names and can covert between names and bunch of different codes as well!</p>
+<p>We’ll skip <code>countrycode</code> for now, but while we’re dealing with this variable, we’ll get rid of the observation listing the region’s total population.</p>
 <pre class="r"><code>latam_pop &lt;- latam_pop %&gt;% 
     mutate(country = str_replace_all(country, &quot;\\[.*\\]|\\(.*\\)&quot;, &quot;&quot;) %&gt;% 
                str_trim()) %&gt;% 
-    filter(country!=&quot;Total&quot;)
+    filter(!country==&quot;Total&quot;)
 
 latam_pop$country[17:nrow(latam_pop)]</code></pre>
 <pre><code>##  [1] &quot;El Salvador&quot;      &quot;Costa Rica&quot;       &quot;Panama&quot;          
