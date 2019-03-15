@@ -5,7 +5,7 @@ date: '2019-03-14'
 tags:
   - note
 slug: scraping-data
-draft: no
+draft: false
 output:
   html_document:
     self_contained: yes
@@ -27,7 +27,7 @@ Scraping data from tables on the web is a simple, three-step process:
 
 So let's suppose we wanted to get the latest [population figures for the countries of Latin America from Wikipedia](http://en.wikipedia.org/wiki/List_of_Latin_American_countries_by_population)
 
-![](/post/2019-03-12-scraping-data-from-the-web-with-rvest_files/wiki_latam.png){width=80%}
+![](/post/2019-03-14-scraping-data-from-the-web-with-rvest_files/wiki_latam.png){width=80%}
 
 ### Step 1: Read the Webpage
 We load the `tidyverse` and `rvest` packages, then paste the url of the Wikipedia page into `read_html()`
@@ -150,7 +150,7 @@ latam_pop$date_pop
 
 And we're done!  One point worth considering is whether you want this particular scrape to be reproducible.  Sometime you won't---maybe the page you're scraping is updated regularly, and you always want the latest data.  But if you do want to be sure to be able to reproduce what you've done in the future, I recommend you take a second, go to [the Internet Archive](https://archive.org), [archive the page](https://archive.org/web/), and then _scrape the archived page_ instead of the live one.
 
-![](/post/2019-03-12-scraping-data-from-the-web-with-rvest_files/Screen Shot 2019-03-14 at 6.34.54 PM.png){width=80%}
+![](/post/2019-03-14-scraping-data-from-the-web-with-rvest_files/Screen Shot 2019-03-14 at 6.34.54 PM.png){width=80%}
 
 
 ## Scraping Files
@@ -158,13 +158,13 @@ And we're done!  One point worth considering is whether you want this particular
 It's also pretty common to want to get a bunch of files linked from a website.  Consider this example from my own work on [the Standardized World Income Inequality Database](https://fsolt.org/swiid/).  The SWIID depends on [source data on income inequality](https://fsolt.org/swiid/swiid_source/) from international organizations and national statistical offices around the world, including Armenia's Statistical Committee (ArmStat).  ArmStat has a annual report on food security and poverty that includes a chapter titled "Accessibility of Food" that has some data on income and consumption inequality that I want.
 
 Here's the page with the list of poverty reports:
-![](/post/2019-03-12-scraping-data-from-the-web-with-rvest_files/sg0.png){width=80%}
+![](/post/2019-03-14-scraping-data-from-the-web-with-rvest_files/sg0.png){width=80%}
 
 Clicking on the top link shows a list of chapters.  Note the chapter on "Accessibility of Food":
-![](/post/2019-03-12-scraping-data-from-the-web-with-rvest_files/Screen Shot 2019-03-14 at 12.20.19 PM.png){width=80%}
+![](/post/2019-03-14-scraping-data-from-the-web-with-rvest_files/Screen Shot 2019-03-14 at 12.20.19 PM.png){width=80%}
 
 Clicking on that pdf icon shows the pdf file of the chapter, with the lovely data:
-![](/post/2019-03-12-scraping-data-from-the-web-with-rvest_files/Screen Shot 2019-03-13 at 1.51.38 PM.png){width=80%}
+![](/post/2019-03-14-scraping-data-from-the-web-with-rvest_files/Screen Shot 2019-03-13 at 1.51.38 PM.png){width=80%}
 
 But again, we want to download that file for that chapter for every one of the annual reports listed on that first page.  We _could_ go carefully down the list of reports, pick out the annual ones, click through over and over, but there's over a dozen annual reports here, and we're still at the start of the alphabet as far as countries go.  Further, there'll be _another_ new annual report next year.  We need to have this process automated.
 
@@ -183,15 +183,15 @@ In a more straightforward scraping job, step 2 wouldn't be necessary at all, but
 
 Like with scraping web tables, we will start by pasting our link into `read_html()`, but now we will need some more information about just which part of the page we want to scrape, information we'll get from a neat little tool called SelectorGadget.  The `rvest` package includes [a nice vignette on how to install and use it here](https://cran.r-project.org/web/packages/rvest/vignettes/selectorgadget.html).  With SelectorGadget installed in our bookmarks bar (called the favorites bar in Safari here) and engaged (just click on it), each element of the page gets boxed in color as you mouse over it:
 
-![](/post/2019-03-12-scraping-data-from-the-web-with-rvest_files/sg1.png){width=80%}
+![](/post/2019-03-14-scraping-data-from-the-web-with-rvest_files/sg1.png){width=80%}
 
 The idea is to get everything you want---and nothing you don't want---highlighted in green or yellow.  Clicking on the first link gives us all the links of the reports . . . but also all the other links:
 
-![](/post/2019-03-12-scraping-data-from-the-web-with-rvest_files/sg2.png){width=80%}
+![](/post/2019-03-14-scraping-data-from-the-web-with-rvest_files/sg2.png){width=80%}
 
 So we click on one of the links we _don't_ want to turn it red.  In this case, this actually leaves us with exactly what we want, just the links of the reports:
 
-![](/post/2019-03-12-scraping-data-from-the-web-with-rvest_files/sg3.png){width=80%}
+![](/post/2019-03-14-scraping-data-from-the-web-with-rvest_files/sg3.png){width=80%}
 
 Note that in the wide SelectorGadget box at the bottom of the window, it says "h4 a"---that's the info we'll use to identify the parts of the webpage we want, using `rvest`'s `html_nodes()` function.  This will result in a list of xml nodes.  We'll make a tibble of these nodes, with one variable for the title of the report and one for its link.  The report title is just the link text, which we get by passing the node to `html_text()`; for consistency's sake (some of the titles of the early reports are in all caps), we'll make all of the titles lowercase with `str_to_lower()`. To get the report link url, we use `html_attr("href")`.  In this case, the urls are expressed relative to the ArmStat homepage, so we also need to swap out the dot which stands for that address with the actual address.  We only want the year-end reports, so we'll use the combination of `filter()` and `str_detect()` to keep only those that include "december" in their title, and the titles of some reports indicate that they are only available in Armenian, so we'll filter those out, too.
 
@@ -220,7 +220,7 @@ Now that we have the links to all of the reports, we need to get the link to the
 
 Right, so let's take on that first report.  Back to SelectorGadget!  Clicking on the link for the first report, engaging SelectorGadget, and clicking on the chapter title "Accessibility of food" gives us the "td" tag, which defines a cell in an html table.  This means that each of our chapter nodes will be a separate cell from this web table, and we'll have to reconstruct the table structure ourselves.  If we knew a bit of html, we could use the "tr" tag, which defines rows, instead, and spare ourselves this fancy footwork, but whenever I want to know anything about html I have to look it up.  You may be in the same boat, so let's just plan on doing the footwork.
 
-![](/post/2019-03-12-scraping-data-from-the-web-with-rvest_files/Screen Shot 2019-03-14 at 12.49.01 PM.png){width=80%}
+![](/post/2019-03-14-scraping-data-from-the-web-with-rvest_files/Screen Shot 2019-03-14 at 12.49.01 PM.png){width=80%}
 
 Again, we'll make a tibble of titles and links from our chapter nodes.  Again, we'll use `html_text()` to get the titles and standardize on lowercase letters.  However, this time, the titles are not themselves links---the links are in subsequent cells in the same row in the table that contain no text at all.  We'll use `if_else()` to test if the title is an empty string, and if so, set it to `NA_character_` (the missing data indicator for strings).  We can get the links, meanwhile, by selecting `html_node("a")`---"a" for anchor defines links in html (we didn't need to do this separately when we were getting the report links above because our tag, "h4 a", already included it)---and then `html_attr("href")` as before.  And we'll have to deal with the relative urls again, too (two dots to replace this time, and no `/en`---we figure this out by clicking the link in the actual webpage and comparing it to what `html_attr("href")` gave us).  How do we deal with the fact the rows of our tibble are just cells from the webtable, so our titles have no links and our links have no titles?  Here comes the "fancy footwork": we'll use the `fill()` function to replace any `NA`s in our chapter titles with the last observed chapter title (this is why we set the empty strings to `NA_character_` the way we did above; fill only works on `NA`s).  Then, since each link is actually repeated twice---ArmStat understandably wants to be sure you know that their bilingual documents are available to you in both Armenian and English---we use `distinct()` to get rid of the duplicates.  Finally, we drop the observations without links (that is, the original title cells), leaving us with a neat reconstruction of the table of chapter titles and links:
 
