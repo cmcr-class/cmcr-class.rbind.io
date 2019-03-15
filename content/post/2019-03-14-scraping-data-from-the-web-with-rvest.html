@@ -216,11 +216,13 @@ latam_pop$date_pop</code></pre>
 <p>But again, we want to download that file for that chapter for every one of the annual reports listed on that first page. We <em>could</em> go carefully down the list of all the reports, pick out the annual reports, click through the chapters over and over, but there’s more than a dozen annual reports here, and we’re still at the start of the alphabet as far as countries go. Further, there’ll be <em>another</em> new annual report next year. We need to have this process automated.</p>
 <p>Thinking about it a moment, this is maybe a particularly tricky scraping job because we need to:</p>
 <ol style="list-style-type: decimal">
-<li><p>get the links for the reports we want from the main page on poverty, and then</p></li>
-<li><p>follow each of those links to get the link for the chapter we want.</p></li>
-<li><p>After we have all <em>those</em> links, then we can download all the chapter files and extract the data we want from them. (Reading pdfs into R is another great data acquisition skill, but I think it merits a post of its own, so for now we’ll stop once we have all the files we want.)</p></li>
+<li><p>use rvest to get the links for the reports we want from the main page on poverty, and then</p></li>
+<li><p>follow each of those links to get the link for the chapter we want, and, after we have all <em>those</em> links, then</p></li>
+<li><p>we can download all the chapter files and extract the data we want from them. (Reading pdfs into R is another great data acquisition skill, but I think it merits a post of its own, so for now we’ll stop once we have all the files we want.)</p></li>
 </ol>
 <p>In a more straightforward scraping job, step 2 wouldn’t be necessary at all, but this sort of arrangement isn’t all that uncommon (think of articles in issues of journals, for another example), and it will give us a chance to practice some of our data wrangling skills.</p>
+<p>And in the very most straightforward cases, as <a href="https://twitter.com/rschhina">Raman Singh Chhína</a> <a href="https://twitter.com/rschhina/status/1106659201647079428">reminded me here</a>, the links to files we want will fit some consistent pattern, and even step 1 won’t be necessary as we can simply construct the list of links we need along the lines of: <code>needed_links &lt;- str_c("https://suchandsuch.org/files/annualreport", 2006:2018, ".pdf")</code>. Then we can skip straight to step 3.</p>
+<p>But let’s roll up our sleeves and take on this harder job.</p>
 <div id="step-1-getting-the-links-to-the-reports" class="section level3">
 <h3>Step 1: Getting the Links to the Reports</h3>
 <p>Like with scraping web tables, we will start by pasting our link into <code>read_html()</code>, but now we will need some more information about just which part of the page we want to scrape, information we’ll get from a neat little tool called SelectorGadget. The <code>rvest</code> package includes <a href="https://cran.r-project.org/web/packages/rvest/vignettes/selectorgadget.html">a nice vignette on how to install and use it here</a>. With SelectorGadget installed in our bookmarks bar (called the favorites bar in Safari here) and engaged (just click on it), each element of the page gets boxed in color as you mouse over it:</p>

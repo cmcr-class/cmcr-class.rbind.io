@@ -176,14 +176,17 @@ But again, we want to download that file for that chapter for every one of the a
 
 Thinking about it a moment, this is maybe a particularly tricky scraping job because we need to:
 
-1. get the links for the reports we want from the main page on poverty, and then
+1. use rvest to get the links for the reports we want from the main page on poverty, and then
 
-2. follow each of those links to get the link for the chapter we want.  
+2. follow each of those links to get the link for the chapter we want, and, after we have all _those_ links, then
 
-3. After we have all _those_ links, then we can download all the chapter files and extract the data we want from them.  (Reading pdfs into R is another great data acquisition skill, but I think it merits a post of its own, so for now we'll stop once we have all the files we want.)
+3. we can download all the chapter files and extract the data we want from them.  (Reading pdfs into R is another great data acquisition skill, but I think it merits a post of its own, so for now we'll stop once we have all the files we want.)
 
 In a more straightforward scraping job, step 2 wouldn't be necessary at all, but this sort of arrangement isn't all that uncommon (think of articles in issues of journals, for another example), and it will give us a chance to practice some of our data wrangling skills.
 
+And in the very most straightforward cases, as [Raman Singh Chhína](https://twitter.com/rschhina) [reminded me here](https://twitter.com/rschhina/status/1106659201647079428), the links to files we want will fit some consistent pattern, and even step 1 won't be necessary as we can simply construct the list of links we need along the lines of: `needed_links <- str_c("https://suchandsuch.org/files/annualreport", 2006:2018, ".pdf")`.  Then we can skip straight to step 3.
+
+But let's roll up our sleeves and take on this harder job.
 
 ### Step 1: Getting the Links to the Reports
 
