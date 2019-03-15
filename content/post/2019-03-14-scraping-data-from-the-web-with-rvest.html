@@ -230,10 +230,7 @@ latam_pop$date_pop</code></pre>
 <p>So we click on one of the links we <em>don’t</em> want to turn it red. In this case, this actually leaves us with exactly what we want, just the links of the reports:</p>
 <p><img src="/post/2019-03-14-scraping-data-from-the-web-with-rvest_files/sg3.png" style="width:100.0%" /></p>
 <p>Note that in the wide SelectorGadget box at the bottom of the window, it says “h4 a”—that’s the info we’ll use to identify the parts of the webpage we want, using <code>rvest</code>’s <code>html_nodes()</code> function. This will result in a list of xml nodes. We’ll make a tibble of these nodes, with one variable for the title of the report and one for its link. The report title is just the link text, which we get by passing the node to <code>html_text()</code>; for consistency’s sake (some of the titles of the early reports are in all caps), we’ll make all of the titles lowercase with <code>str_to_lower()</code>. To get the report link url, we use <code>html_attr("href")</code>. In this case, the urls are expressed relative to the ArmStat homepage, so we also need to swap out the dot which stands for that address with the actual address. We only want the year-end reports, so we’ll use the combination of <code>filter()</code> and <code>str_detect()</code> to keep only those that include “december” in their title, and the titles of some reports indicate that they are only available in Armenian, so we’ll filter those out, too.</p>
-<pre class="r"><code>library(tidyverse)
-library(rvest)
-
-reports_nodes &lt;- read_html(&quot;http://www.armstat.am/en/?nid=81&amp;pthid=pov&amp;year=&quot;) %&gt;% 
+<pre class="r"><code>reports_nodes &lt;- read_html(&quot;http://www.armstat.am/en/?nid=81&amp;pthid=pov&amp;year=&quot;) %&gt;% 
   html_nodes(&quot;h4 a&quot;)
   
 reports_links &lt;- tibble(report_title = reports_nodes %&gt;%
@@ -368,7 +365,7 @@ reports_links</code></pre>
 </div>
 <div id="step-3-getting-all-the-files" class="section level2">
 <h2>Step 3: Getting! All! the! Files!</h2>
-<p>This is actually straightforward, now that we have a tibble of report titles and links to chapter files. The <code>download.file()</code> function will save the contents of a link (its first argument) to a filepath (its second argument) and the <code>walk2()</code> function allows you to pass a pair of vectors to a function to iteratively use as its two arguments (first the first element of each vector, then the second element of each vector, and so on). We’ll use <code>str_extract()</code> to get the year of the report from its title, and use it to make a file name for the pdf with <code>str_c()</code>. But first we should create a directory to save those files in.</p>
+<p>This is actually straightforward, now that we have a tibble of report titles and links to chapter files. The <code>download.file()</code> function will save the contents of a link (its first argument) to a filepath (its second argument) and the <code>walk2()</code> function allows you to pass a pair of vectors to a function to iteratively use as its two arguments (first the first element of each vector, then the second element of each vector, and so on). We’ll use <code>str_extract()</code> to get the year of the report from its title, and use it to make a file name for the pdf with <code>str_c()</code>. But first we should create a directory to save those files in. And after each download, we’ll insert a brief pause with <code>Sys.sleep(3)</code> to be sure that were not hammering the server too hard. Maybe not <em>really</em> necessary this time, given that we’re getting just 13 files, but it’s the considerate thing to do and a good habit.</p>
 <pre class="r"><code>dir.create(&quot;armstat_files&quot;)
 
 walk2(reports_links$report_title, reports_links$chapter_link,
@@ -378,8 +375,9 @@ walk2(reports_links$report_title, reports_links$chapter_link,
                                 str_extract(report_title, &quot;\\d{4}&quot;),
                                 &quot;.pdf&quot;))
     download.file(chapter_link, pdf_path)
+    Sys.sleep(3)
 })</code></pre>
-<p>And that’s that. And remember, use your new powers for good, not for evil: be sure to respect the terms of service of any website you might want to scrape.</p>
+<p>And that’s that. And remember, use your new powers for good, not for evil. Be sure to respect the terms of service of any website you might want to scrape.</p>
 </div>
 <div class="footnotes">
 <hr />

@@ -202,9 +202,6 @@ So we click on one of the links we _don't_ want to turn it red.  In this case, t
 Note that in the wide SelectorGadget box at the bottom of the window, it says "h4 a"---that's the info we'll use to identify the parts of the webpage we want, using `rvest`'s `html_nodes()` function.  This will result in a list of xml nodes.  We'll make a tibble of these nodes, with one variable for the title of the report and one for its link.  The report title is just the link text, which we get by passing the node to `html_text()`; for consistency's sake (some of the titles of the early reports are in all caps), we'll make all of the titles lowercase with `str_to_lower()`. To get the report link url, we use `html_attr("href")`.  In this case, the urls are expressed relative to the ArmStat homepage, so we also need to swap out the dot which stands for that address with the actual address.  We only want the year-end reports, so we'll use the combination of `filter()` and `str_detect()` to keep only those that include "december" in their title, and the titles of some reports indicate that they are only available in Armenian, so we'll filter those out, too.
 
 ```{r}
-library(tidyverse)
-library(rvest)
-
 reports_nodes <- read_html("http://www.armstat.am/en/?nid=81&pthid=pov&year=") %>% 
   html_nodes("h4 a")
   
@@ -312,7 +309,7 @@ reports_links
 
 ## Step 3: Getting! All! the! Files!
 
-This is actually straightforward, now that we have a tibble of report titles and links to chapter files.  The `download.file()` function will save the contents of a link (its first argument) to a filepath (its second argument) and the `walk2()` function allows you to pass a pair of vectors to a function to iteratively use as its two arguments (first the first element of each vector, then the second element of each vector, and so on). We'll use `str_extract()` to get the year of the report from its title, and use it to make a file name for the pdf with `str_c()`.  But first we should create a directory to save those files in.
+This is actually straightforward, now that we have a tibble of report titles and links to chapter files.  The `download.file()` function will save the contents of a link (its first argument) to a filepath (its second argument) and the `walk2()` function allows you to pass a pair of vectors to a function to iteratively use as its two arguments (first the first element of each vector, then the second element of each vector, and so on). We'll use `str_extract()` to get the year of the report from its title, and use it to make a file name for the pdf with `str_c()`.  But first we should create a directory to save those files in.  And after each download, we'll insert a brief pause with `Sys.sleep(3)` to be sure that were not hammering the server too hard.  Maybe not _really_ necessary this time, given that we're getting just `r nrow(reports_links)` files, but it's the considerate thing to do and a good habit.
 
 ```{r, eval=FALSE}
 
@@ -325,10 +322,11 @@ walk2(reports_links$report_title, reports_links$chapter_link,
                                 str_extract(report_title, "\\d{4}"),
                                 ".pdf"))
     download.file(chapter_link, pdf_path)
+    Sys.sleep(3)
 })
 
 ```
 
-And that's that.  And remember, use your new powers for good, not for evil: be sure to respect the terms of service of any website you might want to scrape.
+And that's that.  And remember, use your new powers for good, not for evil.  Be sure to respect the terms of service of any website you might want to scrape.
 
 
