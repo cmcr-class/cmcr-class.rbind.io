@@ -10,7 +10,7 @@ output:
     self_contained: yes
 ---
 
-Although there are lots of R packages that offer special purpose data-download tools---[Eric Persson](https://twitter.com/expersso)'s [`gesis`](https://cran.r-project.org/web/packages/gesis/vignettes/gesis.html) is one of my favorites, and I'm fond of [`icpsrdata`](https://cran.r-project.org/web/packages/icpsrdata/vignettes/icpsrdata-vignette.html) and [`ropercenter`](https://cran.r-project.org/web/packages/ropercenter/vignettes/ropercenter-vignette.html) too---but the Swiss Army knife of webscraping is the `rvest` package.  That is to say, if there's a specialized tool for the online data you're after, you're much better off using _that_ tool, but if not, then `rvest` will help you to get the job done. 
+There are lots of R packages that offer special purpose data-download tools---[Eric Persson](https://twitter.com/expersso)'s [`gesis`](https://cran.r-project.org/web/packages/gesis/vignettes/gesis.html) is one of my favorites, and I'm fond of [`icpsrdata`](https://cran.r-project.org/web/packages/icpsrdata/vignettes/icpsrdata-vignette.html) and [`ropercenter`](https://cran.r-project.org/web/packages/ropercenter/vignettes/ropercenter-vignette.html) too---but the Swiss Army knife of webscraping is [Hadley Wickham](https://twitter.com/hadleywickham)'s `rvest` package.  That is to say, if there's a specialized tool for the online data you're after, you're much better off using _that_ tool, but if not, then `rvest` will help you to get the job done. 
 
 In this post, I'll explain how to do two common webscraping tasks using `rvest`: scraping tables from the web straight into R and scraping the links to a bunch of files so you can then do a batch download.
 
@@ -103,7 +103,7 @@ latam_pop$country[17:27]
 
 We can use our power tool regex to get rid of that stuff.  In the regex pattern below, recall that the double slashes are "escapes": they mean that we want actual brackets (not a character class) and actual parentheses (not a capture group).  Remember too that the `.*`s stand for "anything, repeated zero or more times", and the `|` means "or."  So this `str_replace_all()` is going to replace matched brackets or parentheses and anything between them with nothing.  
 
-And one more quick note on country names: there are lots of variations.  If you're working with data from different sources, you will need to ensure your country names are standardized. [Vincent Arel-Bundock](https://twitter.com/VincentAB)'s [`countrycode` package](https://cran.r-project.org/web/packages/countrycode/index.html) is just what you need for that task.  It standardizes names and can covert between names and bunch of different codes as well!
+And one more quick note on country names: there are lots of variations.  If you're working with data from different sources, you will need to ensure your country names are standardized. [Vincent Arel-Bundock](https://twitter.com/VincentAB)'s [`countrycode` package](https://cran.r-project.org/web/packages/countrycode/index.html) is just what you need for that task.  It standardizes names and can convert between names and bunch of different codes as well!
 
 We'll skip `countrycode` for now, but while we're dealing with this variable, we'll get rid of the observation listing the region's total population.
 
@@ -297,7 +297,7 @@ get_chapter_link <- function(report_link) {
 
 ```
 
-Now we can use that function to create a new chapter link variable in our `reports_links` tibble, with the wrinkle that `mutate()` expects a vectorized function---that is, one that operates on all the values of the variable at the same time---and [we can meet this expectation by using `map_chr()`](https://www.jimhester.com/2018/04/12/vectorize/):
+Now we can use that function to create a new chapter link variable in our `reports_links` tibble, with the wrinkle that `mutate()` expects a vectorized function---that is, one that operates on all the values of the variable at the same time---and, thanks to [Jim Hester](https://twitter.com/jimhester_), we know [we can meet this expectation by using `map_chr()`](https://www.jimhester.com/2018/04/12/vectorize/):
 
 
 ```{r}
