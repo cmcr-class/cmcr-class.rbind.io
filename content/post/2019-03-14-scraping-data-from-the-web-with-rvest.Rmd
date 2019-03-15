@@ -322,7 +322,8 @@ walk2(reports_links$report_title, reports_links$chapter_link,
       function(report_title, chapter_link) {
     pdf_path <- file.path("armstat_files",
                           str_c("armstat", 
-                                str_extract(report_title, "\\d{4}"), ".pdf"))
+                                str_extract(report_title, "\\d{4}"),
+                                ".pdf"))
     download.file(chapter_link, pdf_path)
 })
 

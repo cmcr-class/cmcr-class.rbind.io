@@ -384,7 +384,8 @@ walk2(reports_links$report_title, reports_links$chapter_link,
       function(report_title, chapter_link) {
     pdf_path &lt;- file.path(&quot;armstat_files&quot;,
                           str_c(&quot;armstat&quot;, 
-                                str_extract(report_title, &quot;\\d{4}&quot;), &quot;.pdf&quot;))
+                                str_extract(report_title, &quot;\\d{4}&quot;),
+                                &quot;.pdf&quot;))
     download.file(chapter_link, pdf_path)
 })</code></pre>
 <p>And that’s that. And remember, use your new powers for good, not for evil: be sure to respect the terms of service of any website you might want to scrape.</p>
