@@ -86,7 +86,7 @@ latam_pop</code></pre>
 ##  [8] &quot;Officialfigure(whereavailable)&quot;   
 ##  [9] &quot;Date oflast figure&quot;               
 ## [10] &quot;Source&quot;</code></pre>
-<p>These names are problematic because they have embedded spaces and punctuation marks that may even cause errors when the names are wrapped in backticks, which means we need a way of renaming them without even specifying their names the first time, if you see what I mean. One solution is the <code>clean_names()</code> function of the <code>janitor</code> package:<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></p>
+<p>These names are problematic because they have embedded spaces and punctuation marks that may cause errors even when the names are wrapped in backticks, which means we need a way of renaming them without even specifying their names the first time, if you see what I mean. One solution is the <code>clean_names()</code> function of the <code>janitor</code> package:<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></p>
 <pre class="r"><code>latam_pop &lt;- latam_pop %&gt;% janitor::clean_names()
 
 names(latam_pop)</code></pre>
@@ -100,7 +100,7 @@ names(latam_pop)</code></pre>
 ##  [8] &quot;officialfigure_whereavailable&quot;        
 ##  [9] &quot;date_oflast_figure&quot;                   
 ## [10] &quot;source&quot;</code></pre>
-<p>These names won’t win any awards, but they won’t cause errors, so <code>janitor</code> totally succeeded in cleaning up. It’s a great option for taking care of big messes fast. At the other end of the scale, if you only need to fixing just one or a few problematic names, you can use <code>rename()</code>’s new(-ish) assign-by-position ability:</p>
+<p>These names won’t win any awards, but they won’t cause errors, so <code>janitor</code> totally succeeded in cleaning up. It’s a great option for taking care of big messes fast. At the other end of the scale, if you only need to fix just one or a few problematic names, you can use <code>rename()</code>’s new(-ish) assign-by-position ability:</p>
 <pre class="r"><code>latam_pop &lt;- webpage %&gt;% 
     html_table(fill=TRUE) %&gt;%   # generates a list of all tables
     first() %&gt;%                 # gets the first element of the list

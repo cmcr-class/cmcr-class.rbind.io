@@ -63,7 +63,7 @@ Nice, clean, tidy data is rare in the wild, and data scraped from the web is def
 names(latam_pop)
 ```
 
-These names are problematic because they have embedded spaces and punctuation marks that may even cause errors when the names are wrapped in backticks, which means we need a way of renaming them without even specifying their names the first time, if you see what I mean.  One solution is the `clean_names()` function of the `janitor` package:^[Remember, if you haven't installed it before, you will need to download `janitor` to your machine with `install.packages("janitor")` before this code will work.]
+These names are problematic because they have embedded spaces and punctuation marks that may cause errors even when the names are wrapped in backticks, which means we need a way of renaming them without even specifying their names the first time, if you see what I mean.  One solution is the `clean_names()` function of the `janitor` package:^[Remember, if you haven't installed it before, you will need to download `janitor` to your machine with `install.packages("janitor")` before this code will work.]
 
 ```{r, message=FALSE}
 latam_pop <- latam_pop %>% janitor::clean_names()
@@ -71,7 +71,7 @@ latam_pop <- latam_pop %>% janitor::clean_names()
 names(latam_pop)
 ```
 
-These names won't win any awards, but they won't cause errors, so `janitor` totally succeeded in cleaning up.  It's a great option for taking care of big messes fast.  At the other end of the scale, if you only need to fixing just one or a few problematic names, you can use `rename()`'s new(-ish) assign-by-position ability:
+These names won't win any awards, but they won't cause errors, so `janitor` totally succeeded in cleaning up.  It's a great option for taking care of big messes fast.  At the other end of the scale, if you only need to fix just one or a few problematic names, you can use `rename()`'s new(-ish) assign-by-position ability:
 
 ```{r}
 latam_pop <- webpage %>% 
