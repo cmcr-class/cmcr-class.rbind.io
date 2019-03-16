@@ -284,7 +284,7 @@ get_chapter_link <- function(report_link) {
                            chapter_link = chapter_nodes %>% 
                                html_node("a") %>% 
                                html_attr("href") %>% 
-                               str_replace("\\.\\.", "https://www.armstat.am/")) %>% 
+                               str_replace("\\.\\.", "https://www.armstat.am")) %>% 
         fill(chapter_title) %>% 
         distinct() %>% 
         filter(!is.na(chapter_link))
