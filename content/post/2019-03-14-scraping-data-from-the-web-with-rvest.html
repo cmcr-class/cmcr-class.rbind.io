@@ -32,12 +32,12 @@ output:
 <pre class="r"><code>library(rvest)</code></pre>
 <pre><code>## Loading required package: xml2</code></pre>
 <pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>## ── Attaching packages ───────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>## ── Attaching packages ───────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
 <pre><code>## ✔ ggplot2 3.1.0       ✔ purrr   0.3.0  
 ## ✔ tibble  2.0.1       ✔ dplyr   0.8.0.1
 ## ✔ tidyr   0.8.2       ✔ stringr 1.4.0  
 ## ✔ readr   1.3.1       ✔ forcats 0.3.0</code></pre>
-<pre><code>## ── Conflicts ──────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+<pre><code>## ── Conflicts ──────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ## ✖ dplyr::filter()         masks stats::filter()
 ## ✖ readr::guess_encoding() masks rvest::guess_encoding()
 ## ✖ dplyr::lag()            masks stats::lag()
@@ -153,31 +153,31 @@ latam_pop$country[17:nrow(latam_pop)]</code></pre>
 ## [10] &quot;Saint Barthélemy&quot;</code></pre>
 <p>Another common problem with webscraped tables: are the numbers encoded as strings? Probably so.</p>
 <pre class="r"><code>latam_pop$official_pop</code></pre>
-<pre><code>##  [1] &quot;210,585,000&quot; &quot;122,273,473&quot; &quot;50,174,000&quot;  &quot;43,590,368&quot;  &quot;31,488,625&quot; 
-##  [6] &quot;31,028,637&quot;  &quot;18,191,884&quot;  &quot;17,220,700&quot;  &quot;16,176,133&quot;  &quot;11,238,317&quot; 
+<pre><code>##  [1] &quot;210,658,000&quot; &quot;122,273,473&quot; &quot;50,197,000&quot;  &quot;43,590,368&quot;  &quot;31,488,625&quot; 
+##  [6] &quot;31,028,637&quot;  &quot;18,191,884&quot;  &quot;17,231,900&quot;  &quot;16,176,133&quot;  &quot;11,238,317&quot; 
 ## [11] &quot;10,911,819&quot;  &quot;10,985,059&quot;  &quot;10,075,045&quot;  &quot;8,576,500&quot;   &quot;6,854,536&quot;  
 ## [16] &quot;6,071,045&quot;   &quot;6,520,675&quot;   &quot;4,832,234&quot;   &quot;3,764,166&quot;   &quot;3,548,397&quot;  
 ## [21] &quot;3,480,222&quot;   &quot;403,314&quot;     &quot;388,364&quot;     &quot;239,648&quot;     &quot;35,742&quot;     
 ## [26] &quot;9,131&quot;</code></pre>
 <pre class="r"><code>str(latam_pop$official_pop)</code></pre>
-<pre><code>##  chr [1:26] &quot;210,585,000&quot; &quot;122,273,473&quot; &quot;50,174,000&quot; &quot;43,590,368&quot; ...</code></pre>
+<pre><code>##  chr [1:26] &quot;210,658,000&quot; &quot;122,273,473&quot; &quot;50,197,000&quot; &quot;43,590,368&quot; ...</code></pre>
 <p>Yep. So let’s replace the commas with nothing and use <code>as.numeric()</code> to make the result actually numeric.</p>
 <pre class="r"><code>latam_pop &lt;- latam_pop %&gt;% 
     mutate(official_pop = str_replace_all(official_pop, &quot;,&quot;, &quot;&quot;) %&gt;%
                as.numeric())
 
 latam_pop$official_pop</code></pre>
-<pre><code>##  [1] 210585000 122273473  50174000  43590368  31488625  31028637  18191884
-##  [8]  17220700  16176133  11238317  10911819  10985059  10075045   8576500
+<pre><code>##  [1] 210658000 122273473  50197000  43590368  31488625  31028637  18191884
+##  [8]  17231900  16176133  11238317  10911819  10985059  10075045   8576500
 ## [15]   6854536   6071045   6520675   4832234   3764166   3548397   3480222
 ## [22]    403314    388364    239648     35742      9131</code></pre>
 <pre class="r"><code>str(latam_pop$official_pop)</code></pre>
 <pre><code>##  num [1:26] 2.11e+08 1.22e+08 5.02e+07 4.36e+07 3.15e+07 ...</code></pre>
 <p>One last issue is to get the dates for these population figures into POSIXct format. This is complicated a bit by the fact for some countries we only have a year rather than a full date:</p>
 <pre class="r"><code>latam_pop$date_pop</code></pre>
-<pre><code>##  [1] &quot;March 9, 2019&quot;     &quot;July 1, 2016&quot;      &quot;March 9, 2019&quot;    
+<pre><code>##  [1] &quot;March 25, 2019&quot;    &quot;July 1, 2016&quot;      &quot;March 25, 2019&quot;   
 ##  [4] &quot;July 1, 2016&quot;      &quot;June 30, 2016&quot;     &quot;2016&quot;             
-##  [7] &quot;2016&quot;              &quot;March 9, 2019&quot;     &quot;July 1, 2015&quot;     
+##  [7] &quot;2016&quot;              &quot;March 25, 2019&quot;    &quot;July 1, 2015&quot;     
 ## [10] &quot;December 31, 2014&quot; &quot;2015&quot;              &quot;2016&quot;             
 ## [13] &quot;2016&quot;              &quot;July 1, 2015&quot;      &quot;2016&quot;             
 ## [16] &quot;June 30, 2012&quot;     &quot;2016&quot;              &quot;June 30, 2015&quot;    
@@ -193,8 +193,8 @@ latam_pop$official_pop</code></pre>
                                                          &quot;m d, y&quot;)))
 
 latam_pop$date_pop</code></pre>
-<pre><code>##  [1] &quot;2019-03-09 UTC&quot; &quot;2016-07-01 UTC&quot; &quot;2019-03-09 UTC&quot; &quot;2016-07-01 UTC&quot;
-##  [5] &quot;2016-06-30 UTC&quot; &quot;2016-01-01 UTC&quot; &quot;2016-01-01 UTC&quot; &quot;2019-03-09 UTC&quot;
+<pre><code>##  [1] &quot;2019-03-25 UTC&quot; &quot;2016-07-01 UTC&quot; &quot;2019-03-25 UTC&quot; &quot;2016-07-01 UTC&quot;
+##  [5] &quot;2016-06-30 UTC&quot; &quot;2016-01-01 UTC&quot; &quot;2016-01-01 UTC&quot; &quot;2019-03-25 UTC&quot;
 ##  [9] &quot;2015-07-01 UTC&quot; &quot;2014-12-31 UTC&quot; &quot;2015-01-01 UTC&quot; &quot;2016-01-01 UTC&quot;
 ## [13] &quot;2016-01-01 UTC&quot; &quot;2015-07-01 UTC&quot; &quot;2016-01-01 UTC&quot; &quot;2012-06-30 UTC&quot;
 ## [17] &quot;2016-01-01 UTC&quot; &quot;2015-06-30 UTC&quot; &quot;2015-07-01 UTC&quot; &quot;2014-07-01 UTC&quot;
@@ -284,25 +284,25 @@ chapter_links &lt;- tibble(chapter_title = chapter_nodes %&gt;%
                             html_node(&quot;a&quot;) %&gt;% 
                             html_attr(&quot;href&quot;) %&gt;% 
                             str_replace(&quot;\\.\\.&quot;,
-                                        &quot;https://www.armstat.am/en&quot;)) %&gt;% 
+                                        &quot;https://www.armstat.am&quot;)) %&gt;% 
     fill(chapter_title) %&gt;% 
     distinct() %&gt;% 
     filter(!is.na(chapter_link))
     
 chapter_links</code></pre>
 <pre><code>## # A tibble: 10 x 2
-##    chapter_title                         chapter_link                      
-##    &lt;chr&gt;                                 &lt;chr&gt;                             
-##  1 &quot;  &quot;                                  https://www.armstat.am/en/file/ar…
-##  2 cover  page                           https://www.armstat.am/en/file/ar…
-##  3 contents                              https://www.armstat.am/en/file/ar…
-##  4 introduction                          https://www.armstat.am/en/file/ar…
-##  5 &quot;social-economic indicators &quot;         https://www.armstat.am/en/file/ar…
-##  6 prices and  price indexes             https://www.armstat.am/en/file/ar…
-##  7 availability of  food                 https://www.armstat.am/en/file/ar…
-##  8 &quot;forest maintenance, protection and … https://www.armstat.am/en/file/ar…
-##  9 accessibility of food                 https://www.armstat.am/en/file/ar…
-## 10 utilization of food                   https://www.armstat.am/en/file/ar…</code></pre>
+##    chapter_title                          chapter_link                     
+##    &lt;chr&gt;                                  &lt;chr&gt;                            
+##  1 &quot;  &quot;                                   https://www.armstat.am/file/arti…
+##  2 cover  page                            https://www.armstat.am/file/arti…
+##  3 contents                               https://www.armstat.am/file/arti…
+##  4 introduction                           https://www.armstat.am/file/arti…
+##  5 &quot;social-economic indicators &quot;          https://www.armstat.am/file/arti…
+##  6 prices and  price indexes              https://www.armstat.am/file/arti…
+##  7 availability of  food                  https://www.armstat.am/file/arti…
+##  8 &quot;forest maintenance, protection and r… https://www.armstat.am/file/arti…
+##  9 accessibility of food                  https://www.armstat.am/file/arti…
+## 10 utilization of food                    https://www.armstat.am/file/arti…</code></pre>
 <p>Of course, we just want the “accessibility of food” chapter, and, in fact, really just the link rather than a tibble:</p>
 <pre class="r"><code>accessibilty_chapter &lt;- chapter_links %&gt;% 
     filter(str_detect(chapter_title, &quot;accessibility&quot;))
@@ -311,12 +311,12 @@ accessibilty_chapter</code></pre>
 <pre><code>## # A tibble: 1 x 2
 ##   chapter_title         chapter_link                                       
 ##   &lt;chr&gt;                 &lt;chr&gt;                                              
-## 1 accessibility of food https://www.armstat.am/en/file/article/f_sec_4_201…</code></pre>
+## 1 accessibility of food https://www.armstat.am/file/article/f_sec_4_2018_5…</code></pre>
 <pre class="r"><code>just_the_link &lt;- accessibilty_chapter %&gt;% 
         pull(chapter_link)
 
 just_the_link</code></pre>
-<pre><code>## [1] &quot;https://www.armstat.am/en/file/article/f_sec_4_2018_5.pdf&quot;</code></pre>
+<pre><code>## [1] &quot;https://www.armstat.am/file/article/f_sec_4_2018_5.pdf&quot;</code></pre>
 <p>All right, so now we’re going to take everything we just did to get the link for the first report’s accessibility chapter and wrap it into a function that takes a report link and returns <code>just_the_link</code> for the accessibilty chapter:</p>
 <pre class="r"><code>get_chapter_link &lt;- function(report_link) {
     chapter_nodes &lt;- read_html(report_link) %&gt;% 

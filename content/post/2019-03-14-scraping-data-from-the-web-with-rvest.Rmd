@@ -248,7 +248,7 @@ chapter_links <- tibble(chapter_title = chapter_nodes %>%
                             html_node("a") %>% 
                             html_attr("href") %>% 
                             str_replace("\\.\\.",
-                                        "https://www.armstat.am/en")) %>% 
+                                        "https://www.armstat.am")) %>% 
     fill(chapter_title) %>% 
     distinct() %>% 
     filter(!is.na(chapter_link))
