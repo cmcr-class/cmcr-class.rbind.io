@@ -1,0 +1,237 @@
+---
+title: Text Mining the Brexit Indicative Votes Debates, the Tidy Way
+author: Frederick Solt
+date: '2019-04-01'
+slug: text-mining-brexit
+tags:
+  - note
+output:
+  html_document:
+    self_contained: yes
+---
+
+```{r get_debates}
+library(tidyverse)
+library(xml2)
+
+# get info on MPs via theyworkforyou.com CSV, but archived on archive.org for reproducibility
+mps <- read_csv("https://web.archive.org/web/20190402005606/https://www.theyworkforyou.com/mps/?f=csv") %>% 
+    janitor::clean_names()
+
+get_twfy_debate <- function(xml_address) {
+    speech_attrs <- read_xml(xml_address) %>%
+    xml_find_all("//speech") %>% 
+    xml_attrs() %>% 
+    map_df(function(x) data.frame(as.list(x), stringsAsFactors = FALSE))
+    
+    speeches <- read_xml(xml_address) %>%
+    xml_find_all("//speech") %>% 
+    xml_text()
+    
+    debate <- speech_attrs %>% 
+        mutate(speech = speeches, 
+               date = str_extract(xml_address, "(?<=debates)[\\d-]{10}"),
+               nospeaker = if_else(is.na(nospeaker), FALSE, TRUE),
+               person_id = as.numeric(str_extract(person_id, "\\d+$"))) %>% 
+        filter(!nospeaker) %>% 
+        left_join(mps %>% select(person_id, party), by = "person_id") %>% 
+        select(id, colnum, date, time, person_id, speakername, party, speech)
+    
+    return(debate)
+}
+
+march27 <- "https://www.theyworkforyou.com/pwdata/scrapedxml/debates/debates2019-03-27b.xml"
+march29 <- "https://www.theyworkforyou.com/pwdata/scrapedxml/debates/debates2019-03-29a.xml"
+
+debate27 <- get_twfy_debate(march27)
+debate29 <- get_twfy_debate(march29)
+
+```
+
+
+
+
+
+```{r tokenize}
+library(tidytext)
+
+tidy_debate <- debate29 %>% 
+    mutate(speech = str_replace_all(speech, "rticle\\s+50", "rticle50") %>% 
+               str_replace_all("[Pp]rime\\s+[Mm]inister", "pm") %>% 
+               str_replace_all("[Uu]nited\\s+[Kk]ingdom", "uk") %>% 
+               str_replace_all("[Ee]uropean\\s+[Uu]nion", "eu") %>% 
+               str_replace_all("[Ww]ithdrawal\\s+[Aa]greement", "wa") %>% 
+               str_replace_all("[Nn]o\\s+[Dd]eal", "no_deal"),
+           party = str_replace(party, "/Co-operative", "") %>% 
+               str_replace("Scottish National Party", "SNP")) %>% 
+    unnest_tokens(output = word, input = speech)
+
+data("stop_words")
+
+tidy_debate <- tidy_debate %>% 
+    anti_join(stop_words, by = "word") %>% 
+    filter(!(word == "hon" | word == "house" | word == "friend")) # Parliamentary stopwords
+```
+
+```{r word_count}
+tidy_debate %>%
+    count(word, sort = TRUE) %>%
+    mutate(word = reorder(word, n)) %>%
+    slice(1:25) %>% 
+    ggplot(aes(word, n)) +
+    geom_col() +
+    xlab(NULL) +
+    coord_flip()
+
+```
+
+
+
+```{r by_party}
+tidy_debate_by_party <- tidy_debate %>%
+    group_by(party) %>% 
+    count(word, sort = TRUE) %>%
+    mutate(word = reorder(word, n),
+           party_rank = row_number()) %>%
+    ungroup()
+```
+
+```{r words_con}
+tidy_debate_con <- tidy_debate_by_party %>% 
+    filter(party == "Conservative")
+
+tidy_debate_con %>%
+    filter(party_rank <= 25) %>% 
+    mutate(word = reorder(word, n)) %>%
+    ggplot(aes(word, n)) +
+    geom_col(fill = "#0087DC") +  # https://en.wikipedia.org/wiki/Wikipedia:Index_of_United_Kingdom_political_parties_meta_attributes
+    xlab(NULL) +
+    coord_flip()
+```
+
+```{r words_lab}
+tidy_debate_lab <- tidy_debate_by_party %>% 
+    filter(party == "Labour")
+
+tidy_debate_lab %>%
+    filter(party_rank <= 25) %>% 
+    mutate(word = reorder(word, n)) %>%
+    ggplot(aes(word, n)) +
+    geom_col(fill = "#b22222") +
+    xlab(NULL) +
+    coord_flip()
+```
+
+```{r words_snp}
+tidy_debate_snp <- tidy_debate_by_party %>% 
+    filter(party == "SNP")
+
+tidy_debate_snp %>%
+    filter(party_rank <= 25) %>% 
+    mutate(word = reorder(word, n)) %>%
+    ggplot(aes(word, n)) +
+    geom_col(fill = "#FEF987") +
+    xlab(NULL) +
+    coord_flip()
+```
+
+```{r words_tig}
+tidy_debate_tig <- tidy_debate_by_party %>% 
+    filter(party == "Independent")
+
+tidy_debate_tig %>%
+    filter(party_rank <= 25) %>% 
+    mutate(word = reorder(word, n)) %>% 
+    ggplot(aes(word, n)) +
+    geom_col() +
+    xlab(NULL) +
+    coord_flip()
+```
+
+```{r freq_by_party}
+frequency <- tidy_debate %>% 
+  group_by(party) %>% 
+  count(word, sort = TRUE) %>% 
+  left_join(tidy_debate %>% 
+              group_by(party) %>% 
+              summarise(total = n()), by = "party") %>%
+  mutate(freq = n/total) %>% 
+  select(party, word, freq) %>% 
+  spread(party, freq) %>% 
+    arrange(-Conservative, -Labour)
+
+ggplot(frequency, aes(Labour, Conservative)) +
+  geom_jitter(alpha = 0.1, size = 2.5, width = 0.25, height = 0.25) +
+  geom_text(aes(label = word), check_overlap = TRUE, vjust = 1.5) +
+  scale_x_log10(labels = scales::percent_format()) +
+  scale_y_log10(labels = scales::percent_format()) +
+  geom_abline(color = "red")
+
+```
+
+
+
+
+
+```{r ratios}
+word_ratios <- tidy_debate %>%
+    filter(party == "Conservative" | party == "Labour") %>% 
+  count(word, party) %>%
+  group_by(word) %>%
+  filter(sum(n) >= 10) %>%
+  ungroup() %>%
+  spread(party, n, fill = 0) %>%
+  mutate_if(is.numeric, funs((. + 1) / (sum(.) + 1))) %>%
+  mutate(logratio = log(Conservative / Labour)) %>%
+  arrange(desc(logratio))
+
+word_ratios %>%
+  group_by(logratio < 0) %>%
+  top_n(15, abs(logratio)) %>%
+  ungroup() %>%
+  mutate(word = reorder(word, logratio)) %>%
+  ggplot(aes(word, logratio, fill = logratio < 0)) +
+  geom_col(show.legend = FALSE) +
+  coord_flip() +
+  ylab("log odds ratio (Conservative/Labour)") +
+  scale_fill_discrete(name = "", labels = c("Conservative", "Labour"))
+```
+
+
+
+```{r tf_idf}
+tf_idf <- tidy_debate %>%
+    count(party, word, sort = TRUE) %>% 
+    filter(n > 5) %>% 
+    bind_tf_idf(word, party, n) %>%
+    arrange(desc(tf_idf))
+    
+
+tf_idf %>%
+  group_by(party) %>%
+  top_n(12, tf_idf) %>%
+  ungroup() %>%
+  mutate(word = reorder(word, tf_idf)) %>%
+  ggplot(aes(word, tf_idf, fill = party)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~ party, scales = "free") +
+  ylab("tf-idf") +
+  coord_flip()
+```
+
+
+```{r sentiment}
+debate_sentiments <- tidy_debate %>%
+    count(party, word, sort = TRUE) %>%
+    inner_join(get_sentiments("afinn"), by = "word") %>%
+    group_by(party) %>%
+    summarize(score = sum(score * n) / sum(n))
+
+debate_sentiments %>%
+  mutate(party = reorder(party, score)) %>%
+  ggplot(aes(party, score, fill = score > 0)) +
+  geom_col(show.legend = FALSE) +
+  coord_flip() +
+  ylab("Average sentiment score")
+
+```
