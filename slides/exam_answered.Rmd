@@ -1,0 +1,196 @@
+---
+title: "Exam"
+author: "Frederick Solt"
+date: "March 11, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Exam
+
+This exam is open-book, open-notes, open-internet.  It is, however, a test of your ability *to complete work on your own*.  Please do not discuss the contents of the exam with your classmates or seek anyone's assistance.  Make all of your work reproducible in this file.
+
+## Practicum
+
+### Import
+
+#### Part A
+The email that included the link to this exam specified a particular Eurobarometer (EB) survey.  Retrieve this survey and its codebook from Gesis using the `gesis` package and then load the dataset into R.
+
+```{r}
+library(gesis)
+library(tidyverse)
+library(haven)
+
+fs <- login(Sys.getenv("GESIS_USER"),
+            Sys.getenv("GESIS_PASS"))
+download_dataset(s = fs, 
+                 doi = "5567", 
+                 purpose = 1) # "1. for scientific research"
+download_codebook(doi = "5567")
+
+eb <- read_dta("ZA5567_v2-0-1.dta")
+```
+
+#### Part B
+Eurostat is the statistics office of the European Commission.  It provides annual data on GDP per capita by country at current market prices in its `tec00001` series.  Scrape this data from the web into R using the method of your choice (it's totally feasible, though a bit tricky, using `rvest`;  there are alternatives). 
+
+Be sure that the GDP per capita variable does not include footnote flags or commas and both year and GDP per capita are numeric variables.  Note: your observations are country-years.  Be sure your result is in tidy format.
+
+![](scrape.png)
+
+```{r}
+library(rvest)
+library(countrycode)
+
+gdp <- read_html("http://ec.europa.eu/eurostat/tgm/refreshTableAction.do?tab=table&plugin=1&pcode=tec00001&language=en") 
+
+countries <- gdp %>% 
+    html_table() %>% 
+    nth(5) %>% 
+    pull(`EU (28 countries)`)
+
+years <- gdp %>%
+    html_table() %>% 
+    nth(4) %>% 
+    names()
+
+gdp_rvest <- gdp %>% 
+    html_table() %>% 
+    last() %>% 
+    as_tibble() %>% 
+    rename_at(vars(str_c("X", 1:length(years))), ~ years) %>% 
+    mutate(country_name = c("EU (28 countries)", countries)) %>% 
+    filter(!str_detect(country_name, "EU|Euro")) %>% 
+    gather(key = year, value = gdppc, -country_name) %>% 
+    transmute(country = countrycode(country_name, 
+                                    "country.name", "country.name"),
+              year = as.numeric(year),
+              gdppc = str_replace_all(gdppc, "\\D", "") %>% as.numeric()) %>% 
+    arrange(country, year) %>% 
+    filter(!is.na(gdppc))
+
+gdp_eurostat <- eurostat::get_eurostat("tec00001", time_format = "num") %>% 
+    filter(unit == "CP_EUR_HAB") %>% 
+    transmute(country = countrycode(str_replace(geo, "UK", "GB") %>%
+                                        str_replace("EL", "GR"),
+                                    "iso2c", "country.name"),
+           year = time,
+           gdppc = values) %>% 
+    filter(!is.na(country))
+
+```
+
+### Transform
+
+#### Part A
+From your EB survey dataset, generate a working dataset that includes only the following variables for each respondent (R).  Be sure to correctly identify any missing data and code it appropriately (i.e., as `NA`).
+
+Variable        | Description
+----------------|---------------------------------
+country_code    | R's country's two-letter ISO 3166 code (note: *not* ISO 3166-2)
+country_name    | R's country's name (hint: use the `countrycode` package)
+age_yrs         | R's age in years, bottom-coded at 15, top-coded at 99
+educ_9_17       | R's years of education, bottom-coded at 9, top-coded at 17
+female2         | R's (binary) sex, coded 1 if female, 0 if male
+married2        | R's marital status, coded 1 if currently married, 0 if not
+children4       | R's number of children, top-coded at 4
+rural2          | Is R's household in rural area or village? 1 if yes, 0 if no
+employed2       | Is R currently employed or self-employed? 1 if yes, 0 if no
+poldisc2        | When with friends, does R discuss political matters frequently? 1 if yes, 0 if no
+
+```{r}
+eb1 <- eb %>%
+    transmute(country_code = str_replace(isocntry, "-\\w*", ""),
+              country_name = countrycode(country_code, "iso2c", "country.name"),
+              age_yrs = if_else(between(d11, 15, 99), d11, NA_real_),
+              educ_9_17 = case_when(between(d8r1, 1, 9) ~ d8r1 + 8, 
+                                  d8r1 == 10 & age_yrs - 5 <= 17 ~  age_yrs - 5,
+                                  d8r1 == 10 & age_yrs - 5 > 17 ~ 17),
+              female2 = if_else(between(d10, 1, 2), d10-1, NA_real_),
+              married2 = case_when(d7r2 == 2 ~ 1,
+                                   (d7r2 == 1 | between(d7r2, 3, 7)) ~ 0),
+              children4 = if_else(d40b + d40c > 4, 4, as.numeric(d40b + d40c)), 
+              rural2 = if_else(between(d25, 1, 3), as.numeric(d25==1), NA_real_),
+              employed2 = as.numeric(d15a>=5),
+              poldisc2 = as.numeric(qa2_1==1))
+
+```
+
+#### Part B
+Using Eurostat's `tec00001` series, generate a cross-sectional dataset that includes the GDP per capita for all available countries for the same year that your EB was conducted.  Then merge this data into your working dataset. (Hint: don't forget to standardize country names!)
+
+```{r}
+eb_data <- gdp_rvest %>% 
+    filter(year == 2014) %>% 
+    right_join(eb1, by = c("country" = "country_name"))
+```
+
+
+### Visualize
+Make a summary of your working dataset that includes the percentage of respondents who indicated they discuss political matters frequently when with friends in each country surveyed.  Plot this percentage against GDP per capita in a scatterplot (if necessary, discard countries for which there is no Eurostat GDP per capita data).
+
+```{r}
+eb_data %>% 
+    group_by(country) %>% 
+    summarise(poldisc2 = mean(poldisc2, na.rm = TRUE),
+              gdppc = mean(gdppc)) %>%
+    ggplot(aes(gdppc, poldisc2)) +
+    geom_point()
+
+```
+
+
+### Model (Bonus)
+Use `lme4::glmer` to estimate a two-level logistic regression model of whether EB respondents report frequently discussing politics with friends.  Your model should include all of the other individual-level variables in your working dataset as controls, plus GDP per capita at the country level. For the purpose of this question, you may use rowwise deletion to deal with missing data---and variables that are completely missing should simply be excluded from the model---even though IRL you would multiply impute. (Hint: use the argument `family = binomial(link = "logit")` with the `glmer` command to get a logistic regression model.)
+
+```{r}
+library(lme4)
+eb_data1 <- eb_data %>%
+    mutate(gdppc_10k = gdppc/10000,
+           age_10yrs = age_yrs/10)
+
+m1 <- glmer(data = eb_data1,
+            formula = poldisc2 ~ gdppc_10k +
+                age_10yrs + 
+                educ_9_17 +
+                female2 +
+                married2 +
+                children4 +
+                rural2 + 
+                employed2 +
+                (1|country),
+            family=binomial(link="logit"))
+
+summary(m1)
+```
+
+> IRL, we'd have to deal with this warning . . .
+
+### Communicate (Bonus)
+Present your results as a dotwhisker plot.  Does this evidence support the hypothesis that people are more likely to frequently discuss political matters if they live in countries with higher GDP per capita?
+
+```{r}
+library(dotwhisker)
+
+m1_df <- broom::tidy(m1) %>% 
+    filter(group=="fixed") %>% 
+    by_2sd(eb_data1)
+
+dwplot(m1_df) %>% 
+     relabel_predictors(gdppc_10k = "GDP per capita", 
+                      age_10yrs = "Age", educ_9_17 = "Education",
+                      female2 = "Female",
+                      married2 = "Married", 
+                      children4 = "Children", 
+                      rural2 = "Rural", 
+                      employed2 = "Employed") +
+     theme_bw() + xlab("Coefficient Estimate") + ylab("") +
+     geom_vline(xintercept = 0, colour = "grey60", linetype = 2) +
+     theme(legend.position="none")
+```
+
+> Nope.
