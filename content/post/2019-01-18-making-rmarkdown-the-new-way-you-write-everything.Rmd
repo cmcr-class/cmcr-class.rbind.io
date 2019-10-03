@@ -36,6 +36,8 @@ install.packages("tinytex")
 tinytex::install_tinytex()
 ```
 
+If you have a Mac, you will also need to [install XQuartz](https://www.xquartz.org) before continuing.
+
 Okay, let's get started!
 
 ## Articles
