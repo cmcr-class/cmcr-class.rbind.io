@@ -32,12 +32,12 @@ output:
 <pre class="r"><code>library(rvest)</code></pre>
 <pre><code>## Loading required package: xml2</code></pre>
 <pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>## ── Attaching packages ───────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
-<pre><code>## ✔ ggplot2 3.1.0       ✔ purrr   0.3.0  
-## ✔ tibble  2.0.1       ✔ dplyr   0.8.0.1
-## ✔ tidyr   0.8.2       ✔ stringr 1.4.0  
-## ✔ readr   1.3.1       ✔ forcats 0.3.0</code></pre>
-<pre><code>## ── Conflicts ──────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+<pre><code>## ── Attaching packages ──────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>## ✔ ggplot2 3.2.1.9000     ✔ purrr   0.3.3     
+## ✔ tibble  2.1.3          ✔ dplyr   0.8.3     
+## ✔ tidyr   1.0.0          ✔ stringr 1.4.0     
+## ✔ readr   1.3.1          ✔ forcats 0.4.0</code></pre>
+<pre><code>## ── Conflicts ─────────── tidyverse_conflicts() ──
 ## ✖ dplyr::filter()         masks stats::filter()
 ## ✖ readr::guess_encoding() masks rvest::guess_encoding()
 ## ✖ dplyr::lag()            masks stats::lag()
@@ -60,7 +60,7 @@ latam_pop</code></pre>
 ##  2 2     Mexico           127,500,000           19.6              1.08
 ##  3 3     Colombia         48,218,000             7.81             1.16
 ##  4 4     Argentina        43,132,000             6.99             1.09
-##  5 5     Peru             31,153,000             5.05             1.1 
+##  5 5     Peru             32,721,300             5.05             1.1 
 ##  6 6     Venezuela        30,620,000             4.96             1.37
 ##  7 7     Chile            18,006,000             2.92             1.05
 ##  8 8     Ecuador          16,279,000             2.64             1.57
@@ -76,16 +76,11 @@ latam_pop</code></pre>
 <h3>Step 3: Wrangle as Needed</h3>
 <p>Nice, clean, tidy data is rare in the wild, and data scraped from the web is definitely wild. So let’s practice our data-wrangling skills here a bit. The column names of tables are usually not suitable for use as variable names, and our Wikipedia population table is not exceptional in this respect:</p>
 <pre class="r"><code>names(latam_pop)</code></pre>
-<pre><code>##  [1] &quot;Rank&quot;                             
-##  [2] &quot;Country(or dependent territory)&quot;  
-##  [3] &quot;July 1, 2015projection[1]&quot;        
-##  [4] &quot;% ofpop.&quot;                         
-##  [5] &quot;Averagerelativeannualgrowth(%)[2]&quot;
-##  [6] &quot;Averageabsoluteannualgrowth[3]&quot;   
-##  [7] &quot;Estimateddoublingtime(Years)[4]&quot;  
-##  [8] &quot;Officialfigure(whereavailable)&quot;   
-##  [9] &quot;Date oflast figure&quot;               
-## [10] &quot;Source&quot;</code></pre>
+<pre><code>##  [1] &quot;Rank&quot;                              &quot;Country(or dependent territory)&quot;  
+##  [3] &quot;July 1, 2015projection[1]&quot;         &quot;% ofpop.&quot;                         
+##  [5] &quot;Averagerelativeannualgrowth(%)[2]&quot; &quot;Averageabsoluteannualgrowth[3]&quot;   
+##  [7] &quot;Estimateddoublingtime(Years)[4]&quot;   &quot;Officialfigure(whereavailable)&quot;   
+##  [9] &quot;Date oflast figure&quot;                &quot;Source&quot;</code></pre>
 <p>These names are problematic because they have embedded spaces and punctuation marks that may cause errors even when the names are wrapped in backticks, which means we need a way of renaming them without even specifying their names the first time, if you see what I mean. One solution is the <code>clean_names()</code> function of the <code>janitor</code> package:<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></p>
 <pre class="r"><code>latam_pop &lt;- latam_pop %&gt;% janitor::clean_names()
 
@@ -108,16 +103,11 @@ names(latam_pop)</code></pre>
     rename(&quot;est_pop_2015&quot; = 3)  # rename the third variable
 
 names(latam_pop)</code></pre>
-<pre><code>##  [1] &quot;Rank&quot;                             
-##  [2] &quot;Country(or dependent territory)&quot;  
-##  [3] &quot;est_pop_2015&quot;                     
-##  [4] &quot;% ofpop.&quot;                         
-##  [5] &quot;Averagerelativeannualgrowth(%)[2]&quot;
-##  [6] &quot;Averageabsoluteannualgrowth[3]&quot;   
-##  [7] &quot;Estimateddoublingtime(Years)[4]&quot;  
-##  [8] &quot;Officialfigure(whereavailable)&quot;   
-##  [9] &quot;Date oflast figure&quot;               
-## [10] &quot;Source&quot;</code></pre>
+<pre><code>##  [1] &quot;Rank&quot;                              &quot;Country(or dependent territory)&quot;  
+##  [3] &quot;est_pop_2015&quot;                      &quot;% ofpop.&quot;                         
+##  [5] &quot;Averagerelativeannualgrowth(%)[2]&quot; &quot;Averageabsoluteannualgrowth[3]&quot;   
+##  [7] &quot;Estimateddoublingtime(Years)[4]&quot;   &quot;Officialfigure(whereavailable)&quot;   
+##  [9] &quot;Date oflast figure&quot;                &quot;Source&quot;</code></pre>
 <p>An intermediate option is to assign a complete vector of names (that is, one for every variable):</p>
 <pre class="r"><code>names(latam_pop) &lt;- c(&quot;rank&quot;, &quot;country&quot;, &quot;est_pop_2015&quot;,
                       &quot;percent_latam&quot;, &quot;annual_growth_rate&quot;,
@@ -147,37 +137,36 @@ names(latam_pop)</code></pre>
     filter(!country==&quot;Total&quot;)
 
 latam_pop$country[17:nrow(latam_pop)]</code></pre>
-<pre><code>##  [1] &quot;El Salvador&quot;      &quot;Costa Rica&quot;       &quot;Panama&quot;          
-##  [4] &quot;Puerto Rico&quot;      &quot;Uruguay&quot;          &quot;Guadeloupe&quot;      
-##  [7] &quot;Martinique&quot;       &quot;French Guiana&quot;    &quot;Saint Martin&quot;    
-## [10] &quot;Saint Barthélemy&quot;</code></pre>
+<pre><code>##  [1] &quot;El Salvador&quot;      &quot;Costa Rica&quot;       &quot;Panama&quot;           &quot;Puerto Rico&quot;     
+##  [5] &quot;Uruguay&quot;          &quot;Guadeloupe&quot;       &quot;Martinique&quot;       &quot;French Guiana&quot;   
+##  [9] &quot;Saint Martin&quot;     &quot;Saint Barthélemy&quot;</code></pre>
 <p>Another common problem with webscraped tables: are the numbers encoded as strings? Probably so.</p>
 <pre class="r"><code>latam_pop$official_pop</code></pre>
-<pre><code>##  [1] &quot;210,658,000&quot; &quot;122,273,473&quot; &quot;50,197,000&quot;  &quot;43,590,368&quot;  &quot;31,488,625&quot; 
-##  [6] &quot;31,028,637&quot;  &quot;18,191,884&quot;  &quot;17,231,900&quot;  &quot;16,176,133&quot;  &quot;11,238,317&quot; 
+<pre><code>##  [1] &quot;212,436,000&quot; &quot;122,273,473&quot; &quot;50,767,000&quot;  &quot;43,590,368&quot;  &quot;31,488,625&quot; 
+##  [6] &quot;31,028,637&quot;  &quot;18,191,884&quot;  &quot;17,504,400&quot;  &quot;16,176,133&quot;  &quot;11,238,317&quot; 
 ## [11] &quot;10,911,819&quot;  &quot;10,985,059&quot;  &quot;10,075,045&quot;  &quot;8,576,500&quot;   &quot;6,854,536&quot;  
 ## [16] &quot;6,071,045&quot;   &quot;6,520,675&quot;   &quot;4,832,234&quot;   &quot;3,764,166&quot;   &quot;3,548,397&quot;  
 ## [21] &quot;3,480,222&quot;   &quot;403,314&quot;     &quot;388,364&quot;     &quot;239,648&quot;     &quot;35,742&quot;     
 ## [26] &quot;9,131&quot;</code></pre>
 <pre class="r"><code>str(latam_pop$official_pop)</code></pre>
-<pre><code>##  chr [1:26] &quot;210,658,000&quot; &quot;122,273,473&quot; &quot;50,197,000&quot; &quot;43,590,368&quot; ...</code></pre>
+<pre><code>##  chr [1:26] &quot;212,436,000&quot; &quot;122,273,473&quot; &quot;50,767,000&quot; &quot;43,590,368&quot; ...</code></pre>
 <p>Yep. So let’s replace the commas with nothing and use <code>as.numeric()</code> to make the result actually numeric.</p>
 <pre class="r"><code>latam_pop &lt;- latam_pop %&gt;% 
     mutate(official_pop = str_replace_all(official_pop, &quot;,&quot;, &quot;&quot;) %&gt;%
                as.numeric())
 
 latam_pop$official_pop</code></pre>
-<pre><code>##  [1] 210658000 122273473  50197000  43590368  31488625  31028637  18191884
-##  [8]  17231900  16176133  11238317  10911819  10985059  10075045   8576500
+<pre><code>##  [1] 212436000 122273473  50767000  43590368  31488625  31028637  18191884
+##  [8]  17504400  16176133  11238317  10911819  10985059  10075045   8576500
 ## [15]   6854536   6071045   6520675   4832234   3764166   3548397   3480222
 ## [22]    403314    388364    239648     35742      9131</code></pre>
 <pre class="r"><code>str(latam_pop$official_pop)</code></pre>
-<pre><code>##  num [1:26] 2.11e+08 1.22e+08 5.02e+07 4.36e+07 3.15e+07 ...</code></pre>
+<pre><code>##  num [1:26] 2.12e+08 1.22e+08 5.08e+07 4.36e+07 3.15e+07 ...</code></pre>
 <p>One last issue is to get the dates for these population figures into POSIXct format. This is complicated a bit by the fact for some countries we only have a year rather than a full date:</p>
 <pre class="r"><code>latam_pop$date_pop</code></pre>
-<pre><code>##  [1] &quot;March 25, 2019&quot;    &quot;July 1, 2016&quot;      &quot;March 25, 2019&quot;   
+<pre><code>##  [1] &quot;April 19, 2020&quot;    &quot;July 1, 2016&quot;      &quot;April 19, 2020&quot;   
 ##  [4] &quot;July 1, 2016&quot;      &quot;June 30, 2016&quot;     &quot;2016&quot;             
-##  [7] &quot;2016&quot;              &quot;March 25, 2019&quot;    &quot;July 1, 2015&quot;     
+##  [7] &quot;2016&quot;              &quot;April 19, 2020&quot;    &quot;July 1, 2015&quot;     
 ## [10] &quot;December 31, 2014&quot; &quot;2015&quot;              &quot;2016&quot;             
 ## [13] &quot;2016&quot;              &quot;July 1, 2015&quot;      &quot;2016&quot;             
 ## [16] &quot;June 30, 2012&quot;     &quot;2016&quot;              &quot;June 30, 2015&quot;    
@@ -193,8 +182,8 @@ latam_pop$official_pop</code></pre>
                                                          &quot;m d, y&quot;)))
 
 latam_pop$date_pop</code></pre>
-<pre><code>##  [1] &quot;2019-03-25 UTC&quot; &quot;2016-07-01 UTC&quot; &quot;2019-03-25 UTC&quot; &quot;2016-07-01 UTC&quot;
-##  [5] &quot;2016-06-30 UTC&quot; &quot;2016-01-01 UTC&quot; &quot;2016-01-01 UTC&quot; &quot;2019-03-25 UTC&quot;
+<pre><code>##  [1] &quot;2020-04-19 UTC&quot; &quot;2016-07-01 UTC&quot; &quot;2020-04-19 UTC&quot; &quot;2016-07-01 UTC&quot;
+##  [5] &quot;2016-06-30 UTC&quot; &quot;2016-01-01 UTC&quot; &quot;2016-01-01 UTC&quot; &quot;2020-04-19 UTC&quot;
 ##  [9] &quot;2015-07-01 UTC&quot; &quot;2014-12-31 UTC&quot; &quot;2015-01-01 UTC&quot; &quot;2016-01-01 UTC&quot;
 ## [13] &quot;2016-01-01 UTC&quot; &quot;2015-07-01 UTC&quot; &quot;2016-01-01 UTC&quot; &quot;2012-06-30 UTC&quot;
 ## [17] &quot;2016-01-01 UTC&quot; &quot;2015-06-30 UTC&quot; &quot;2015-07-01 UTC&quot; &quot;2014-07-01 UTC&quot;
@@ -246,22 +235,23 @@ reports_links &lt;- tibble(report_title = reports_nodes %&gt;%
                !str_detect(report_title, &quot;armenian&quot;))
 
 reports_links</code></pre>
-<pre><code>## # A tibble: 13 x 2
-##    report_title                             report_link                    
-##    &lt;chr&gt;                                    &lt;chr&gt;                          
-##  1 food  security  and  poverty, january-d… https://www.armstat.am/en/?nid…
-##  2 food  security  and  poverty, january-d… https://www.armstat.am/en/?nid…
-##  3 food  security  and  poverty, january-d… https://www.armstat.am/en/?nid…
-##  4 food  security  and  poverty, january-d… https://www.armstat.am/en/?nid…
-##  5 food  security  and  poverty, january-d… https://www.armstat.am/en/?nid…
-##  6 food  security  and  poverty, january-d… https://www.armstat.am/en/?nid…
-##  7 food  security  and  poverty, january-d… https://www.armstat.am/en/?nid…
-##  8 food  security  and  poverty, january-d… https://www.armstat.am/en/?nid…
-##  9 food  security  and  poverty, january-d… https://www.armstat.am/en/?nid…
-## 10 food  security  and  poverty, january-d… https://www.armstat.am/en/?nid…
-## 11 food  security  and  poverty, january- … https://www.armstat.am/en/?nid…
-## 12 food security and poverty january-decem… https://www.armstat.am/en/?nid…
-## 13 food security and poverty january-decem… https://www.armstat.am/en/?nid…</code></pre>
+<pre><code>## # A tibble: 14 x 2
+##    report_title                                report_link                      
+##    &lt;chr&gt;                                       &lt;chr&gt;                            
+##  1 food  security  and  poverty, january-dece… https://www.armstat.am/en/?nid=8…
+##  2 food  security  and  poverty, january-dece… https://www.armstat.am/en/?nid=8…
+##  3 food  security  and  poverty, january-dece… https://www.armstat.am/en/?nid=8…
+##  4 food  security  and  poverty, january-dece… https://www.armstat.am/en/?nid=8…
+##  5 food  security  and  poverty, january-dece… https://www.armstat.am/en/?nid=8…
+##  6 food  security  and  poverty, january-dece… https://www.armstat.am/en/?nid=8…
+##  7 food  security  and  poverty, january-dece… https://www.armstat.am/en/?nid=8…
+##  8 food  security  and  poverty, january-dece… https://www.armstat.am/en/?nid=8…
+##  9 food  security  and  poverty, january-dece… https://www.armstat.am/en/?nid=8…
+## 10 food  security  and  poverty, january-dece… https://www.armstat.am/en/?nid=8…
+## 11 food  security  and  poverty, january-dece… https://www.armstat.am/en/?nid=8…
+## 12 food  security  and  poverty, january- dec… https://www.armstat.am/en/?nid=8…
+## 13 food security and poverty january-december… https://www.armstat.am/en/?nid=8…
+## 14 food security and poverty january-december… https://www.armstat.am/en/?nid=8…</code></pre>
 </div>
 <div id="step-2-getting-the-links-to-the-chapter-files" class="section level3">
 <h3>Step 2: Getting the Links to the Chapter Files</h3>
@@ -291,32 +281,32 @@ chapter_links &lt;- tibble(chapter_title = chapter_nodes %&gt;%
     
 chapter_links</code></pre>
 <pre><code>## # A tibble: 10 x 2
-##    chapter_title                          chapter_link                     
-##    &lt;chr&gt;                                  &lt;chr&gt;                            
-##  1 &quot;  &quot;                                   https://www.armstat.am/file/arti…
-##  2 cover  page                            https://www.armstat.am/file/arti…
-##  3 contents                               https://www.armstat.am/file/arti…
-##  4 introduction                           https://www.armstat.am/file/arti…
-##  5 &quot;social-economic indicators &quot;          https://www.armstat.am/file/arti…
-##  6 prices and  price indexes              https://www.armstat.am/file/arti…
-##  7 availability of  food                  https://www.armstat.am/file/arti…
-##  8 &quot;forest maintenance, protection and r… https://www.armstat.am/file/arti…
-##  9 accessibility of food                  https://www.armstat.am/file/arti…
-## 10 utilization of food                    https://www.armstat.am/file/arti…</code></pre>
+##    chapter_title                             chapter_link                       
+##    &lt;chr&gt;                                     &lt;chr&gt;                              
+##  1 &quot;  &quot;                                      https://www.armstat.am/file/articl…
+##  2 cover  page                               https://www.armstat.am/file/articl…
+##  3 contents                                  https://www.armstat.am/file/articl…
+##  4 introduction                              https://www.armstat.am/file/articl…
+##  5 &quot;social-economic indicators &quot;             https://www.armstat.am/file/articl…
+##  6 prices and  price indexes                 https://www.armstat.am/file/articl…
+##  7 availability of  food                     https://www.armstat.am/file/articl…
+##  8 &quot;forest maintenance, protection and refo… https://www.armstat.am/file/articl…
+##  9 accessibility of food                     https://www.armstat.am/file/articl…
+## 10 utilization of food                       https://www.armstat.am/file/articl…</code></pre>
 <p>Of course, we just want the “accessibility of food” chapter, and, in fact, really just the link rather than a tibble:</p>
 <pre class="r"><code>accessibilty_chapter &lt;- chapter_links %&gt;% 
     filter(str_detect(chapter_title, &quot;accessibility&quot;))
 
 accessibilty_chapter</code></pre>
 <pre><code>## # A tibble: 1 x 2
-##   chapter_title         chapter_link                                       
-##   &lt;chr&gt;                 &lt;chr&gt;                                              
-## 1 accessibility of food https://www.armstat.am/file/article/f_sec_4_2018_5…</code></pre>
+##   chapter_title         chapter_link                                          
+##   &lt;chr&gt;                 &lt;chr&gt;                                                 
+## 1 accessibility of food https://www.armstat.am/file/article/f_sec_4_2019_5.pdf</code></pre>
 <pre class="r"><code>just_the_link &lt;- accessibilty_chapter %&gt;% 
         pull(chapter_link)
 
 just_the_link</code></pre>
-<pre><code>## [1] &quot;https://www.armstat.am/file/article/f_sec_4_2018_5.pdf&quot;</code></pre>
+<pre><code>## [1] &quot;https://www.armstat.am/file/article/f_sec_4_2019_5.pdf&quot;</code></pre>
 <p>All right, so now we’re going to take everything we just did to get the link for the first report’s accessibility chapter and wrap it into a function that takes a report link and returns <code>just_the_link</code> for the accessibilty chapter:</p>
 <pre class="r"><code>get_chapter_link &lt;- function(report_link) {
     chapter_nodes &lt;- read_html(report_link) %&gt;% 
@@ -347,27 +337,28 @@ just_the_link</code></pre>
     mutate(chapter_link = map_chr(report_link, get_chapter_link))
 
 reports_links</code></pre>
-<pre><code>## # A tibble: 13 x 3
-##    report_title             report_link          chapter_link              
-##    &lt;chr&gt;                    &lt;chr&gt;                &lt;chr&gt;                     
-##  1 food  security  and  po… https://www.armstat… https://www.armstat.am/fi…
-##  2 food  security  and  po… https://www.armstat… https://www.armstat.am/fi…
-##  3 food  security  and  po… https://www.armstat… https://www.armstat.am/fi…
-##  4 food  security  and  po… https://www.armstat… https://www.armstat.am/fi…
-##  5 food  security  and  po… https://www.armstat… https://www.armstat.am/fi…
-##  6 food  security  and  po… https://www.armstat… https://www.armstat.am/fi…
-##  7 food  security  and  po… https://www.armstat… https://www.armstat.am/fi…
-##  8 food  security  and  po… https://www.armstat… https://www.armstat.am/fi…
-##  9 food  security  and  po… https://www.armstat… https://www.armstat.am/fi…
-## 10 food  security  and  po… https://www.armstat… https://www.armstat.am/fi…
-## 11 food  security  and  po… https://www.armstat… https://www.armstat.am/fi…
-## 12 food security and pover… https://www.armstat… https://www.armstat.am/fi…
-## 13 food security and pover… https://www.armstat… https://www.armstat.am/fi…</code></pre>
+<pre><code>## # A tibble: 14 x 3
+##    report_title               report_link           chapter_link                
+##    &lt;chr&gt;                      &lt;chr&gt;                 &lt;chr&gt;                       
+##  1 food  security  and  pove… https://www.armstat.… https://www.armstat.am/file…
+##  2 food  security  and  pove… https://www.armstat.… https://www.armstat.am/file…
+##  3 food  security  and  pove… https://www.armstat.… https://www.armstat.am/file…
+##  4 food  security  and  pove… https://www.armstat.… https://www.armstat.am/file…
+##  5 food  security  and  pove… https://www.armstat.… https://www.armstat.am/file…
+##  6 food  security  and  pove… https://www.armstat.… https://www.armstat.am/file…
+##  7 food  security  and  pove… https://www.armstat.… https://www.armstat.am/file…
+##  8 food  security  and  pove… https://www.armstat.… https://www.armstat.am/file…
+##  9 food  security  and  pove… https://www.armstat.… https://www.armstat.am/file…
+## 10 food  security  and  pove… https://www.armstat.… https://www.armstat.am/file…
+## 11 food  security  and  pove… https://www.armstat.… https://www.armstat.am/file…
+## 12 food  security  and  pove… https://www.armstat.… https://www.armstat.am/file…
+## 13 food security and poverty… https://www.armstat.… https://www.armstat.am/file…
+## 14 food security and poverty… https://www.armstat.… https://www.armstat.am/file…</code></pre>
 </div>
 </div>
 <div id="step-3-getting-all-the-files" class="section level2">
 <h2>Step 3: Getting! All! the! Files!</h2>
-<p>This is actually straightforward, now that we have a tibble of report titles and links to chapter files. The <code>download.file()</code> function will save the contents of a link (its first argument) to a filepath (its second argument) and the <code>walk2()</code> function allows you to pass a pair of vectors to a function to iteratively use as its two arguments (first the first element of each vector, then the second element of each vector, and so on). We’ll use <code>str_extract()</code> to get the year of the report from its title, and use it to make a file name for the pdf with <code>str_c()</code>. But first we should create a directory to save those files in. And after each download, we’ll insert a brief pause with <code>Sys.sleep(3)</code> to be sure that were not hammering the server too hard. Maybe not <em>really</em> necessary this time, given that we’re getting just 13 files, but it’s the considerate thing to do and a good habit.</p>
+<p>This is actually straightforward, now that we have a tibble of report titles and links to chapter files. The <code>download.file()</code> function will save the contents of a link (its first argument) to a filepath (its second argument) and the <code>walk2()</code> function allows you to pass a pair of vectors to a function to iteratively use as its two arguments (first the first element of each vector, then the second element of each vector, and so on). We’ll use <code>str_extract()</code> to get the year of the report from its title, and use it to make a file name for the pdf with <code>str_c()</code>. But first we should create a directory to save those files in. And after each download, we’ll insert a brief pause with <code>Sys.sleep(3)</code> to be sure that were not hammering the server too hard. Maybe not <em>really</em> necessary this time, given that we’re getting just 14 files, but it’s the considerate thing to do and a good habit.</p>
 <pre class="r"><code>dir.create(&quot;armstat_files&quot;)
 
 walk2(reports_links$report_title, reports_links$chapter_link,
@@ -384,6 +375,6 @@ walk2(reports_links$report_title, reports_links$chapter_link,
 <div class="footnotes">
 <hr />
 <ol>
-<li id="fn1"><p>Remember, if you haven’t installed it before, you will need to download <code>janitor</code> to your machine with <code>install.packages("janitor")</code> before this code will work.<a href="#fnref1" class="footnote-back">↩</a></p></li>
+<li id="fn1"><p>Remember, if you haven’t installed it before, you will need to download <code>janitor</code> to your machine with <code>install.packages("janitor")</code> before this code will work.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
