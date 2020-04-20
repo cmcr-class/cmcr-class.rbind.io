@@ -39,14 +39,14 @@ Ugh.  Right.  That's why.
 
 ## The Solution
 
-RMarkdown makes converting a manuscript to a .docx fairly easy.  The process is not quite seamless, though, so it's wise I think to duplicate the .Rmd file and rename it with `_word`.  That is, if the paper starts from `updating_swiid.Rmd`, make a duplicate and call it `updating_swiid_word.Rmd`.
+RMarkdown makes converting a manuscript to a .docx fairly easy.  The process is not quite seamless, though, so it's wise I think to duplicate the .Rmd file and rename it with `_word`.  That is, if the paper starts from `example_article.Rmd`, make a duplicate and call it `example_article_word.Rmd`.
 
 ### Step 1. The YAML metadata
 
 Our preferred PDF template, [`svm-latex-ms2.tex`](https://github.com/cmcr-class/example_article/blob/master/paper/svm-latex-ms2.tex), has all kinds of YAML stuff that the word version will ignore, although it doesn't actually have to be deleted: `fontsize`, `spacing`, `citecolor`, `linkcolor`, `endnote`.^[I delete it anyway, because I prefer my code clean.  You of course can feel free to do you.]  But `author` apparently has to be a single string---`author: "Frederick Solt, _University of Iowa_"`--- rather than using `name` and `affiliation`, and `thanks` should be switched to an inline footnote at the end of the title:
 
 ```yaml
-title: "Measuring Income Inequality Across Countries and Over Time: The Standardized World Income Inequality Database^[This paper's revision history and the materials needed to reproduce its analyses can be found on Github at <http://github.com/fsolt/swiid>. The project is supported by U.S. National Science Foundation Award #1533746. Corresponding author: [frederick-solt@uiowa.edu](mailto:frederick-solt@uiowa.edu).]"
+title: "An Example Article^[This paper's revision history and the materials needed to reproduce its analyses can be found on Github at <http://github.com/fsolt/example_article>.  Corresponding author: [frederick-solt@uiowa.edu](mailto:frederick-solt@uiowa.edu).]"
 ```
 
 The big thing to change, of course, is the `output`, which should appear as below:
@@ -58,7 +58,7 @@ output:
     keep_md: true
 ```
 
-The `word-styles-reference-01.docx` file ensures the references [get hanging indents](https://rmarkdown.rstudio.com/articles_docx.html); one could do more here to customize the format, but we don't care, and even this much probably isn't really necessary.
+The `word-styles-reference-01.docx` file ensures the references [get hanging indents](https://rmarkdown.rstudio.com/articles_docx.html); one could do more here to customize the format, but we don't care, and even this much probably isn't really necessary.  Anyway, [download it here](https://github.com/cmcr-class/example_article/raw/master/paper/word-styles-reference-01.docx) and put it in the same directory with the .Rmd.
 
 Setting `keep_md` to `TRUE` has [the side effect that the directory of figures is preserved](https://bookdown.org/yihui/rmarkdown-cookbook/keep-files.html).  They'll all need to be exported as .tiff and .jpeg files, too (let the publisher figure out which format they want to use for each, I think).  I'm positive there's a clever one-liner to do this, and I really want to go look for it, but it took way less than a minute to get the job done in Preview.  I'm sure there are equally quick ways to do this in windows.  Satisficing, FTW.
 
@@ -68,7 +68,7 @@ Oh, one more thing---my little hack to find the bibliography automatically
 bibliography: \dummy{`r rinline_inchunk('file.path(getwd(), list.files(getwd(), "bib$"))')`}
 ```
 
-doesn't seem to mix well with `output: word_document`.  Just call the .bib file directly, e.g., `bibliography: "updating_swiid.bib"`.
+doesn't seem to mix well with `output: word_document`.  Just call the .bib file directly, e.g., `bibliography: "example_article.bib"`.
 
 
 ### Step 2. Figure Captions and Cross-References
@@ -78,10 +78,10 @@ The only in-text issue I found is that figure captions don't have the "Figure X:
 
 ### Step 3: Bibliography
 
-There are two things to do here.  First, add "## References" to the bottom of the .Rmd.  Second, carefully look over the output bibliography to catch any differences between how your references are cited in the PDF and how they appear in the word file.  In my case, my .bib includes many `unpublished` documents that get cited how I want them to in the PDF, but don't appear right in Word; they need to be switched to `misc` to appear correctly.  For each of these items, I needed to cut the `Note` entry to the clipboard, switch the item to `misc`, and paste the clipboard into `Howpublished`.
+There are two things to do here.  First, add "## References" to the bottom of the .Rmd.  Second, carefully look over the output bibliography to catch any differences between how your references are cited in the PDF and how they appear in the word file.  (In my case, my .bib includes many `unpublished` documents that get cited how I want them to in the PDF, but don't appear right in the .docx; they need to be switched to `misc` to appear correctly.  For each of these items, in my favorite Bib$\TeX$ software, [BibDesk](https://bibdesk.sourceforge.io/), I needed to cut the `Note` entry to the clipboard, switch the item to `misc`, and paste the clipboard into `Howpublished`.)
 
-So, if any such modifications are necessary, one should create a new, duplicate version of the .bib with the `_word` name suffix---remember to change this name in the `bibliography:` entry of the YAML header, too)---and make the needed changes in that file.   
+So, if any such modifications are necessary, one should create a new, duplicate version of the .bib file with the `_word` name suffix---remember to change this name in the `bibliography:` entry of the YAML header of the .Rmd, too---and make the needed changes in that file.   
 
 ## Done!
 
-Not instantaneous, but pretty darn quick, really.
+Not instantaneous, but pretty darn quick, really: a matter of minutes, now that it is all figured out.

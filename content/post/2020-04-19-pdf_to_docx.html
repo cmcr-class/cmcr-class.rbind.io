@@ -26,21 +26,21 @@ output:
 </div>
 <div id="the-solution" class="section level2">
 <h2>The Solution</h2>
-<p>RMarkdown makes converting a manuscript to a .docx fairly easy. The process is not quite seamless, though, so it’s wise I think to duplicate the .Rmd file and rename it with <code>_word</code>. That is, if the paper starts from <code>updating_swiid.Rmd</code>, make a duplicate and call it <code>updating_swiid_word.Rmd</code>.</p>
+<p>RMarkdown makes converting a manuscript to a .docx fairly easy. The process is not quite seamless, though, so it’s wise I think to duplicate the .Rmd file and rename it with <code>_word</code>. That is, if the paper starts from <code>example_article.Rmd</code>, make a duplicate and call it <code>example_article_word.Rmd</code>.</p>
 <div id="step-1.-the-yaml-metadata" class="section level3">
 <h3>Step 1. The YAML metadata</h3>
 <p>Our preferred PDF template, <a href="https://github.com/cmcr-class/example_article/blob/master/paper/svm-latex-ms2.tex"><code>svm-latex-ms2.tex</code></a>, has all kinds of YAML stuff that the word version will ignore, although it doesn’t actually have to be deleted: <code>fontsize</code>, <code>spacing</code>, <code>citecolor</code>, <code>linkcolor</code>, <code>endnote</code>.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> But <code>author</code> apparently has to be a single string—<code>author: "Frederick Solt, _University of Iowa_"</code>— rather than using <code>name</code> and <code>affiliation</code>, and <code>thanks</code> should be switched to an inline footnote at the end of the title:</p>
-<pre class="yaml"><code>title: &quot;Measuring Income Inequality Across Countries and Over Time: The Standardized World Income Inequality Database^[This paper&#39;s revision history and the materials needed to reproduce its analyses can be found on Github at &lt;http://github.com/fsolt/swiid&gt;. The project is supported by U.S. National Science Foundation Award #1533746. Corresponding author: [frederick-solt@uiowa.edu](mailto:frederick-solt@uiowa.edu).]&quot;</code></pre>
+<pre class="yaml"><code>title: &quot;An Example Article^[This paper&#39;s revision history and the materials needed to reproduce its analyses can be found on Github at &lt;http://github.com/fsolt/example_article&gt;.  Corresponding author: [frederick-solt@uiowa.edu](mailto:frederick-solt@uiowa.edu).]&quot;</code></pre>
 <p>The big thing to change, of course, is the <code>output</code>, which should appear as below:</p>
 <pre class="yaml"><code>output: 
   word_document:
     reference_docx: word-styles-reference-01.docx
     keep_md: true</code></pre>
-<p>The <code>word-styles-reference-01.docx</code> file ensures the references <a href="https://rmarkdown.rstudio.com/articles_docx.html">get hanging indents</a>; one could do more here to customize the format, but we don’t care, and even this much probably isn’t really necessary.</p>
+<p>The <code>word-styles-reference-01.docx</code> file ensures the references <a href="https://rmarkdown.rstudio.com/articles_docx.html">get hanging indents</a>; one could do more here to customize the format, but we don’t care, and even this much probably isn’t really necessary. Anyway, <a href="https://github.com/cmcr-class/example_article/raw/master/paper/word-styles-reference-01.docx">download it here</a> and put it in the same directory with the .Rmd.</p>
 <p>Setting <code>keep_md</code> to <code>TRUE</code> has <a href="https://bookdown.org/yihui/rmarkdown-cookbook/keep-files.html">the side effect that the directory of figures is preserved</a>. They’ll all need to be exported as .tiff and .jpeg files, too (let the publisher figure out which format they want to use for each, I think). I’m positive there’s a clever one-liner to do this, and I really want to go look for it, but it took way less than a minute to get the job done in Preview. I’m sure there are equally quick ways to do this in windows. Satisficing, FTW.</p>
 <p>Oh, one more thing—my little hack to find the bibliography automatically</p>
 <pre class="yaml"><code>bibliography: \dummy{ `r file.path(getwd(), list.files(getwd(), &quot;bib$&quot;))` }</code></pre>
-<p>doesn’t seem to mix well with <code>output: word_document</code>. Just call the .bib file directly, e.g., <code>bibliography: "updating_swiid.bib"</code>.</p>
+<p>doesn’t seem to mix well with <code>output: word_document</code>. Just call the .bib file directly, e.g., <code>bibliography: "example_article.bib"</code>.</p>
 </div>
 <div id="step-2.-figure-captions-and-cross-references" class="section level3">
 <h3>Step 2. Figure Captions and Cross-References</h3>
@@ -48,13 +48,13 @@ output:
 </div>
 <div id="step-3-bibliography" class="section level3">
 <h3>Step 3: Bibliography</h3>
-<p>There are two things to do here. First, add “## References” to the bottom of the .Rmd. Second, carefully look over the output bibliography to catch any differences between how your references are cited in the PDF and how they appear in the word file. In my case, my .bib includes many <code>unpublished</code> documents that get cited how I want them to in the PDF, but don’t appear right in Word; they need to be switched to <code>misc</code> to appear correctly. For each of these items, I needed to cut the <code>Note</code> entry to the clipboard, switch the item to <code>misc</code>, and paste the clipboard into <code>Howpublished</code>.</p>
-<p>So, if any such modifications are necessary, one should create a new, duplicate version of the .bib with the <code>_word</code> name suffix—remember to change this name in the <code>bibliography:</code> entry of the YAML header, too)—and make the needed changes in that file.</p>
+<p>There are two things to do here. First, add “## References” to the bottom of the .Rmd. Second, carefully look over the output bibliography to catch any differences between how your references are cited in the PDF and how they appear in the word file. (In my case, my .bib includes many <code>unpublished</code> documents that get cited how I want them to in the PDF, but don’t appear right in the .docx; they need to be switched to <code>misc</code> to appear correctly. For each of these items, in my favorite Bib<span class="math inline">\(\TeX\)</span> software, <a href="https://bibdesk.sourceforge.io/">BibDesk</a>, I needed to cut the <code>Note</code> entry to the clipboard, switch the item to <code>misc</code>, and paste the clipboard into <code>Howpublished</code>.)</p>
+<p>So, if any such modifications are necessary, one should create a new, duplicate version of the .bib file with the <code>_word</code> name suffix—remember to change this name in the <code>bibliography:</code> entry of the YAML header of the .Rmd, too—and make the needed changes in that file.</p>
 </div>
 </div>
 <div id="done" class="section level2">
 <h2>Done!</h2>
-<p>Not instantaneous, but pretty darn quick, really.</p>
+<p>Not instantaneous, but pretty darn quick, really: a matter of minutes, now that it is all figured out.</p>
 </div>
 <div class="footnotes">
 <hr />
